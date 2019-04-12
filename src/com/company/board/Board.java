@@ -20,7 +20,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private static final int BOARD_WIDTH = TILE_SIZE * 13;
     private static final int MAX_TILES_IN_A_ROW = BOARD_WIDTH/TILE_SIZE;
 
-    private static final int INITIAL_SPEED_INCREASE_FREQUENCY = 30;
+    private static final int INITIAL_SPEED_INCREASE_FREQUENCY = 20;
     private static final int INITIAL_SPEED_INCREASE_VALUE = 10;
     public static final int INITIAL_WALL_GENERATION_FREQUENCY = 24;
 
@@ -173,7 +173,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         }
 
         if(SCORE_COUNT % INITIAL_SPEED_INCREASE_FREQUENCY * 2 == 0 &&
-           SCORE_COUNT > INITIAL_SPEED_INCREASE_FREQUENCY * 15 && SPEED_INCREASE_VALUE > 1) {
+           SCORE_COUNT > INITIAL_SPEED_INCREASE_FREQUENCY * 3 && SPEED_INCREASE_VALUE > 1) {
             SPEED_INCREASE_VALUE--;
         }
 
