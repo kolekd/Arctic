@@ -27,4 +27,5 @@ public class WallLine {
     public void setPosY(int posY) {
         this.posY = posY;
     }
+
 }

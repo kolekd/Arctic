@@ -1,6 +1,6 @@
 package com.company.board;
 
-import com.company.logic.RandomDecision;
+import com.company.util.RandomDecision;
 import com.company.logic.WallLine;
 import com.company.logic.WallPlacer;
 
@@ -20,8 +20,13 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private static final int BOARD_WIDTH = TILE_SIZE * 13;
     private static final int MAX_TILES_IN_A_ROW = BOARD_WIDTH/TILE_SIZE;
 
+    private static final int SPEED_INCREASE_VALUE = 5;
+    private static final int INITIAL_SPEED_INCREASE_FREQUENCY = 8;
+    public static final int INITIAL_WALL_GENERATION_FREQUENCY = 24;
 
-    private static final int DELAY = 1000;
+    private static int SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY;
+    private static int WALL_GENERATION_FREQUENCY = INITIAL_WALL_GENERATION_FREQUENCY;
+    private static int DELAY = 150;
 
     private static boolean gameRunning;
     private static int TICK_COUNT;
@@ -42,6 +47,8 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
         setFocusable(true);
+        setBackground(new Color(238,238,238));
+//        setBackground(new Color(0,0,0));
 
         loadImages();
         initGame();
@@ -74,9 +81,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
         for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
             if(RandomDecision.get()) {
-                wallPlacerList.add(new WallPlacer(true));
+                wallPlacerList.add(new WallPlacer(true, (i * TILE_SIZE)));
             } else {
-                wallPlacerList.add(new WallPlacer(false));
+                wallPlacerList.add(new WallPlacer(false, 0));
             }
         }
 
@@ -90,7 +97,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
             for (WallLine wallLine : listOfWallLists) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-                    if(wallLine.getWalls().get(i).isWillBePlaced()) {
+                    if(wallLine.getWalls().get(i).isPlaced()) {
                         graphics.drawImage(wall, (i * TILE_SIZE), wallLine.getPosY(), this);
                     }
                 }
@@ -105,12 +112,14 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
     public void gameOver(Graphics g) {
         String msg = "Game Over";
-        Font font = new Font("Helvetica", Font.BOLD, 18);
-        FontMetrics metr = getFontMetrics(font);
+        String score = "Score: " + TICK_COUNT;
+                Font font = new Font("Helvetica", Font.BOLD, 18);
+        FontMetrics metrics = getFontMetrics(font);
 
         g.setColor(Color.black);
         g.setFont(font);
-        g.drawString(msg, (BOARD_WIDTH - metr.stringWidth(msg)) / 2, BOARD_HEIGHT / 2);
+        g.drawString(msg, (BOARD_WIDTH - metrics.stringWidth(msg)) / 2, BOARD_HEIGHT / 2);
+        g.drawString(score, (BOARD_WIDTH - metrics.stringWidth(score)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE);
     }
 
     @Override
@@ -122,6 +131,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.out.println(TICK_COUNT);
         TICK_COUNT++;
 
         Iterator<WallLine> iterator = listOfWallLists.iterator();
@@ -130,8 +140,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
             for (int i = 0; i < currentWallLine.getWalls().size(); i++) {
                 if(posY == currentWallLine.getPosY() + TILE_SIZE &&
-                   currentWallLine.getWalls().get(posX / TILE_SIZE).isWillBePlaced()) {
+                   currentWallLine.getWalls().get(posX / TILE_SIZE).isPlaced()) {
 
+                    timer.stop();
                     gameRunning = false;
                     break;
                 }
@@ -140,16 +151,53 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             if (currentWallLine.getPosY() + TILE_SIZE > BOARD_HEIGHT) {
                 iterator.remove();
             } else {
-                currentWallLine.setPosY(currentWallLine.getPosY() + TILE_SIZE);
+                currentWallLine.setPosY(currentWallLine.getPosY() + TILE_SIZE/4);
             }
         }
 
-        if(TICK_COUNT == 8) {
+        if(TICK_COUNT % WALL_GENERATION_FREQUENCY == 0) {
             generateWall();
-            TICK_COUNT = 0;
+        }
+
+        updateSpeedChangeFrequency();
+
+        if(TICK_COUNT % SPEED_INCREASE_FREQUENCY == 0 && DELAY > SPEED_INCREASE_VALUE) {
+            timer.setDelay(timer.getDelay() - SPEED_INCREASE_VALUE);
         }
 
         repaint();
+    }
+
+    private void updateSpeedChangeFrequency() {
+        if(TICK_COUNT == 200) {
+            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 2;
+        } else if (TICK_COUNT == 250) {
+            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 4;
+        } else if (TICK_COUNT == 270) {
+            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 6;
+        } else if (TICK_COUNT == 280) {
+            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 7;
+        } else if (TICK_COUNT == 285) {
+            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 8;
+        } else if (TICK_COUNT == 290) {
+            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 9;
+        } else if (TICK_COUNT == 295) {
+            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 10;
+        }
+    }
+
+    public boolean isThereAWallHere(int coords) {
+        for(WallLine wallLine : listOfWallLists) {
+            for(WallPlacer wall : wallLine.getWalls()) {
+                if (coords == wall.getPosX() &&
+                        posY < wallLine.getPosY() + TILE_SIZE &&
+                        posY > wallLine.getPosY() - TILE_SIZE){
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -159,22 +207,31 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_LEFT && posX > 0) {
+        if (key == KeyEvent.VK_LEFT && posX > 0 && !isThereAWallHere(posX - TILE_SIZE)) {
             posX -= TILE_SIZE;
         }
 
-        if (key == KeyEvent.VK_RIGHT && posX < BOARD_WIDTH - TILE_SIZE) {
+        if (key == KeyEvent.VK_RIGHT && posX < BOARD_WIDTH - TILE_SIZE && !isThereAWallHere(posX + TILE_SIZE)) {
             posX += TILE_SIZE;
         }
 
+        if (key == KeyEvent.VK_DOWN) {
+            if(timer.isRunning()) {
+                timer.stop();
+            } else {
+                timer.start();
+            }
+        }
+
         repaint();
+
+    }
+
+
+    @Override
+    public void keyReleased(KeyEvent e) {
     }
 }
 

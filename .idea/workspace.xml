@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1b0ee3e8-da22-4a4e-a3e8-33e6680a6d85" name="Default Changelist" comment="" />
+    <list default="true" id="1b0ee3e8-da22-4a4e-a3e8-33e6680a6d85" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Arctic/com/company/board/Board.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Arctic/com/company/board/Board.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/board/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/board/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/logic/RandomDecision.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/util/RandomDecision.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/logic/WallLine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/logic/WallLine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/logic/WallPlacer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/logic/WallPlacer.java" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,8 +21,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/company/Arctic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="158">
-              <caret line="14" column="19" lean-forward="true" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="19" />
+            <state relative-caret-position="232">
+              <caret line="14" column="19" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="19" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#126#127#0" expanded="true" />
@@ -28,22 +35,22 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/company/board/Board.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="133" column="20" selection-start-line="133" selection-start-column="20" selection-end-line="133" selection-end-column="20" />
+            <state relative-caret-position="866">
+              <caret line="202" selection-start-line="202" selection-end-line="202" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#keyTyped#0;class#Board#0" />
-                <element signature="method#keyPressed#0;class#Board#0" />
+                <element signature="method#keyReleased#0;class#Board#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/company/logic/RandomDecision.java">
+        <entry file="file://$PROJECT_DIR$/src/com/company/logic/WallPlacer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="80">
-              <caret line="4" column="8" lean-forward="true" selection-start-line="4" selection-start-column="8" selection-end-line="4" selection-end-column="8" />
+            <state relative-caret-position="100">
+              <caret line="5" column="13" lean-forward="true" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -56,6 +63,11 @@
         <option value="Class" />
       </list>
     </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>DELAY</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -70,8 +82,8 @@
         <option value="$PROJECT_DIR$/src/com/company/gameobject/Wall.java" />
         <option value="$PROJECT_DIR$/src/com/company/logic/Wall.java" />
         <option value="$PROJECT_DIR$/src/com/company/logic/RandomDecision.java" />
-        <option value="$PROJECT_DIR$/src/com/company/logic/WallPlacer.java" />
         <option value="$PROJECT_DIR$/src/com/company/logic/WallLine.java" />
+        <option value="$PROJECT_DIR$/src/com/company/logic/WallPlacer.java" />
         <option value="$PROJECT_DIR$/src/com/company/board/Board.java" />
       </list>
     </option>
@@ -123,6 +135,13 @@
               <item name="Arctic" type="b2602c69:ProjectViewProjectNode" />
               <item name="Arctic" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="company" type="462c0819:PsiDirectoryNode" />
+              <item name="util" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Arctic" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Arctic" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -136,8 +155,9 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555083839956" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555088071545" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -220,12 +240,12 @@
       <option name="presentableId" value="Default" />
       <updated>1555053017740</updated>
       <workItem from="1555053021162" duration="1830000" />
-      <workItem from="1555060389713" duration="13479000" />
+      <workItem from="1555060389713" duration="17377000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15309000" />
+    <option name="totallyTimeSpent" value="19207000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="877" extended-state="6" />
@@ -297,47 +317,28 @@
     <entry file="file://$PROJECT_DIR$/src/resources/player_tile.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/logic/RandomDecision.java">
+    <entry file="file://$PROJECT_DIR$/src/com/company/util/RandomDecision.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="80">
-          <caret line="4" column="8" lean-forward="true" selection-start-line="4" selection-start-column="8" selection-end-line="4" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/company/logic/WallPlacer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="6" column="45" selection-start-line="6" selection-start-column="45" selection-end-line="6" selection-end-column="45" />
-          <folding>
-            <element signature="e#174#175#0" expanded="true" />
-            <element signature="e#118#119#0" expanded="true" />
-            <element signature="e#153#154#0" expanded="true" />
-            <element signature="e#210#211#0" expanded="true" />
-            <element signature="e#258#259#0" expanded="true" />
-          </folding>
+          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/logic/WallLine.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="14" column="40" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
+        <state relative-caret-position="371">
+          <caret line="30" selection-start-line="30" selection-end-line="30" />
           <folding>
-            <element signature="e#308#309#0" expanded="true" />
-            <element signature="e#360#361#0" expanded="true" />
-            <element signature="e#394#395#0" expanded="true" />
-            <element signature="e#422#423#0" expanded="true" />
-            <element signature="e#449#450#0" expanded="true" />
-            <element signature="e#486#487#0" expanded="true" />
-            <element signature="e#518#519#0" expanded="true" />
+            <element signature="e#276#277#0" expanded="true" />
+            <element signature="e#304#305#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/Arctic.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="14" column="19" lean-forward="true" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="19" />
+        <state relative-caret-position="232">
+          <caret line="14" column="19" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="19" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#126#127#0" expanded="true" />
@@ -346,14 +347,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/company/logic/WallPlacer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="5" column="13" lean-forward="true" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/board/Board.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="133" column="20" selection-start-line="133" selection-start-column="20" selection-end-line="133" selection-end-column="20" />
+        <state relative-caret-position="866">
+          <caret line="202" selection-start-line="202" selection-end-line="202" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#keyTyped#0;class#Board#0" />
-            <element signature="method#keyPressed#0;class#Board#0" />
+            <element signature="method#keyReleased#0;class#Board#0" />
           </folding>
         </state>
       </provider>
