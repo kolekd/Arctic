@@ -1,22 +1,22 @@
-package com.company.logic;
+package com.company.model;
 
 import java.util.List;
 
 public class WallLine {
 
-    List<WallPlacer> walls;
+    List<Wall> walls;
     int posY;
 
-    public WallLine(List<WallPlacer> walls, int posY) {
+    public WallLine(List<Wall> walls, int posY) {
         this.walls = walls;
         this.posY = posY;
     }
 
-    public List<WallPlacer> getWalls() {
+    public List<Wall> getWalls() {
         return walls;
     }
 
-    public void setWalls(List<WallPlacer> walls) {
+    public void setWalls(List<Wall> walls) {
         this.walls = walls;
     }
 

@@ -1,11 +1,11 @@
-package com.company.logic;
+package com.company.model;
 
-public class WallPlacer {
+public class Wall {
 
     boolean placed;
     int posX;
 
-    public WallPlacer(boolean willBePlaced, int posX) {
+    public Wall(boolean willBePlaced, int posX) {
         this.placed = willBePlaced;
         this.posX = posX;
     }

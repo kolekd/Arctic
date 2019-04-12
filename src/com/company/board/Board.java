@@ -1,8 +1,8 @@
 package com.company.board;
 
 import com.company.util.RandomDecision;
-import com.company.logic.WallLine;
-import com.company.logic.WallPlacer;
+import com.company.model.WallLine;
+import com.company.model.Wall;
 
 import javax.swing.*;
 import java.awt.*;
@@ -97,14 +97,14 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
     private void generateWall() {
 
-        List<WallPlacer> wallPlacerList = new ArrayList<>();
+        List<Wall> wallPlacerList = new ArrayList<>();
         WallLine wallLine = new WallLine(wallPlacerList, 0);
 
         for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
             if(RandomDecision.get()) {
-                wallPlacerList.add(new WallPlacer(true, (i * TILE_SIZE)));
+                wallPlacerList.add(new Wall(true, (i * TILE_SIZE)));
             } else {
-                wallPlacerList.add(new WallPlacer(false, 0));
+                wallPlacerList.add(new Wall(false, 0));
             }
         }
 
@@ -211,7 +211,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
     private boolean noWallThere(int coords) {
         for(WallLine wallLine : listOfWallLists) {
-            for(WallPlacer wall : wallLine.getWalls()) {
+            for(Wall wall : wallLine.getWalls()) {
                 if (coords == wall.getPosX() &&
                         posY < wallLine.getPosY() + TILE_SIZE &&
                         posY > wallLine.getPosY() - TILE_SIZE){
