@@ -10,7 +10,6 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 public class Board extends JPanel implements KeyListener, ActionListener {
 
@@ -47,15 +46,19 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private Image player;
     private Image wall;
 
-    Font font;
-    FontMetrics metrics;
-    Random random;
-    Timer timer;
+    private Font font;
+    private Font slimFont;
+    private FontMetrics metrics;
+    private FontMetrics slimMetrics;
+
+    private Timer timer;
 
     public Board() {
         addKeyListener(this);
 
         font = new Font("Helvetica", Font.BOLD, 18);
+        slimFont = new Font("Helvetica", Font.PLAIN,16);
+        slimMetrics = getFontMetrics(slimFont);
         metrics = getFontMetrics(font);
 
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
@@ -68,8 +71,6 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     }
 
     private void initGame() {
-        random = new Random();
-
         SPEED_INCREASE_VALUE = INITIAL_SPEED_INCREASE_VALUE;
         SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY;
         WALL_GENERATION_FREQUENCY = INITIAL_WALL_GENERATION_FREQUENCY;
@@ -133,17 +134,20 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         }
     }
 
-    public void gameOver(Graphics g) {
+    private void gameOver(Graphics g) {
         String msg = "Game Over";
         String score = "Score: " + SCORE_COUNT;
+        String restartMsg = "Press <space> to restart.";
 
         g.setColor(Color.black);
         g.setFont(font);
         g.drawString(msg, (BOARD_WIDTH - metrics.stringWidth(msg)) / 2, BOARD_HEIGHT / 2);
         g.drawString(score, (BOARD_WIDTH - metrics.stringWidth(score)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE);
+        g.setFont(slimFont);
+        g.drawString(restartMsg, (BOARD_WIDTH - slimMetrics.stringWidth(restartMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 2);
     }
 
-    public void restart() {
+    private void restart() {
         removeAll();
         initGame();
         revalidate();
@@ -205,18 +209,18 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         repaint();
     }
 
-    public boolean isThereAWallHere(int coords) {
+    private boolean noWallThere(int coords) {
         for(WallLine wallLine : listOfWallLists) {
             for(WallPlacer wall : wallLine.getWalls()) {
                 if (coords == wall.getPosX() &&
                         posY < wallLine.getPosY() + TILE_SIZE &&
                         posY > wallLine.getPosY() - TILE_SIZE){
-                    return true;
+                    return false;
                 }
             }
         }
 
-        return false;
+        return true;
     }
 
     @Override
@@ -228,11 +232,11 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_LEFT && posX > 0 && !isThereAWallHere(posX - TILE_SIZE)) {
+        if (key == KeyEvent.VK_LEFT && posX > 0 && noWallThere(posX - TILE_SIZE)) {
             posX -= TILE_SIZE;
         }
 
-        if (key == KeyEvent.VK_RIGHT && posX < BOARD_WIDTH - TILE_SIZE && !isThereAWallHere(posX + TILE_SIZE)) {
+        if (key == KeyEvent.VK_RIGHT && posX < BOARD_WIDTH - TILE_SIZE && noWallThere(posX + TILE_SIZE)) {
             posX += TILE_SIZE;
         }
 
@@ -240,13 +244,13 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             restart();
         }
 
-        if (key == KeyEvent.VK_DOWN) {
-            if(timer.isRunning()) {
-                timer.stop();
-            } else {
-                timer.start();
-            }
-        }
+//        if (key == KeyEvent.VK_DOWN) {
+//            if(timer.isRunning()) {
+//                timer.stop();
+//            } else {
+//                timer.start();
+//            }
+//        }
 
         repaint();
 
