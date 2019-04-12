@@ -5,28 +5,23 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
 
-public class Board extends JPanel implements ActionListener {
+public class Board extends JPanel implements KeyListener, ActionListener {
 
-    public static final int BOARD_HEIGHT = 400;
-    public static final int BOARD_WIDTH = (BOARD_HEIGHT / 4) * 3;
+    public static final int TILE_SIZE = 32;
 
-    public static final int TILE_SIZE = BOARD_HEIGHT / 10;
+    public static final int BOARD_HEIGHT = TILE_SIZE * 20;
+    public static final int BOARD_WIDTH = TILE_SIZE * 13;
+
+    private boolean inGame = true;
 
     private int posX;
     private int posY;
-
-    private boolean leftDirection = false;
-    private boolean rightDirection = true;
-    private boolean upDirection = false;
-    private boolean downDirection = false;
-    private boolean inGame = true;
 
     private Image player;
     private Image wall;
 
     public Board(){
-
-        addKeyListener(new TAdapter());
+        addKeyListener(this);
 
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
         setFocusable(true);
@@ -44,75 +39,52 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void initGame() {
-        posX = BOARD_WIDTH / 2;
-        posY = BOARD_HEIGHT - TILE_SIZE;
-    }
-
-    public void move() {
-
-        if (leftDirection) {
-            posX -= TILE_SIZE;
-        }
-
-        if (rightDirection) {
-            posX += TILE_SIZE;
-        }
-
-        if (upDirection) {
-            posY -= TILE_SIZE;
-        }
-
-        if (downDirection) {
-            posY += TILE_SIZE;
-        }
+        posX = (BOARD_WIDTH / 2) - (TILE_SIZE / 2);
+        posY = BOARD_HEIGHT - (TILE_SIZE * 4);
     }
 
     public void doDrawing(Graphics graphics) {
-        graphics.drawImage(player, posX,posY, this);
+
+        graphics.drawImage(player, posX, posY, this);
+
         Toolkit.getDefaultToolkit().sync();
     }
 
     @Override
     public void paintComponent (Graphics graphics){
+        super.paintComponent(graphics);
+
         doDrawing(graphics);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        move();
         repaint();
     }
 
-    private class TAdapter extends KeyAdapter {
-        @Override
-        public void keyPressed(KeyEvent e) {
+    @Override
+    public void keyTyped(KeyEvent e) {
 
-            int key = e.getKeyCode();
-
-            if (key == KeyEvent.VK_LEFT) {
-                leftDirection = true;
-                upDirection = false;
-                downDirection = false;
-            }
-
-            if (key == KeyEvent.VK_RIGHT) {
-                rightDirection = true;
-                upDirection = false;
-                downDirection = false;
-            }
-
-            if (key == KeyEvent.VK_UP) {
-                upDirection = true;
-                rightDirection = false;
-                leftDirection = false;
-            }
-
-            if (key == KeyEvent.VK_DOWN) {
-                downDirection = true;
-                rightDirection = false;
-                leftDirection = false;
-            }
-        }
     }
 
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        int key = e.getKeyCode();
+
+        if (key == KeyEvent.VK_LEFT && posX > 0) {
+            posX -= TILE_SIZE;
+        }
+
+        if (key == KeyEvent.VK_RIGHT && posX < BOARD_WIDTH - TILE_SIZE) {
+            posX += TILE_SIZE;
+        }
+
+        repaint();
+    }
 }
+
