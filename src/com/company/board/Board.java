@@ -21,7 +21,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private static final int MAX_TILES_IN_A_ROW = BOARD_WIDTH/TILE_SIZE;
 
 
-    private static final int DELAY = 200;
+    private static final int DELAY = 1000;
 
     private static boolean gameRunning;
     private static int TICK_COUNT;
@@ -131,7 +131,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             for (int i = 0; i < currentWallLine.getWalls().size(); i++) {
                 if(posY == currentWallLine.getPosY() + TILE_SIZE &&
                    currentWallLine.getWalls().get(posX / TILE_SIZE).isWillBePlaced()) {
-                    
+
                     gameRunning = false;
                     break;
                 }
