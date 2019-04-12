@@ -20,15 +20,18 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private static final int BOARD_WIDTH = TILE_SIZE * 13;
     private static final int MAX_TILES_IN_A_ROW = BOARD_WIDTH/TILE_SIZE;
 
-    private static final int SPEED_INCREASE_VALUE = 5;
-    private static final int INITIAL_SPEED_INCREASE_FREQUENCY = 8;
+    private static final int INITIAL_SPEED_INCREASE_FREQUENCY = 30;
+    private static final int INITIAL_SPEED_INCREASE_VALUE = 10;
     public static final int INITIAL_WALL_GENERATION_FREQUENCY = 24;
 
+    private static int SPEED_INCREASE_VALUE = INITIAL_SPEED_INCREASE_VALUE;
     private static int SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY;
     private static int WALL_GENERATION_FREQUENCY = INITIAL_WALL_GENERATION_FREQUENCY;
-    private static int DELAY = 150;
+    private static int DELAY = 70;
 
     private static boolean gameRunning;
+
+    private static int SCORE_COUNT;
     private static int TICK_COUNT;
 
     private int posX;
@@ -112,7 +115,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
     public void gameOver(Graphics g) {
         String msg = "Game Over";
-        String score = "Score: " + TICK_COUNT;
+        String score = "Score: " + SCORE_COUNT;
                 Font font = new Font("Helvetica", Font.BOLD, 18);
         FontMetrics metrics = getFontMetrics(font);
 
@@ -131,8 +134,10 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println(TICK_COUNT);
+        System.out.println("Score:  " + SCORE_COUNT + "  Delay: " + timer.getDelay() + "  SI Frequency: " +
+                            SPEED_INCREASE_FREQUENCY + "  SI Value: " + SPEED_INCREASE_VALUE);
         TICK_COUNT++;
+        SCORE_COUNT++;
 
         Iterator<WallLine> iterator = listOfWallLists.iterator();
         while (iterator.hasNext()) {
@@ -155,35 +160,24 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             }
         }
 
-        if(TICK_COUNT % WALL_GENERATION_FREQUENCY == 0) {
+        if(SCORE_COUNT % WALL_GENERATION_FREQUENCY == 0) {
             generateWall();
         }
 
-        updateSpeedChangeFrequency();
+//        updateSpeedChangeFrequency();
 
-        if(TICK_COUNT % SPEED_INCREASE_FREQUENCY == 0 && DELAY > SPEED_INCREASE_VALUE) {
+        if(TICK_COUNT > SPEED_INCREASE_FREQUENCY && timer.getDelay() > 20) {
             timer.setDelay(timer.getDelay() - SPEED_INCREASE_VALUE);
+            SPEED_INCREASE_FREQUENCY += INITIAL_SPEED_INCREASE_FREQUENCY;
+            TICK_COUNT = 0;
+        }
+
+        if(SCORE_COUNT % INITIAL_SPEED_INCREASE_FREQUENCY * 2 == 0 &&
+           SCORE_COUNT > INITIAL_SPEED_INCREASE_FREQUENCY * 15 && SPEED_INCREASE_VALUE > 1) {
+            SPEED_INCREASE_VALUE--;
         }
 
         repaint();
-    }
-
-    private void updateSpeedChangeFrequency() {
-        if(TICK_COUNT == 200) {
-            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 2;
-        } else if (TICK_COUNT == 250) {
-            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 4;
-        } else if (TICK_COUNT == 270) {
-            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 6;
-        } else if (TICK_COUNT == 280) {
-            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 7;
-        } else if (TICK_COUNT == 285) {
-            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 8;
-        } else if (TICK_COUNT == 290) {
-            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 9;
-        } else if (TICK_COUNT == 295) {
-            SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY * 10;
-        }
     }
 
     public boolean isThereAWallHere(int coords) {
