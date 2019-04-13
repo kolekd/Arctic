@@ -24,10 +24,13 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     // Nice & smooth - init_delay=50, min_delay=15, val=10, freq=20, wgen=48, eachTickTileGoDownBy=TILE_SIZE / 8
 
     private static final int INITIAL_SPEED_INCREASE_FREQUENCY = 20;
-    private static final int INITIAL_SPEED_INCREASE_VALUE = 10;
+    private static final int INITIAL_SPEED_INCREASE_VALUE = 6;
     private static final int INITIAL_WALL_GENERATION_FREQUENCY = 48;
     private static final int INITIAL_DELAY = 50;
-    private static final int MIN_DELAY = 15;
+
+    private static final int MIN_DELAY = 8;
+    private static final int SI_VALUE_DECREASE_FREQUENCY =  80;
+    private static final int POINT_OF_DECREMENTING_SI_VALUE = 60;
 
     private static int SPEED_INCREASE_VALUE;
     private static int SPEED_INCREASE_FREQUENCY;
@@ -201,8 +204,8 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             TICK_COUNT = 0;
         }
 
-        if(SCORE_COUNT % INITIAL_SPEED_INCREASE_FREQUENCY * 2 == 0 &&
-           SCORE_COUNT > INITIAL_SPEED_INCREASE_FREQUENCY * 3 && SPEED_INCREASE_VALUE > 1) {
+        if(SCORE_COUNT % SI_VALUE_DECREASE_FREQUENCY == 0 &&
+           SCORE_COUNT > POINT_OF_DECREMENTING_SI_VALUE && SPEED_INCREASE_VALUE > 1) {
             SPEED_INCREASE_VALUE--;
         }
 
