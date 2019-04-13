@@ -28,7 +28,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private static final int INITIAL_WALL_GENERATION_FREQUENCY = 48;
     private static final int INITIAL_DELAY = 50;
 
-    private static final int MIN_DELAY = 8;
+    private static final int MIN_DELAY = 7;
     private static final int SI_VALUE_DECREASE_FREQUENCY =  80;
     private static final int POINT_OF_DECREMENTING_SI_VALUE = 60;
 
@@ -37,6 +37,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private static int WALL_GENERATION_FREQUENCY;
 
     private static boolean gameRunning;
+    private static boolean gameJustLaunched;
 
     private static int SCORE_COUNT;
     private static int TICK_COUNT;
@@ -70,7 +71,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         setFont(font);
 
         loadImages();
-        initGame();
+        gameJustLaunched = true;
     }
 
     private void initGame() {
@@ -85,6 +86,8 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
         SCORE_COUNT = 0;
         TICK_COUNT = 0;
+
+        gameJustLaunched = false;
         gameRunning = true;
         timer = new Timer(INITIAL_DELAY, this);
         timer.start();
@@ -116,7 +119,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
     private void doDrawing(Graphics graphics) {
 
-        if(gameRunning) {
+        if(gameJustLaunched) {
+            gameStart(graphics);
+        } else if(gameRunning) {
             graphics.drawImage(player, posX, posY, this);
 
             for (WallLine wallLine : listOfWallLists) {
@@ -150,7 +155,18 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         g.drawString(restartMsg, (BOARD_WIDTH - slimMetrics.stringWidth(restartMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 2);
     }
 
-    private void restart() {
+    private void gameStart(Graphics g) {
+        String msg = "Arctic";
+        String startMsg = "Press <space> to start.";
+
+        g.setColor(Color.black);
+        g.setFont(font);
+        g.drawString(msg, (BOARD_WIDTH - metrics.stringWidth(msg)) / 2, BOARD_HEIGHT / 2);
+        g.setFont(slimFont);
+        g.drawString(startMsg, (BOARD_WIDTH - slimMetrics.stringWidth(startMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 2);
+    }
+
+    private void launch() {
         removeAll();
         initGame();
         revalidate();
@@ -243,8 +259,8 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             posX += TILE_SIZE;
         }
 
-        if (!gameRunning && key == KeyEvent.VK_SPACE) {
-            restart();
+        if (gameJustLaunched  && key == KeyEvent.VK_SPACE || !gameRunning && key == KeyEvent.VK_SPACE) {
+            launch();
         }
 
 //        if (key == KeyEvent.VK_DOWN) {
