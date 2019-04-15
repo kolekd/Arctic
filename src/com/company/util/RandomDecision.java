@@ -9,10 +9,6 @@ public class RandomDecision {
     public static boolean get() {
         int randNum = random.nextInt((101 - 0) + 1) + 0;
 
-        if (randNum > 50) {
-            return true;
-        }
-
-        return false;
+        return randNum > 50;
     }
 }

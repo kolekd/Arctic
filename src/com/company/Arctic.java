@@ -11,7 +11,7 @@ public class Arctic extends JFrame {
         initUI();
     }
 
-    public void initUI() {
+    private void initUI() {
         add(new Board());
 
         setResizable(false);
@@ -23,12 +23,9 @@ public class Arctic extends JFrame {
     }
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JFrame frame = new Arctic();
-                frame.setVisible(true);
-            }
+        EventQueue.invokeLater(() -> {
+            JFrame frame = new Arctic();
+            frame.setVisible(true);
         });
     }
 
