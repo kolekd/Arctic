@@ -19,6 +19,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     // Nice & smooth - init_delay=50, min_delay=15, val=10, freq=20, wgen=48, eachTickTileGoDownBy=TILE_SIZE / 8
 
     private Image player;
+    private Image playerBuffed;
     private Image wall;
     private Image powerUp;
 
@@ -57,6 +58,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         ImageIcon pIcon = new ImageIcon("src/resources/player_tile.png");
         player = pIcon.getImage();
 
+        ImageIcon pbIcon = new ImageIcon("src/resources/player_tile_buffed.png");
+        playerBuffed = pbIcon.getImage();
+
         ImageIcon wIcon = new ImageIcon("src/resources/wall_tile.png");
         wall = wIcon.getImage();
 
@@ -66,7 +70,11 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
     private void doDrawing(Graphics graphics) {
         if(logic.gameRunning) {
-            graphics.drawImage(player, logic.player_posX, logic.player_posY, this);
+            if(logic.player_buffed) {
+                graphics.drawImage(playerBuffed, logic.player_posX, logic.player_posY, this);
+            } else {
+                graphics.drawImage(player, logic.player_posX, logic.player_posY, this);
+            }
 
             for (WallLine wallLine : logic.listOfWallLists) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {

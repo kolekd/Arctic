@@ -35,6 +35,7 @@ public class Logic {
 
     public int player_posX;
     public int player_posY;
+    public boolean player_buffed;
 
     public List<WallLine> listOfWallLists;
 
@@ -102,17 +103,23 @@ public class Logic {
             for (int i = 0; i < currentWallLine.getWalls().size(); i++) {
                 if(!currentWallLine.getWalls().get(0).isPowerUp()) {
                     if(player_posY == currentWallLine.getPosY() + TILE_SIZE &&
-                            currentWallLine.getWalls().get(player_posX / TILE_SIZE).isPlaced()) {
+                       currentWallLine.getWalls().get(player_posX / TILE_SIZE).isPlaced()) {
 
-                        timer.stop();
-                        gameRunning = false;
-                        break;
+                        if(player_buffed) {
+                            currentWallLine.getWalls().get(player_posX / TILE_SIZE).setPlaced(false);
+                            player_buffed = false;
+                        } else {
+                            timer.stop();
+                            gameRunning = false;
+                            break;
+                        }
                     }
                 } else {
                     if(player_posY == currentWallLine.getPosY() + TILE_SIZE &&
-                            currentWallLine.getWalls().get(0).isPlaced()) {
+                            currentWallLine.getWalls().get(0).getPosX() == player_posX) {
 
                         iterator.remove();
+                        player_buffed = true;
                         return;
                     }
                 }
