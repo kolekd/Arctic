@@ -2,6 +2,8 @@ package com.company.model;
 
 import java.util.List;
 
+import static com.company.model.Constants.TILE_SIZE;
+
 public class WallLine {
 
     private List<Wall> walls;
@@ -9,7 +11,7 @@ public class WallLine {
 
     public WallLine(List<Wall> walls) {
         this.walls = walls;
-        this.posY = 0;
+        this.posY = -TILE_SIZE;
     }
 
     public List<Wall> getWalls() {

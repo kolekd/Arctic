@@ -125,7 +125,7 @@ public class Logic {
                 }
             }
 
-            if (currentWallLine.getPosY() + TILE_SIZE > BOARD_HEIGHT) {
+            if (currentWallLine.getPosY() > BOARD_HEIGHT) {
                 iterator.remove();
             } else {
                 currentWallLine.setPosY(currentWallLine.getPosY() + TILE_SIZE/8);
