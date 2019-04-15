@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.company.model.Constants.*;
+import static com.company.logic.Constants.*;
 
 public class Logic {
 
@@ -118,6 +118,7 @@ public class Logic {
                     if(player_posY == currentWallLine.getPosY() + TILE_SIZE &&
                             currentWallLine.getWalls().get(0).getPosX() == player_posX) {
 
+                        currentWallLine.getWalls().get(0).setPlaced(false);
                         iterator.remove();
                         player_buffed = true;
                         return;
@@ -158,8 +159,13 @@ public class Logic {
         for(WallLine wallLine : listOfWallLists) {
             for(Wall wall : wallLine.getWalls()) {
                 if (coords == wall.getPosX() &&
-                        player_posY < wallLine.getPosY() + TILE_SIZE &&
-                        player_posY > wallLine.getPosY() - TILE_SIZE){
+                    player_posY < wallLine.getPosY() + TILE_SIZE &&
+                    player_posY > wallLine.getPosY() - TILE_SIZE) {
+                    if(wall.isPowerUp() && wall.isPlaced()) {
+                        wall.setPlaced(false);
+                        player_buffed = true;
+                        return true;
+                    }
                     return false;
                 }
             }

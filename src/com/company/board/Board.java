@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import static com.company.model.Constants.*;
+import static com.company.logic.Constants.*;
 
 public class Board extends JPanel implements KeyListener, ActionListener {
 
@@ -79,8 +79,10 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             for (WallLine wallLine : logic.listOfWallLists) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
                     if(wallLine.getWalls().size() < 2 && wallLine.getWalls().get(0).isPowerUp()) {
-                        graphics.drawImage(powerUp, (wallLine.getWalls().get(0).getPosX()), wallLine.getPosY(), this);
-                        break;
+                        if(wallLine.getWalls().get(0).isPlaced()) {
+                            graphics.drawImage(powerUp, (wallLine.getWalls().get(0).getPosX()), wallLine.getPosY(), this);
+                            break;
+                        }
                     } else if(wallLine.getWalls().get(i).isPlaced()) {
                         graphics.drawImage(wall, (i * TILE_SIZE), wallLine.getPosY(), this);
                     }

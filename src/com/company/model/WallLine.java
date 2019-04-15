@@ -2,7 +2,7 @@ package com.company.model;
 
 import java.util.List;
 
-import static com.company.model.Constants.TILE_SIZE;
+import static com.company.logic.Constants.TILE_SIZE;
 
 public class WallLine {
 
