@@ -20,6 +20,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
     private Image player;
     private Image wall;
+    private Image powerUp;
 
     private Font font;
     private Font slimFont;
@@ -58,6 +59,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
         ImageIcon wIcon = new ImageIcon("src/resources/wall_tile.png");
         wall = wIcon.getImage();
+
+        ImageIcon pwIcon = new ImageIcon("src/resources/power_up.png");
+        powerUp = pwIcon.getImage();
     }
 
     private void doDrawing(Graphics graphics) {
@@ -66,7 +70,10 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
             for (WallLine wallLine : logic.listOfWallLists) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-                    if(wallLine.getWalls().get(i).isPlaced()) {
+                    if(wallLine.getWalls().size() < 2 && wallLine.getWalls().get(0).isPowerUp()) {
+                        graphics.drawImage(powerUp, (wallLine.getWalls().get(0).getPosX()), wallLine.getPosY(), this);
+                        break;
+                    } else if(wallLine.getWalls().get(i).isPlaced()) {
                         graphics.drawImage(wall, (i * TILE_SIZE), wallLine.getPosY(), this);
                     }
                 }
@@ -140,10 +147,10 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         }
 
 //        if (key == KeyEvent.VK_DOWN) {
-//            if(timer.isRunning()) {
-//                timer.stop();
+//            if(logic.timer.isRunning()) {
+//                logic.timer.stop();
 //            } else {
-//                timer.start();
+//                logic.timer.start();
 //            }
 //        }
 //

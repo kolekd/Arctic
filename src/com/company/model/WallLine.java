@@ -7,9 +7,9 @@ public class WallLine {
     private List<Wall> walls;
     private int posY;
 
-    public WallLine(List<Wall> walls, int posY) {
+    public WallLine(List<Wall> walls) {
         this.walls = walls;
-        this.posY = posY;
+        this.posY = 0;
     }
 
     public List<Wall> getWalls() {

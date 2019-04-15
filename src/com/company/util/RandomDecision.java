@@ -7,8 +7,11 @@ public class RandomDecision {
     private static Random random = new Random();
 
     public static boolean get() {
-        int randNum = random.nextInt((101 - 0) + 1) + 0;
-
+        int randNum = randomNumberInRange(0, 101);
         return randNum > 50;
+    }
+
+    public static int randomNumberInRange(int from, int to) {
+        return random.nextInt((to - from) + 1) + from;
     }
 }

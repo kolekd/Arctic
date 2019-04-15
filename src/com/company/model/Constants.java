@@ -9,6 +9,7 @@ public class Constants {
 
     public static final int INITIAL_SPEED_INCREASE_FREQUENCY = 20;
     public static final int INITIAL_SPEED_INCREASE_VALUE = 6;
-    public static final int INITIAL_WALL_GENERATION_FREQUENCY = 48;
+    public static final int INITIAL_WALL_GENERATION_FREQUENCY = 100;
     public static final int INITIAL_DELAY = 50;
+    public static final int POWER_UP_GENERATION_FREQUENCY = 10;             //  <- Per how many walls.
 }

@@ -25,6 +25,7 @@ public class Logic {
     private static int SPEED_INCREASE_VALUE;
     private static int SPEED_INCREASE_FREQUENCY;
     private static int WALL_GENERATION_FREQUENCY;
+    private static int GENERATED_WALLS_COUNT;
 
     public boolean gameRunning;
     public boolean gameJustLaunched;
@@ -37,7 +38,7 @@ public class Logic {
 
     public List<WallLine> listOfWallLists;
 
-    private Timer timer;
+    public Timer timer;
 
     public Logic() {
         this.gameJustLaunched = true;
@@ -47,6 +48,7 @@ public class Logic {
         SPEED_INCREASE_VALUE = INITIAL_SPEED_INCREASE_VALUE;
         SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY;
         WALL_GENERATION_FREQUENCY = INITIAL_WALL_GENERATION_FREQUENCY;
+        GENERATED_WALLS_COUNT = 0;
 
         player_posX = (BOARD_WIDTH / 2) - (TILE_SIZE / 2);
         player_posY = BOARD_HEIGHT - (TILE_SIZE * 4);
@@ -63,24 +65,33 @@ public class Logic {
     }
 
     private void generateWall() {
-
         List<Wall> wallPlacerList = new ArrayList<>();
-        WallLine wallLine = new WallLine(wallPlacerList, 0);
+        WallLine wallLine = new WallLine(wallPlacerList);
 
+        int solidCount = 0;
         for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
             if(RandomDecision.get()) {
-                wallPlacerList.add(new Wall(true, (i * TILE_SIZE)));
-            } else {
-                wallPlacerList.add(new Wall(false, 0));
+                wallPlacerList.add(new Wall(true, (i * TILE_SIZE), false));
+                solidCount++;
+            } else if(solidCount < MAX_TILES_IN_A_ROW - 1) {
+                wallPlacerList.add(new Wall(false, 0, false));
             }
         }
 
         listOfWallLists.add(wallLine);
     }
 
+    private void generatePowerUp() {
+        List<Wall> wallPlacerList = new ArrayList<>();
+        WallLine wallLine = new WallLine(wallPlacerList);
+
+        wallPlacerList.add(new Wall(true,
+                RandomDecision.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1) * TILE_SIZE, true));
+
+        listOfWallLists.add(wallLine);
+    }
+
     public void tickAction() {
-        System.out.println("Score:  " + SCORE_COUNT + "  Delay: " + timer.getDelay() + "  SI Frequency: " +
-                SPEED_INCREASE_FREQUENCY + "  SI Value: " + SPEED_INCREASE_VALUE);
         TICK_COUNT++;
         SCORE_COUNT++;
 
@@ -89,12 +100,21 @@ public class Logic {
             WallLine currentWallLine = iterator.next();
 
             for (int i = 0; i < currentWallLine.getWalls().size(); i++) {
-                if(player_posY == currentWallLine.getPosY() + TILE_SIZE &&
-                        currentWallLine.getWalls().get(player_posX / TILE_SIZE).isPlaced()) {
+                if(!currentWallLine.getWalls().get(0).isPowerUp()) {
+                    if(player_posY == currentWallLine.getPosY() + TILE_SIZE &&
+                            currentWallLine.getWalls().get(player_posX / TILE_SIZE).isPlaced()) {
 
-                    timer.stop();
-                    gameRunning = false;
-                    break;
+                        timer.stop();
+                        gameRunning = false;
+                        break;
+                    }
+                } else {
+                    if(player_posY == currentWallLine.getPosY() + TILE_SIZE &&
+                            currentWallLine.getWalls().get(0).isPlaced()) {
+
+                        iterator.remove();
+                        return;
+                    }
                 }
             }
 
@@ -106,7 +126,13 @@ public class Logic {
         }
 
         if(SCORE_COUNT % WALL_GENERATION_FREQUENCY == 0) {
-            generateWall();
+            if(GENERATED_WALLS_COUNT % POWER_UP_GENERATION_FREQUENCY == 0){
+                generatePowerUp();
+                GENERATED_WALLS_COUNT++;
+            } else {
+                generateWall();
+                GENERATED_WALLS_COUNT++;
+            }
         }
 
         if(TICK_COUNT > SPEED_INCREASE_FREQUENCY && timer.getDelay() > MIN_DELAY) {
@@ -119,8 +145,6 @@ public class Logic {
                 SCORE_COUNT > POINT_OF_DECREMENTING_SI_VALUE && SPEED_INCREASE_VALUE > 1) {
             SPEED_INCREASE_VALUE--;
         }
-
-        //REPAINT HERE
     }
 
     public boolean noWallThere(int coords) {
@@ -139,6 +163,7 @@ public class Logic {
 
     public String debugReport() {
         return "Score:  " + SCORE_COUNT + "  Delay: " + timer.getDelay() + "  SI Frequency: " +
-                SPEED_INCREASE_FREQUENCY + "  SI Value: " + SPEED_INCREASE_VALUE;
+                SPEED_INCREASE_FREQUENCY + "  SI Value: " + SPEED_INCREASE_VALUE + "  Walls generated: " +
+                GENERATED_WALLS_COUNT;
     }
 }
