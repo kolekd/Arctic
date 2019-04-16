@@ -1,6 +1,7 @@
 package com.company.logic;
 
 import com.company.model.PowerUp;
+import com.company.model.Projectile;
 import com.company.model.Wall;
 import com.company.model.WallLine;
 import com.company.util.RandomDecision;
@@ -34,7 +35,10 @@ public class Logic {
     public int playerPosY;
     public String playerBuff;
 
-    public List<WallLine> listOfWallLines;
+    public boolean projectileWillBeLaunched;
+
+    public List<WallLine> wallLineList;
+    public List<Projectile> projectileList;
 
     public Timer timer;
 
@@ -52,7 +56,10 @@ public class Logic {
         playerPosY = BOARD_HEIGHT - (TILE_SIZE * 4);
         playerBuff = "";
 
-        listOfWallLines = new ArrayList<>();
+        projectileWillBeLaunched = false;
+
+        wallLineList = new ArrayList<>();
+        projectileList = new ArrayList<>();
 
         SCORE_COUNT = 0;
         TICK_COUNT = 0;
@@ -77,7 +84,7 @@ public class Logic {
             }
         }
 
-        listOfWallLines.add(wallLine);
+        wallLineList.add(wallLine);
     }
 
     private void generatePowerUp() {
@@ -95,7 +102,7 @@ public class Logic {
 
         wallPlacerList.add(powerUpBuilder.build());
 
-        listOfWallLines.add(wallLine);
+        wallLineList.add(wallLine);
     }
 
     //  This happens every tick.
@@ -103,14 +110,33 @@ public class Logic {
         TICK_COUNT++;
         SCORE_COUNT++;
 
-        Iterator<WallLine> iterator = listOfWallLines.iterator();
-        while (iterator.hasNext()) {
-            WallLine currentWallLine = iterator.next();
+        Iterator<WallLine> wallLineIterator = wallLineList.iterator();
 
-            //  Checks whether the player is in the hitbox of a wall or a power-up.
-            //   Wall (player) -> ends the game, Power-up -> buffs the player.
+        //  Goes through each individual row of walls ("wall lines").
+        while (wallLineIterator.hasNext()) {
+            WallLine currentWallLine = wallLineIterator.next();
+
+            /*  Checks whether the player or projectile is in the hitbox of a wall or a power-up.
+                    - Wall - player unbuffed -> ends the game, player buffed -> removes the wall
+                    - Power-up -> buffs the player.       */
             for (int i = 0; i < currentWallLine.getWalls().size(); i++) {
                 if(!currentWallLine.getWalls().get(0).isPowerUp()) {
+
+                    // Checks if any projectile hit any wall. If not, moves them forward.
+                    Iterator<Projectile> projectileIterator = projectileList.iterator();
+                    while (projectileIterator.hasNext()) {
+                        Projectile currentProjectile = projectileIterator.next();
+                        int convertedPosX = currentProjectile.getPosX() / TILE_SIZE;
+
+                        if(currentProjectile.isLaunched() &&
+                           currentWallLine.getWalls().get(convertedPosX).isPlaced() &&
+                           currentWallLine.getPosY() <= currentProjectile.getPosY() - TILE_SIZE + 4 &&
+                           currentWallLine.getPosY() >= currentProjectile.getPosY() - TILE_SIZE - 4) {
+                            currentWallLine.getWalls().get(convertedPosX).setPlaced(false);
+                            currentProjectile.setLaunched(false);
+                        }
+                    }
+
                     if(playerPosY == currentWallLine.getPosY() + TILE_SIZE &&
                        currentWallLine.getWalls().get(playerPosX / TILE_SIZE).isPlaced()) {
 
@@ -123,23 +149,43 @@ public class Logic {
                             break;
                         }
                     }
-                } else {
-                    if(playerPosY == currentWallLine.getPosY() + TILE_SIZE &&
-                            currentWallLine.getWalls().get(0).getPosX() == playerPosX) {
 
-                        currentWallLine.getWalls().get(0).setPlaced(false);
-                        playerBuff = ((currentWallLine.getWalls().get(0)).toString());
-                        iterator.remove();
-                        return;
-                    }
+                //  Here it knows that the current tile is a buff.
+                } else if(currentWallLine.getWalls().get(0) instanceof PowerUp &&
+                          playerPosY == currentWallLine.getPosY() + TILE_SIZE  &&
+                          currentWallLine.getWalls().get(0).getPosX() == playerPosX) {
+
+                    currentWallLine.getWalls().get(0).setPlaced(false);
+                    playerBuff = ((currentWallLine.getWalls().get(0)).toString());
+                    wallLineIterator.remove();
+                    return;
                 }
             }
 
+            //  Removes non-visible walls and moves visible ones.
             if (currentWallLine.getPosY() > BOARD_HEIGHT) {
-                iterator.remove();
+                wallLineIterator.remove();
             } else {
-                currentWallLine.setPosY(currentWallLine.getPosY() + TILE_SIZE/8);
+                currentWallLine.setPosY(currentWallLine.getPosY() + STEP_DISTANCE);
             }
+        }
+
+        //  Removes non-visible projectiles and moves visible ones.
+        Iterator<Projectile> projectileIterator = projectileList.iterator();
+        while (projectileIterator.hasNext()) {
+            Projectile projectile = projectileIterator.next();
+            if(projectile.getPosY() < -TILE_SIZE || !projectile.isLaunched()) {
+                projectileIterator.remove();
+            } else {
+                projectile.setPosY(projectile.getPosY() - STEP_DISTANCE);
+            }
+        }
+
+        //  Launches a projectile if one's supposed to be launched.
+        if(projectileWillBeLaunched) {
+            playerBuff = "";
+            projectileList.add(new Projectile(playerPosX, playerPosY - TILE_SIZE, true));
+            projectileWillBeLaunched = false;
         }
 
         if(SCORE_COUNT % WALL_GENERATION_FREQUENCY == 0) {
@@ -164,9 +210,9 @@ public class Logic {
         }
     }
 
-    //  Checks whether there is no walls at the provided coordinates. Ignores buffs.
+    //  Checks whether there is no walls at the provided coordinates.
     public boolean noWallThere(int coords) {
-        for(WallLine wallLine : listOfWallLines) {
+        for(WallLine wallLine : wallLineList) {
             for(Wall wall : wallLine.getWalls()) {
                 if (coords == wall.getPosX() &&
                     playerPosY < wallLine.getPosY() + TILE_SIZE &&
