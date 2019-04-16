@@ -1,5 +1,6 @@
 package com.company.logic;
 
+import com.company.model.PowerUp;
 import com.company.model.Wall;
 import com.company.model.WallLine;
 import com.company.util.RandomDecision;
@@ -29,9 +30,9 @@ public class Logic {
     public boolean gameRunning;
     public boolean gameJustLaunched;
 
-    public int player_posX;
-    public int player_posY;
-    public boolean player_buffed;
+    public int playerPosX;
+    public int playerPosY;
+    public String playerBuff;
 
     public List<WallLine> listOfWallLines;
 
@@ -47,8 +48,9 @@ public class Logic {
         WALL_GENERATION_FREQUENCY = INITIAL_WALL_GENERATION_FREQUENCY;
         GENERATED_WALLS_COUNT = 0;
 
-        player_posX = (BOARD_WIDTH / 2) - (TILE_SIZE / 2);
-        player_posY = BOARD_HEIGHT - (TILE_SIZE * 4);
+        playerPosX = (BOARD_WIDTH / 2) - (TILE_SIZE / 2);
+        playerPosY = BOARD_HEIGHT - (TILE_SIZE * 4);
+        playerBuff = "";
 
         listOfWallLines = new ArrayList<>();
 
@@ -68,10 +70,10 @@ public class Logic {
         int solidCount = 0;
         for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
             if(RandomDecision.get()) {
-                wallPlacerList.add(new Wall(true, (i * TILE_SIZE), false));
+                wallPlacerList.add(new Wall(true, (i * TILE_SIZE)));
                 solidCount++;
             } else if(solidCount < MAX_TILES_IN_A_ROW - 1) {
-                wallPlacerList.add(new Wall(false, 0, false));
+                wallPlacerList.add(new Wall(false, 0));
             }
         }
 
@@ -82,8 +84,16 @@ public class Logic {
         List<Wall> wallPlacerList = new ArrayList<>();
         WallLine wallLine = new WallLine(wallPlacerList);
 
-        wallPlacerList.add(new Wall(true,
-                RandomDecision.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1) * TILE_SIZE, true));
+        PowerUp.Builder powerUpBuilder = new PowerUp.Builder(true,
+                RandomDecision.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1) * TILE_SIZE);
+
+        if (RandomDecision.get()) {
+            powerUpBuilder.makeBreaker();
+        } else {
+            powerUpBuilder.makeShooter();
+        }
+
+        wallPlacerList.add(powerUpBuilder.build());
 
         listOfWallLines.add(wallLine);
     }
@@ -101,12 +111,12 @@ public class Logic {
             //   Wall (player) -> ends the game, Power-up -> buffs the player.
             for (int i = 0; i < currentWallLine.getWalls().size(); i++) {
                 if(!currentWallLine.getWalls().get(0).isPowerUp()) {
-                    if(player_posY == currentWallLine.getPosY() + TILE_SIZE &&
-                       currentWallLine.getWalls().get(player_posX / TILE_SIZE).isPlaced()) {
+                    if(playerPosY == currentWallLine.getPosY() + TILE_SIZE &&
+                       currentWallLine.getWalls().get(playerPosX / TILE_SIZE).isPlaced()) {
 
-                        if(player_buffed) {
-                            currentWallLine.getWalls().get(player_posX / TILE_SIZE).setPlaced(false);
-                            player_buffed = false;
+                        if(playerBuff.length() > 0) {
+                            currentWallLine.getWalls().get(playerPosX / TILE_SIZE).setPlaced(false);
+                            playerBuff = "";
                         } else {
                             timer.stop();
                             gameRunning = false;
@@ -114,12 +124,12 @@ public class Logic {
                         }
                     }
                 } else {
-                    if(player_posY == currentWallLine.getPosY() + TILE_SIZE &&
-                            currentWallLine.getWalls().get(0).getPosX() == player_posX) {
+                    if(playerPosY == currentWallLine.getPosY() + TILE_SIZE &&
+                            currentWallLine.getWalls().get(0).getPosX() == playerPosX) {
 
                         currentWallLine.getWalls().get(0).setPlaced(false);
-                        iterator.remove();
-                        player_buffed = true;
+                        playerBuff = ((currentWallLine.getWalls().get(0)).toString());
+x                        iterator.remove();
                         return;
                     }
                 }
@@ -159,11 +169,11 @@ public class Logic {
         for(WallLine wallLine : listOfWallLines) {
             for(Wall wall : wallLine.getWalls()) {
                 if (coords == wall.getPosX() &&
-                    player_posY < wallLine.getPosY() + TILE_SIZE &&
-                    player_posY > wallLine.getPosY() - TILE_SIZE) {
+                    playerPosY < wallLine.getPosY() + TILE_SIZE &&
+                    playerPosY > wallLine.getPosY() - TILE_SIZE) {
                     if(wall.isPowerUp() && wall.isPlaced()) {
                         wall.setPlaced(false);
-                        player_buffed = true;
+                        playerBuff = wall.toString();
                         return true;
                     }
                     return false;

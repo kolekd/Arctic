@@ -1,6 +1,7 @@
 package com.company.board;
 
 import com.company.logic.Logic;
+import com.company.model.PowerUp;
 import com.company.model.WallLine;
 
 import javax.swing.*;
@@ -19,9 +20,11 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     // Nice & smooth - init_delay=50, min_delay=15, val=10, freq=20, wgen=48, eachTickTileGoDownBy=TILE_SIZE / 8
 
     private Image player;
-    private Image playerBuffed;
+    private Image playerBreakerBuff;
+    private Image playerShooterBuff;
     private Image wall;
-    private Image powerUp;
+    private Image powerUpBreaker;
+    private Image powerUpShooter;
 
     private Font font;
     private Font slimFont;
@@ -55,32 +58,48 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     }
 
     private void loadImages() {
-        ImageIcon pIcon = new ImageIcon("src/resources/player_tile.png");
-        player = pIcon.getImage();
+        ImageIcon playerIcon = new ImageIcon("src/resources/player_tile.png");
+        player = playerIcon.getImage();
 
-        ImageIcon pbIcon = new ImageIcon("src/resources/player_tile_buffed.png");
-        playerBuffed = pbIcon.getImage();
+        ImageIcon playerBreakerBuffIcon = new ImageIcon("src/resources/player_tile_buffed_breaker.png");
+        playerBreakerBuff = playerBreakerBuffIcon.getImage();
 
-        ImageIcon wIcon = new ImageIcon("src/resources/wall_tile.png");
-        wall = wIcon.getImage();
+        ImageIcon playerShooterBuffIcon = new ImageIcon("src/resources/player_tile_buffed_shooter.png");
+        playerShooterBuff = playerShooterBuffIcon.getImage();
 
-        ImageIcon pwIcon = new ImageIcon("src/resources/power_up.png");
-        powerUp = pwIcon.getImage();
+        ImageIcon wallIcon = new ImageIcon("src/resources/wall_tile.png");
+        wall = wallIcon.getImage();
+
+        ImageIcon breakerPowerUpIcon = new ImageIcon("src/resources/power_up_breaker.png");
+        powerUpBreaker = breakerPowerUpIcon.getImage();
+
+        ImageIcon shooterPowerUpIcon = new ImageIcon("src/resources/power_up_shooter.png");
+        powerUpShooter = shooterPowerUpIcon.getImage();
+    }
+
+    private void drawPlayer(Graphics g) {
+        if(logic.playerBuff.equals("breaker")) {
+            g.drawImage(playerBreakerBuff, logic.playerPosX, logic.playerPosY, this);
+        } else if(logic.playerBuff.equals("shooter")) {
+            g.drawImage(playerShooterBuff, logic.playerPosX, logic.playerPosY, this);
+        } else {
+            g.drawImage(player, logic.playerPosX, logic.playerPosY, this);
+        }
     }
 
     private void doDrawing(Graphics graphics) {
         if(logic.gameRunning) {
-            if(logic.player_buffed) {
-                graphics.drawImage(playerBuffed, logic.player_posX, logic.player_posY, this);
-            } else {
-                graphics.drawImage(player, logic.player_posX, logic.player_posY, this);
-            }
+            drawPlayer(graphics);
 
             for (WallLine wallLine : logic.listOfWallLines) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
                     if(wallLine.getWalls().size() < 2 && wallLine.getWalls().get(0).isPowerUp()) {
                         if(wallLine.getWalls().get(0).isPlaced()) {
-                            graphics.drawImage(powerUp, (wallLine.getWalls().get(0).getPosX()), wallLine.getPosY(), this);
+                            if(((PowerUp)wallLine.getWalls().get(0)).isShooter()) {
+                                graphics.drawImage(powerUpShooter, (wallLine.getWalls().get(0).getPosX()), wallLine.getPosY(), this);
+                            } else {
+                                graphics.drawImage(powerUpBreaker, (wallLine.getWalls().get(0).getPosX()), wallLine.getPosY(), this);
+                            }
                             break;
                         }
                     } else if(wallLine.getWalls().get(i).isPlaced()) {
@@ -144,12 +163,12 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_LEFT && logic.player_posX > 0 && logic.noWallThere(logic.player_posX - TILE_SIZE)) {
-            logic.player_posX -= TILE_SIZE;
+        if (key == KeyEvent.VK_LEFT && logic.playerPosX > 0 && logic.noWallThere(logic.playerPosX - TILE_SIZE)) {
+            logic.playerPosX -= TILE_SIZE;
         }
 
-        if (key == KeyEvent.VK_RIGHT && logic.player_posX < BOARD_WIDTH - TILE_SIZE && logic.noWallThere(logic.player_posX + TILE_SIZE)) {
-            logic.player_posX += TILE_SIZE;
+        if (key == KeyEvent.VK_RIGHT && logic.playerPosX < BOARD_WIDTH - TILE_SIZE && logic.noWallThere(logic.playerPosX + TILE_SIZE)) {
+            logic.playerPosX += TILE_SIZE;
         }
 
         if (logic.gameJustLaunched  && key == KeyEvent.VK_SPACE || !logic.gameRunning && key == KeyEvent.VK_SPACE) {

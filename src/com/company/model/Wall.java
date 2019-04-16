@@ -2,22 +2,24 @@ package com.company.model;
 
 public class Wall {
 
-    private boolean placed;
-    private int posX;
-    private boolean isPowerUp;
+    boolean isPlaced;
+    int posX;
+    boolean isPowerUp;
 
-    public Wall(boolean placed, int posX, boolean isPower) {
-        this.placed = placed;
+    public Wall(boolean placed, int posX) {
+        this.isPlaced = placed;
         this.posX = posX;
-        this.isPowerUp = isPower;
+        this.isPowerUp = false;
     }
 
+    public Wall() {}
+
     public boolean isPlaced() {
-        return placed;
+        return isPlaced;
     }
 
     public void setPlaced(boolean placed) {
-        this.placed = placed;
+        this.isPlaced = placed;
     }
 
     public boolean isPowerUp() {
