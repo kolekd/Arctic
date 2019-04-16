@@ -192,13 +192,13 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             launch();
         }
 
-        if (key == KeyEvent.VK_DOWN) {
-            if(logic.timer.isRunning()) {
-                logic.timer.stop();
-            } else {
-                logic.timer.start();
-            }
-        }
+//        if (key == KeyEvent.VK_DOWN) {
+//            if(logic.timer.isRunning()) {
+//                logic.timer.stop();
+//            } else {
+//                logic.timer.start();
+//            }
+//        }
 //
 //          TIME STOP BUTTON
 
