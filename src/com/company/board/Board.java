@@ -76,7 +76,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 graphics.drawImage(player, logic.player_posX, logic.player_posY, this);
             }
 
-            for (WallLine wallLine : logic.listOfWallLists) {
+            for (WallLine wallLine : logic.listOfWallLines) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
                     if(wallLine.getWalls().size() < 2 && wallLine.getWalls().get(0).isPowerUp()) {
                         if(wallLine.getWalls().get(0).isPlaced()) {

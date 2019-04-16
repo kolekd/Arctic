@@ -18,26 +18,22 @@ public class Logic {
 
     // Nice & smooth - init_delay=50, min_delay=15, val=10, freq=20, wgen=48, eachTickTileGoDownBy=TILE_SIZE / 8
 
-    private static final int MIN_DELAY = 7;
-    private static final int SI_VALUE_DECREASE_FREQUENCY =  80;
-    private static final int POINT_OF_DECREMENTING_SI_VALUE = 60;
-
-    private static int SPEED_INCREASE_VALUE;
-    private static int SPEED_INCREASE_FREQUENCY;
-    private static int WALL_GENERATION_FREQUENCY;
-    private static int GENERATED_WALLS_COUNT;
-
-    public boolean gameRunning;
-    public boolean gameJustLaunched;
+    private int SPEED_INCREASE_VALUE;
+    private int SPEED_INCREASE_FREQUENCY;
+    private int WALL_GENERATION_FREQUENCY;
+    private int GENERATED_WALLS_COUNT;
 
     public int SCORE_COUNT;
     private int TICK_COUNT;
+
+    public boolean gameRunning;
+    public boolean gameJustLaunched;
 
     public int player_posX;
     public int player_posY;
     public boolean player_buffed;
 
-    public List<WallLine> listOfWallLists;
+    public List<WallLine> listOfWallLines;
 
     public Timer timer;
 
@@ -54,7 +50,7 @@ public class Logic {
         player_posX = (BOARD_WIDTH / 2) - (TILE_SIZE / 2);
         player_posY = BOARD_HEIGHT - (TILE_SIZE * 4);
 
-        listOfWallLists = new ArrayList<>();
+        listOfWallLines = new ArrayList<>();
 
         SCORE_COUNT = 0;
         TICK_COUNT = 0;
@@ -79,7 +75,7 @@ public class Logic {
             }
         }
 
-        listOfWallLists.add(wallLine);
+        listOfWallLines.add(wallLine);
     }
 
     private void generatePowerUp() {
@@ -89,17 +85,20 @@ public class Logic {
         wallPlacerList.add(new Wall(true,
                 RandomDecision.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1) * TILE_SIZE, true));
 
-        listOfWallLists.add(wallLine);
+        listOfWallLines.add(wallLine);
     }
 
+    //  This happens every tick.
     public void tickAction() {
         TICK_COUNT++;
         SCORE_COUNT++;
 
-        Iterator<WallLine> iterator = listOfWallLists.iterator();
+        Iterator<WallLine> iterator = listOfWallLines.iterator();
         while (iterator.hasNext()) {
             WallLine currentWallLine = iterator.next();
 
+            //  Checks whether the player is in the hitbox of a wall or a power-up.
+            //   Wall (player) -> ends the game, Power-up -> buffs the player.
             for (int i = 0; i < currentWallLine.getWalls().size(); i++) {
                 if(!currentWallLine.getWalls().get(0).isPowerUp()) {
                     if(player_posY == currentWallLine.getPosY() + TILE_SIZE &&
@@ -155,8 +154,9 @@ public class Logic {
         }
     }
 
+    //  Checks whether there is no walls at the provided coordinates. Ignores buffs.
     public boolean noWallThere(int coords) {
-        for(WallLine wallLine : listOfWallLists) {
+        for(WallLine wallLine : listOfWallLines) {
             for(Wall wall : wallLine.getWalls()) {
                 if (coords == wall.getPosX() &&
                     player_posY < wallLine.getPosY() + TILE_SIZE &&
