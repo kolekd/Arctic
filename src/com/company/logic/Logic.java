@@ -114,7 +114,7 @@ public class Logic {
                     if(playerPosY == currentWallLine.getPosY() + TILE_SIZE &&
                        currentWallLine.getWalls().get(playerPosX / TILE_SIZE).isPlaced()) {
 
-                        if(playerBuff.length() > 0) {
+                        if(playerBuff.equals("breaker")) {
                             currentWallLine.getWalls().get(playerPosX / TILE_SIZE).setPlaced(false);
                             playerBuff = "";
                         } else {
@@ -129,7 +129,7 @@ public class Logic {
 
                         currentWallLine.getWalls().get(0).setPlaced(false);
                         playerBuff = ((currentWallLine.getWalls().get(0)).toString());
-x                        iterator.remove();
+                        iterator.remove();
                         return;
                     }
                 }
