@@ -163,7 +163,12 @@ public class Logic {
         //  Launches a projectile if one's supposed to be launched.
         if(projectileWillBeLaunched) {
             playerBuff = "";
-            projectileList.add(new Projectile(playerPosX, playerPosY - TILE_SIZE, true));
+            if(!isOutOfBounds(playerPosX - TILE_SIZE)) {
+                projectileList.add(new Projectile(playerPosX - TILE_SIZE, playerPosY - TILE_SIZE, true));
+            }
+            if(!isOutOfBounds(playerPosX + TILE_SIZE)) {
+                projectileList.add(new Projectile(playerPosX + TILE_SIZE, playerPosY - TILE_SIZE, true));
+            }
             projectileWillBeLaunched = false;
         }
 
@@ -232,6 +237,10 @@ public class Logic {
         }
 
         return true;
+    }
+
+    public boolean isOutOfBounds(int posX) {
+        return posX < 0 || posX > BOARD_WIDTH - TILE_SIZE;
     }
 
     public String debugReport() {
