@@ -162,8 +162,6 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println(logic.debugReport());
-
         logic.tickAction();
         repaint();
     }
@@ -183,8 +181,8 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         if (key == KeyEvent.VK_SPACE) {
             if (logic.gameJustLaunched) {
                 launch();
-            } else if(logic.playerBuff.equals("shooter")) {
-                logic.projectileWillBeLaunched = true;
+            } else if(logic.playerBuff.equals("shooter") || DEBUG_MODE) {
+                logic.projectilesWillBeLaunched = true;
             }
         }
 
@@ -192,18 +190,16 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             launch();
         }
 
-//        if (key == KeyEvent.VK_DOWN) {
-//            if(logic.timer.isRunning()) {
-//                logic.timer.stop();
-//            } else {
-//                logic.timer.start();
-//            }
-//        }
-//
-//          TIME STOP BUTTON
+        //  TIME STOP BUTTON
+        if (key == KeyEvent.VK_DOWN && DEBUG_MODE) {
+            if(logic.timer.isRunning()) {
+                logic.timer.stop();
+            } else {
+                logic.timer.start();
+            }
+        }
 
         repaint();
-
     }
 
     @Override

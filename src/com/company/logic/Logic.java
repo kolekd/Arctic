@@ -35,7 +35,7 @@ public class Logic {
     public int playerPosY;
     public String playerBuff;
 
-    public boolean projectileWillBeLaunched;
+    public boolean projectilesWillBeLaunched;
 
     public List<WallLine> wallLineList;
     public List<Projectile> projectileList;
@@ -56,7 +56,7 @@ public class Logic {
         playerPosY = BOARD_HEIGHT - (TILE_SIZE * 4);
         playerBuff = "";
 
-        projectileWillBeLaunched = false;
+        projectilesWillBeLaunched = false;
 
         wallLineList = new ArrayList<>();
         projectileList = new ArrayList<>();
@@ -123,7 +123,7 @@ public class Logic {
 
             /*  Checks whether the player is in the hitbox of a wall or a power-up.
                     - Wall - player unbuffed -> ends the game, player buffed -> removes the wall
-                    - Power-up -> buffs the player.       */
+                    - Power-up -> buffs the player.     */
             for (int i = 0; i < currentWallLine.getWalls().size(); i++) {
                 if(!currentWallLine.getWalls().get(0).isPowerUp()) {
 
@@ -160,8 +160,8 @@ public class Logic {
             }
         }
 
-        //  Launches a projectile if one's supposed to be launched.
-        if(projectileWillBeLaunched) {
+        //  Launches projectiles if they're supposed to be launched.
+        if(projectilesWillBeLaunched) {
             playerBuff = "";
             if(!isOutOfBounds(playerPosX - TILE_SIZE)) {
                 projectileList.add(new Projectile(playerPosX - TILE_SIZE, playerPosY - TILE_SIZE, true));
@@ -169,9 +169,10 @@ public class Logic {
             if(!isOutOfBounds(playerPosX + TILE_SIZE)) {
                 projectileList.add(new Projectile(playerPosX + TILE_SIZE, playerPosY - TILE_SIZE, true));
             }
-            projectileWillBeLaunched = false;
+            projectilesWillBeLaunched = false;
         }
 
+        //  Generates a wall or power-up.
         if(SCORE_COUNT % WALL_GENERATION_FREQUENCY == 0) {
             if(GENERATED_WALLS_COUNT % POWER_UP_GENERATION_FREQUENCY == 0){
                 generatePowerUp();
@@ -182,20 +183,25 @@ public class Logic {
             }
         }
 
+        /*  Shortens the time between each tick, resets TICK_COUNT and
+                increases the value the TICK_COUNT has to reach to run these methods.   */
         if(TICK_COUNT > SPEED_INCREASE_FREQUENCY && timer.getDelay() > MIN_DELAY) {
             timer.setDelay(timer.getDelay() - SPEED_INCREASE_VALUE);
             SPEED_INCREASE_FREQUENCY += INITIAL_SPEED_INCREASE_FREQUENCY;
             TICK_COUNT = 0;
         }
 
-        if(SCORE_COUNT % SI_VALUE_DECREASE_FREQUENCY == 0 &&
-                SCORE_COUNT > POINT_OF_DECREMENTING_SI_VALUE && SPEED_INCREASE_VALUE > 1) {
+        /*  At a certain point the value by which the time between each tick is shortened
+                gets gradually decremented to prevent extreme game speed increase.  */
+        if(SCORE_COUNT > POINT_OF_DECREMENTING_SI_VALUE &&
+           SCORE_COUNT % SI_VALUE_DECREASE_FREQUENCY == 0 && SPEED_INCREASE_VALUE > 1) {
             SPEED_INCREASE_VALUE--;
         }
+        System.out.println(debugReport());
     }
 
-    // Checks if any projectile hit any wall. If not, moves them forward.
-    public void checkProjectiles(WallLine currentWallLine) {
+    // Checks if any projectile hit any wall. If so, removes them. If not, moves them further upwards.
+    private void checkProjectiles(WallLine currentWallLine) {
         Iterator<Projectile> projectileIterator = projectileList.iterator();
         while (projectileIterator.hasNext()) {
             Projectile currentProjectile = projectileIterator.next();
@@ -219,7 +225,7 @@ public class Logic {
         }
     }
 
-    //  Checks whether there is no walls at the provided coordinates.
+    //  Checks whether there is no walls at the provided coordinates. Also handles player picking up the buff.
     public boolean noWallThere(int coords) {
         for(WallLine wallLine : wallLineList) {
             for(Wall wall : wallLine.getWalls()) {
@@ -239,11 +245,11 @@ public class Logic {
         return true;
     }
 
-    public boolean isOutOfBounds(int posX) {
+    private boolean isOutOfBounds(int posX) {
         return posX < 0 || posX > BOARD_WIDTH - TILE_SIZE;
     }
 
-    public String debugReport() {
+    private String debugReport() {
         return "Score:  " + SCORE_COUNT + "  Delay: " + timer.getDelay() + "  SI Frequency: " +
                 SPEED_INCREASE_FREQUENCY + "  SI Value: " + SPEED_INCREASE_VALUE + "  Walls generated: " +
                 GENERATED_WALLS_COUNT;
