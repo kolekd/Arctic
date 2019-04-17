@@ -183,9 +183,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         if (key == KeyEvent.VK_SPACE) {
             if (logic.gameJustLaunched) {
                 launch();
-            } else
-//                if(logic.playerBuff.equals("shooter"))
-                {
+            } else if(logic.playerBuff.equals("shooter")) {
                 logic.projectileWillBeLaunched = true;
             }
         }
@@ -194,13 +192,13 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             launch();
         }
 
-        if (key == KeyEvent.VK_DOWN) {
-            if(logic.timer.isRunning()) {
-                logic.timer.stop();
-            } else {
-                logic.timer.start();
-            }
-        }
+//        if (key == KeyEvent.VK_DOWN) {
+//            if(logic.timer.isRunning()) {
+//                logic.timer.stop();
+//            } else {
+//                logic.timer.start();
+//            }
+//        }
 //
 //          TIME STOP BUTTON
 
