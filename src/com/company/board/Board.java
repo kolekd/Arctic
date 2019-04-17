@@ -96,6 +96,10 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         if(logic.gameRunning) {
             drawPlayer(graphics);
 
+            for (Projectile currentProjectile : logic.projectileList) {
+                graphics.drawImage(projectile, currentProjectile.getPosX(), currentProjectile.getPosY(), this);
+            }
+
             for (WallLine wallLine : logic.wallLineList) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
                     if(wallLine.getWalls().size() < 2 && wallLine.getWalls().get(0).isPowerUp()) {
@@ -111,10 +115,6 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                         graphics.drawImage(wall, (i * TILE_SIZE), wallLine.getPosY(), this);
                     }
                 }
-            }
-
-            for (Projectile currentProjectile : logic.projectileList) {
-                graphics.drawImage(projectile, currentProjectile.getPosX(), currentProjectile.getPosY(), this);
             }
 
             graphics.drawString(String.valueOf(logic.SCORE_COUNT), (TILE_SIZE / 4), (BOARD_HEIGHT) - 6);
