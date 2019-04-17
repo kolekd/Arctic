@@ -110,9 +110,8 @@ public class Logic {
         TICK_COUNT++;
         SCORE_COUNT++;
 
-        Iterator<WallLine> wallLineIterator = wallLineList.iterator();
-
         //  Goes through each individual row of walls ("wall lines").
+        Iterator<WallLine> wallLineIterator = wallLineList.iterator();
         while (wallLineIterator.hasNext()) {
             WallLine currentWallLine = wallLineIterator.next();
 
@@ -133,7 +132,7 @@ public class Logic {
                            currentWallLine.getPosY() <= currentProjectile.getPosY() - TILE_SIZE + 4 &&
                            currentWallLine.getPosY() >= currentProjectile.getPosY() - TILE_SIZE - 4) {
                             currentWallLine.getWalls().get(convertedPosX).setPlaced(false);
-                            currentProjectile.setLaunched(false);
+                            projectileIterator.remove();
                         }
                     }
 
