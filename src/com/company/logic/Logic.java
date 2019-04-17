@@ -110,31 +110,22 @@ public class Logic {
         TICK_COUNT++;
         SCORE_COUNT++;
 
+        if(wallLineList.isEmpty()) {
+            checkProjectiles(null);
+        }
+
         //  Goes through each individual row of walls ("wall lines").
         Iterator<WallLine> wallLineIterator = wallLineList.iterator();
         while (wallLineIterator.hasNext()) {
             WallLine currentWallLine = wallLineIterator.next();
 
-            /*  Checks whether the player or projectile is in the hitbox of a wall or a power-up.
+            checkProjectiles(currentWallLine);
+
+            /*  Checks whether the player is in the hitbox of a wall or a power-up.
                     - Wall - player unbuffed -> ends the game, player buffed -> removes the wall
                     - Power-up -> buffs the player.       */
             for (int i = 0; i < currentWallLine.getWalls().size(); i++) {
                 if(!currentWallLine.getWalls().get(0).isPowerUp()) {
-
-                    // Checks if any projectile hit any wall. If not, moves them forward.
-                    Iterator<Projectile> projectileIterator = projectileList.iterator();
-                    while (projectileIterator.hasNext()) {
-                        Projectile currentProjectile = projectileIterator.next();
-                        int convertedPosX = currentProjectile.getPosX() / TILE_SIZE;
-
-                        if(currentProjectile.isLaunched() &&
-                           currentWallLine.getWalls().get(convertedPosX).isPlaced() &&
-                           currentWallLine.getPosY() <= currentProjectile.getPosY() - TILE_SIZE + 4 &&
-                           currentWallLine.getPosY() >= currentProjectile.getPosY() - TILE_SIZE - 4) {
-                            currentWallLine.getWalls().get(convertedPosX).setPlaced(false);
-                            projectileIterator.remove();
-                        }
-                    }
 
                     if(playerPosY == currentWallLine.getPosY() + TILE_SIZE &&
                        currentWallLine.getWalls().get(playerPosX / TILE_SIZE).isPlaced()) {
@@ -169,17 +160,6 @@ public class Logic {
             }
         }
 
-        //  Removes non-visible projectiles and moves visible ones.
-        Iterator<Projectile> projectileIterator = projectileList.iterator();
-        while (projectileIterator.hasNext()) {
-            Projectile projectile = projectileIterator.next();
-            if(projectile.getPosY() < -TILE_SIZE || !projectile.isLaunched()) {
-                projectileIterator.remove();
-            } else {
-                projectile.setPosY(projectile.getPosY() - STEP_DISTANCE);
-            }
-        }
-
         //  Launches a projectile if one's supposed to be launched.
         if(projectileWillBeLaunched) {
             playerBuff = "";
@@ -206,6 +186,31 @@ public class Logic {
         if(SCORE_COUNT % SI_VALUE_DECREASE_FREQUENCY == 0 &&
                 SCORE_COUNT > POINT_OF_DECREMENTING_SI_VALUE && SPEED_INCREASE_VALUE > 1) {
             SPEED_INCREASE_VALUE--;
+        }
+    }
+
+    // Checks if any projectile hit any wall. If not, moves them forward.
+    public void checkProjectiles(WallLine currentWallLine) {
+        Iterator<Projectile> projectileIterator = projectileList.iterator();
+        while (projectileIterator.hasNext()) {
+            Projectile currentProjectile = projectileIterator.next();
+            int convertedPosX = currentProjectile.getPosX() / TILE_SIZE;
+
+            if(currentWallLine != null) {
+                if(!(currentWallLine.getWalls().get(0) instanceof PowerUp) &&
+                        currentProjectile.isLaunched() && currentWallLine.getWalls().get(convertedPosX).isPlaced() &&
+                        currentWallLine.getPosY() <= currentProjectile.getPosY() - TILE_SIZE + 4 &&
+                        currentWallLine.getPosY() >= currentProjectile.getPosY() - TILE_SIZE - 4) {
+                    currentWallLine.getWalls().get(convertedPosX).setPlaced(false);
+                    projectileIterator.remove();
+                }
+            }
+
+            if (currentProjectile.getPosY() < -TILE_SIZE) {
+                projectileIterator.remove();
+            } else {
+                currentProjectile.setPosY(currentProjectile.getPosY() - STEP_DISTANCE);
+            }
         }
     }
 
