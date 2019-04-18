@@ -6,8 +6,8 @@ import static com.company.logic.Constants.TILE_SIZE;
 
 public class WallLine {
 
-    private List<Wall> walls;
-    private int posY;
+    List<Wall> walls;
+    int posY;
 
     public WallLine(List<Wall> walls) {
         this.walls = walls;
