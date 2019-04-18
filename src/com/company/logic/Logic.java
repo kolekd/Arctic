@@ -167,9 +167,9 @@ public class Logic {
                             }
                         }
                     } else if (playerPosY <= currentWallLine.getPosY() + TILE_SIZE &&
-                               playerPosY >= currentWallLine.getPosY() &&
+                               playerPosY >= currentWallLine.getPosY() - TILE_SIZE &&
                                playerPosX <= ((MovingWallLine) currentWallLine).retrieveMovingWall().getPosX() + TILE_SIZE &&
-                               playerPosX >= ((MovingWallLine) currentWallLine).retrieveMovingWall().getPosX()) {
+                               playerPosX >= ((MovingWallLine) currentWallLine).retrieveMovingWall().getPosX() - TILE_SIZE) {
                         stopTheGame = true;
                     }
 
@@ -302,11 +302,12 @@ public class Logic {
                         }
                         return false;
                     }
-                } else if(coords >= ((MovingWallLine) wallLine).retrieveMovingWall().getPosX() &&
-                          coords <= ((MovingWallLine) wallLine).retrieveMovingWall().getPosX() + TILE_SIZE &&
-                          playerPosY < wallLine.getPosY() + TILE_SIZE && playerPosY > wallLine.getPosY() - TILE_SIZE) {
-                    return false;
                 }
+//                else if(coords >= ((MovingWallLine) wallLine).retrieveMovingWall().getPosX() &&
+//                          coords <= ((MovingWallLine) wallLine).retrieveMovingWall().getPosX() + TILE_SIZE &&
+//                          playerPosY < wallLine.getPosY() + TILE_SIZE && playerPosY > wallLine.getPosY() - TILE_SIZE) {
+//                    return false;
+//                }
             }
         }
 
