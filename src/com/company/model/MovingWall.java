@@ -7,11 +7,21 @@ import static com.company.logic.Constants.TILE_SIZE;
 
 public class MovingWall extends Wall {
 
+    boolean moving;
     boolean movingRight;
 
     public MovingWall(boolean placed, int posX) {
         super(placed, posX);
+        this.moving = true;
         this.movingRight = RandomDecision.get();
+    }
+
+    public void bounceIfAtBorder() {
+        if(posX <= 0) {
+            movingRight = true;
+        } else if (posX >= BOARD_WIDTH - TILE_SIZE) {
+            movingRight = false;
+        }
     }
 
     public boolean isMovingRight() {
@@ -22,11 +32,11 @@ public class MovingWall extends Wall {
         this.movingRight = movingRight;
     }
 
-    public void bounceIfAtBorder() {
-        if(posX <= 0) {
-            movingRight = true;
-        } else if (posX >= BOARD_WIDTH - TILE_SIZE) {
-            movingRight = false;
-        }
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.moving = moving;
     }
 }

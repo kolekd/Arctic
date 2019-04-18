@@ -166,7 +166,8 @@ public class Logic {
                                 stopTheGame = true;
                             }
                         }
-                    } else if (playerPosY <= currentWallLine.getPosY() + TILE_SIZE &&
+                    } else if (((MovingWallLine) currentWallLine).retrieveMovingWall().isPlaced() &&
+                               playerPosY <= currentWallLine.getPosY() + TILE_SIZE &&
                                playerPosY >= currentWallLine.getPosY() - TILE_SIZE &&
                                playerPosX <= ((MovingWallLine) currentWallLine).retrieveMovingWall().getPosX() + TILE_SIZE &&
                                playerPosX >= ((MovingWallLine) currentWallLine).retrieveMovingWall().getPosX() - TILE_SIZE) {
@@ -268,14 +269,29 @@ public class Logic {
             int convertedPosX = currentProjectile.getPosX() / TILE_SIZE;
 
             if(currentWallLine != null) {
-                if(!(currentWallLine.getWalls().get(0) instanceof PowerUp) &&
-                        currentProjectile.isLaunched() && currentWallLine.getWalls().get(convertedPosX).isPlaced() &&
-                        currentWallLine.getPosY() <= currentProjectile.getPosY() - TILE_SIZE + 4 &&
-                        currentWallLine.getPosY() >= currentProjectile.getPosY() - TILE_SIZE - 4) {
-                    currentWallLine.getWalls().get(convertedPosX).setPlaced(false);
-                    currentWallLine.getWalls().get(convertedPosX).setJustDestroyed("shooter");
-                    SCORE_COUNT += 200;
-                    projectileIterator.remove();
+                if(!(currentWallLine.getWalls().get(0) instanceof PowerUp) && currentProjectile.isLaunched()) {
+                    if(!(currentWallLine instanceof MovingWallLine)) {
+                        if (currentWallLine.getWalls().get(convertedPosX).isPlaced() &&
+                            currentWallLine.getPosY() <= currentProjectile.getPosY() + TILE_SIZE &&
+                            currentWallLine.getPosY() >= currentProjectile.getPosY() - TILE_SIZE) {
+
+                            currentWallLine.getWalls().get(convertedPosX).setPlaced(false);
+                            currentWallLine.getWalls().get(convertedPosX).setJustDestroyed("shooter");
+                            SCORE_COUNT += 200;
+                            projectileIterator.remove();
+                        }
+                    } else if (((MovingWallLine) currentWallLine).retrieveMovingWall().isPlaced() &&
+                               currentProjectile.getPosY() <= currentWallLine.getPosY() + TILE_SIZE &&
+                               currentProjectile.getPosY() >= currentWallLine.getPosY() - TILE_SIZE &&
+                               currentProjectile.getPosX() <= ((MovingWallLine) currentWallLine).retrieveMovingWall().getPosX() + TILE_SIZE &&
+                               currentProjectile.getPosX() >= ((MovingWallLine) currentWallLine).retrieveMovingWall().getPosX() - TILE_SIZE) {
+
+                            ((MovingWallLine) currentWallLine).retrieveMovingWall().setPlaced(false);
+                            ((MovingWallLine) currentWallLine).retrieveMovingWall().setJustDestroyed("shooter");
+                            ((MovingWall)((MovingWallLine) currentWallLine).retrieveMovingWall()).setMoving(false);
+                            SCORE_COUNT += 200;
+                            projectileIterator.remove();
+                    }
                 }
             }
 
