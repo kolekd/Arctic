@@ -51,7 +51,7 @@ public class Logic {
 
         playerPosX = (BOARD_WIDTH / 2) - (TILE_SIZE / 2);
         playerPosY = BOARD_HEIGHT - (TILE_SIZE * 4);
-        playerBuff = "breaker";
+        playerBuff = "";
 
         projectilesWillBeLaunched = false;
         movingWallOrPowerUp = false;
@@ -176,7 +176,6 @@ public class Logic {
                             ((MovingWallLine) currentWallLine).retrieveMovingWall().setJustDestroyed("breaker");
                             ((MovingWall)((MovingWallLine) currentWallLine).retrieveMovingWall()).setMoving(false);
                             SCORE_COUNT += 1000;
-                            playerBuff = "";
                         } else {
                             stopTheGame = true;
                         }

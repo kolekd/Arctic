@@ -38,16 +38,16 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     public Board() {
         addKeyListener(this);
 
+        setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
+        setFocusable(true);
+        setBackground(new Color(238,238,238));
+        setFont(font);
+
         font = new Font("Helvetica", Font.BOLD, 18);
         slimFont = new Font("Helvetica", Font.PLAIN,16);
         hitFont = new Font("Helvetica", Font.BOLD, 13);
         slimMetrics = getFontMetrics(slimFont);
         metrics = getFontMetrics(font);
-
-        setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
-        setFocusable(true);
-        setBackground(new Color(238,238,238));
-        setFont(font);
 
         loadImages();
         logic = new Logic();
