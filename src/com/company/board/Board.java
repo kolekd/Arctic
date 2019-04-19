@@ -135,8 +135,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 }
             }
 
-            graphics.drawString(String.valueOf(logic.SCORE_COUNT), (TILE_SIZE / 4), (BOARD_HEIGHT) - 6);
-
+            drawWords(graphics, String.valueOf(logic.SCORE_COUNT), font, (TILE_SIZE / 4), (BOARD_HEIGHT) - 6);
 
             Toolkit.getDefaultToolkit().sync();
 
@@ -188,14 +187,17 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
+        //  Left: move left if there's no wall or if at board border
         if (key == KeyEvent.VK_LEFT && logic.playerPosX > 0 && logic.noWallThere(logic.playerPosX - TILE_SIZE)) {
             logic.playerPosX -= TILE_SIZE;
         }
 
+        //  Right: move right if there's no wall or if at board border
         if (key == KeyEvent.VK_RIGHT && logic.playerPosX < BOARD_WIDTH - TILE_SIZE && logic.noWallThere(logic.playerPosX + TILE_SIZE)) {
             logic.playerPosX += TILE_SIZE;
         }
 
+        //  SPACE: launch the game at app start; launch projectiles when buffed; DEBUG MODE - launch projectiles
         if (key == KeyEvent.VK_SPACE) {
             if (logic.gameJustLaunched) {
                 launch();
@@ -204,17 +206,23 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             }
         }
 
+        // R: restart
         if (key == KeyEvent.VK_R && !logic.gameRunning) {
             launch();
         }
 
-        //  TIME STOP BUTTON
+        //  Down: DEBUG MODE - time freeze
         if (key == KeyEvent.VK_DOWN && DEBUG_MODE) {
             if(logic.timer.isRunning()) {
                 logic.timer.stop();
             } else {
                 logic.timer.start();
             }
+        }
+
+        //  B: DEBUG MODE - gain Breaker power-up
+        if (key == KeyEvent.VK_B && DEBUG_MODE) {
+            logic.playerBuff = "breaker";
         }
 
         repaint();

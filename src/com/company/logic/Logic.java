@@ -223,7 +223,9 @@ public class Logic {
 
         //  Launches projectiles if they're supposed to be launched.
         if(projectilesWillBeLaunched) {
-            playerBuff = "";
+            if(playerBuff.equals("shooter")) {
+                playerBuff = "";
+            }
             if(!isOutOfBounds(playerPosX - TILE_SIZE)) {
                 projectileList.add(new Projectile(playerPosX - TILE_SIZE, playerPosY - TILE_SIZE, true));
             }
