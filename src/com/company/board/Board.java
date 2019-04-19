@@ -22,6 +22,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private Image playerBreakerBuff;
     private Image playerShooterBuff;
     private Image wall;
+    private Image movingWall;
     private Image powerUpBreaker;
     private Image powerUpShooter;
     private Image projectile;
@@ -31,7 +32,6 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private Font hitFont;
     private FontMetrics metrics;
     private FontMetrics slimMetrics;
-    private FontMetrics hitMetrics;
 
     private Logic logic;
 
@@ -40,10 +40,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
         font = new Font("Helvetica", Font.BOLD, 18);
         slimFont = new Font("Helvetica", Font.PLAIN,16);
-        hitFont = new Font("Helvetica", Font.BOLD, 10);
+        hitFont = new Font("Helvetica", Font.BOLD, 13);
         slimMetrics = getFontMetrics(slimFont);
         metrics = getFontMetrics(font);
-        hitMetrics = getFontMetrics(hitFont);
 
         setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
         setFocusable(true);
@@ -73,6 +72,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
         ImageIcon wallIcon = new ImageIcon("src/resources/wall_tile.png");
         wall = wallIcon.getImage();
+
+        ImageIcon movingWallIcon = new ImageIcon("src/resources/moving_wall_tile.png");
+        movingWall = movingWallIcon.getImage();
 
         ImageIcon breakerPowerUpIcon = new ImageIcon("src/resources/power_up_breaker.png");
         powerUpBreaker = breakerPowerUpIcon.getImage();
@@ -120,15 +122,14 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                         Wall wallOnI = wallLine.getWalls().get(i);
                         if(wallOnI.isPlaced()) {
                             if (wallOnI instanceof MovingWall) {
-                                //  TODO - unique image for MovingWall
-                                graphics.drawImage(wall, (wallOnI.getPosX()), wallLine.getPosY(), this);
+                                graphics.drawImage(movingWall, (wallOnI.getPosX()), wallLine.getPosY(), this);
                             } else {
                                 graphics.drawImage(wall, (i * TILE_SIZE), wallLine.getPosY(), this);
                             }
                         } else if(wallOnI.getJustDestroyed().equals("breaker")) {
-                            graphics.drawString("1000", wallOnI.getPosX(), wallLine.getPosY() + (TILE_SIZE / 2));
+                            drawWords(graphics, "1000", hitFont, wallOnI.getPosX() + (TILE_SIZE /4) - 7, wallLine.getPosY() + (TILE_SIZE /2));
                         } else if(wallOnI.getJustDestroyed().equals("shooter")) {
-                            graphics.drawString("200", wallOnI.getPosX(), wallLine.getPosY() + (TILE_SIZE / 2));
+                            drawWords(graphics, "200", hitFont, wallOnI.getPosX() + (TILE_SIZE /4) - 3, wallLine.getPosY() + (TILE_SIZE /2));
                         }
                     }
                 }
