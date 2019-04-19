@@ -1,6 +1,8 @@
 package com.company.logic;
 
 import com.company.model.*;
+import com.company.model.newmodel.Wall;
+import com.company.model.newmodel.MovingWall;
 import com.company.util.RandomDecision;
 
 import javax.swing.*;
@@ -35,7 +37,7 @@ public class Logic {
     public boolean projectilesWillBeLaunched;
     private boolean movingWallOrPowerUp;
 
-    public List<WallLine> wallLineList;
+    public List<List<Wall>> listOfWallLists;
     public List<Projectile> projectileList;
 
     public Timer timer;
@@ -56,7 +58,7 @@ public class Logic {
         projectilesWillBeLaunched = false;
         movingWallOrPowerUp = false;
 
-        wallLineList = new ArrayList<>();
+        listOfWallLists = new ArrayList<>();
         projectileList = new ArrayList<>();
 
         TOTAL_TICK_COUNT = 0;
@@ -65,60 +67,59 @@ public class Logic {
 
         gameJustLaunched = false;
         gameRunning = true;
+
         timer = new Timer(INITIAL_DELAY, listener);
         timer.start();
     }
 
     private void generateWall() {
-        List<Wall> wallPlacerList = new ArrayList<>();
-        WallLine wallLine = new WallLine(wallPlacerList);
+        List<Wall> wallList = new ArrayList<>();
 
         int solidCount = 0;
         for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
             if(RandomDecision.get()) {
-                wallPlacerList.add(new Wall(true, (i * TILE_SIZE)));
+                wallList.add(new Wall((i * TILE_SIZE), -TILE_SIZE, true));
                 solidCount++;
             } else if(solidCount < MAX_TILES_IN_A_ROW - 1) {
-                wallPlacerList.add(new Wall(false, 0));
+                wallList.add(new Wall((i * TILE_SIZE), -TILE_SIZE, false));
             }
         }
 
-        wallLineList.add(wallLine);
+        listOfWallLists.add(wallList);
     }
 
-    private void generateMovingWall() {
-        List<Wall> wallPlacerList = new ArrayList<>();
-        MovingWallLine movingWallLine = new MovingWallLine(wallPlacerList);
+//    private void generateMovingWall() {
+//        List<Wall> wallList = new ArrayList<>();
+//
+//        int randomPosX = RandomDecision.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1);
+//        for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
+//            if(i == randomPosX) {
+//                wallList.add(new MovingWall(true, i * TILE_SIZE));
+//            } else {
+//                wallList.add(new Wall(false, i * TILE_SIZE));
+//            }
+//        }
+//
+//        listOfWallLists.add(wallList);
+//    }
 
-        int randomPosX = RandomDecision.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1);
-        for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-            if(i == randomPosX) {
-                wallPlacerList.add(new MovingWall(true, i * TILE_SIZE));
-            } else {
-                wallPlacerList.add(new Wall(false, i * TILE_SIZE));
-            }
-        }
-
-        wallLineList.add(movingWallLine);
-    }
-
-    private void generatePowerUp() {
-        List<Wall> wallPlacerList = new ArrayList<>();
-        WallLine wallLine = new WallLine(wallPlacerList);
-
-        PowerUp.Builder powerUpBuilder = new PowerUp.Builder(true,
-                RandomDecision.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1) * TILE_SIZE);
-
-        if (RandomDecision.get()) {
-            powerUpBuilder.makeBreaker();
-        } else {
-            powerUpBuilder.makeShooter();
-        }
-
-        wallPlacerList.add(powerUpBuilder.build());
-
-        wallLineList.add(wallLine);
-    }
+//    private void generatePowerUp() {
+//        List<Wall> listOfWalls = new ArrayList<>();
+//        WallLine wallLine = new WallLine(listOfWalls);
+//
+//        PowerUp.Builder powerUpBuilder = new PowerUp.Builder(true,
+//                RandomDecision.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1) * TILE_SIZE);
+//
+//        if (RandomDecision.get()) {
+//            powerUpBuilder.makeBreaker();
+//        } else {
+//            powerUpBuilder.makeShooter();
+//        }
+//
+//        listOfWalls.add(powerUpBuilder.build());
+//
+//        listOfWallLists.add(wallLine);
+//    }
 
     //  This happens every tick.
     public void tickAction() {
@@ -126,85 +127,82 @@ public class Logic {
         TOTAL_TICK_COUNT++;
         SCORE_COUNT++;
 
-        if(wallLineList.isEmpty()) {
-            checkProjectiles(null);
-        }
+//        if(listOfWallLists.isEmpty()) {
+//            checkProjectiles(null);
+//        }
 
         //  Goes through each individual row of walls ("wall lines").
-        Iterator<WallLine> wallLineIterator = wallLineList.iterator();
+        Iterator<List<Wall>> wallLineIterator = listOfWallLists.iterator();
         while (wallLineIterator.hasNext()) {
-            WallLine currentWallLine = wallLineIterator.next();
-
-            checkProjectiles(currentWallLine);
+            List<Wall> listOfWalls = wallLineIterator.next();
+            Wall wallAtPlayerPosX = listOfWalls.get(playerPosX / TILE_SIZE);
+//            checkProjectiles(listOfWalls);
 
             /*  Checks whether the player is in the hitbox of a wall or a power-up.
                     - Wall - player unbuffed -> ends the game, player buffed -> removes the wall
                     - Power-up -> buffs the player.     */
-            for (int i = 0; i < currentWallLine.getWalls().size(); i++) {
-                if(!(currentWallLine.getWalls().get(0) instanceof PowerUp)) {
+            for (int i = 0; i < listOfWalls.size(); i++) {
+//                if(!(listOfWalls.get(0) instanceof PowerUp)) {
+                if(gameRunning) {
 
                     //  These next 2 bunches of code handle showing gained score from destroying walls.
-                    if(currentWallLine.getWalls().get(i).getJustDestroyed().length() > 0) {
-                        currentWallLine.getWalls().get(i).setScoreDisplayCounter(
-                                currentWallLine.getWalls().get(i).getScoreDisplayCounter() + 1);
+                    if(listOfWalls.get(i).getJustDestroyedBy().length() > 0) {
+                        listOfWalls.get(i).setScoreDisplayCounter(listOfWalls.get(i).getScoreDisplayCounter() + 1);
                     }
 
-                    if(currentWallLine.getWalls().get(i).getScoreDisplayCounter() > 10) {
-                        currentWallLine.getWalls().get(i).setJustDestroyed("");
+                    if(listOfWalls.get(i).getScoreDisplayCounter() > 10) {
+                        listOfWalls.get(i).setJustDestroyedBy("");
                     }
 
                     boolean stopTheGame = false;
-                    if(!(currentWallLine instanceof MovingWallLine)) {
-                        if(playerPosY == currentWallLine.getPosY() + TILE_SIZE &&
-                                currentWallLine.getWalls().get(playerPosX / TILE_SIZE).isPlaced()) {
+                    if(!containsMovingWall(listOfWalls) &&
+                       wallAtPlayerPosX.isPlaced() &&
+                       playerPosY >= wallAtPlayerPosX.getPosY() - TILE_SIZE &&
+                       playerPosY <= wallAtPlayerPosX.getPosY() + TILE_SIZE
+                        ||
+                       retrieveMovingWall(listOfWalls).isPlaced() &&
+                       playerPosY >= wallAtPlayerPosX.getPosY() - TILE_SIZE &&
+                       playerPosY <= wallAtPlayerPosX.getPosY() + TILE_SIZE &&
+                       playerPosX <= retrieveMovingWall(listOfWalls).getPosX() + TILE_SIZE &&
+                       playerPosX >= retrieveMovingWall(listOfWalls).getPosX() - TILE_SIZE) {
                             if(playerBuff.equals("breaker")) {
-                                currentWallLine.getWalls().get(playerPosX / TILE_SIZE).setPlaced(false);
-                                currentWallLine.getWalls().get(playerPosX / TILE_SIZE).setJustDestroyed("breaker");
+                                wallAtPlayerPosX.setPlaced(false);
+                                wallAtPlayerPosX.setJustDestroyedBy("breaker");
+//                                retrieveMovingWall(listOfWalls).setMoving(false);
                                 SCORE_COUNT += 1000;
                                 playerBuff = "";
                             } else {
                                 stopTheGame = true;
                             }
                         }
-                    } else if (((MovingWallLine) currentWallLine).retrieveMovingWall().isPlaced() &&
-                               playerPosY <= currentWallLine.getPosY() + TILE_SIZE &&
-                               playerPosY >= currentWallLine.getPosY() - TILE_SIZE &&
-                               playerPosX <= ((MovingWallLine) currentWallLine).retrieveMovingWall().getPosX() + TILE_SIZE &&
-                               playerPosX >= ((MovingWallLine) currentWallLine).retrieveMovingWall().getPosX() - TILE_SIZE) {
-                        if(playerBuff.equals("breaker")) {
-                            ((MovingWallLine) currentWallLine).retrieveMovingWall().setPlaced(false);
-                            ((MovingWallLine) currentWallLine).retrieveMovingWall().setJustDestroyed("breaker");
-                            ((MovingWall)((MovingWallLine) currentWallLine).retrieveMovingWall()).setMoving(false);
-                            SCORE_COUNT += 1000;
-                        } else {
-                            stopTheGame = true;
-                        }
-                    }
 
                     if(stopTheGame) {
                         timer.stop();
                         gameRunning = false;
                     }
 
-                //  Here it knows that the current tile is a buff.
-                } else if(currentWallLine.getWalls().get(0) instanceof PowerUp &&
-                          playerPosY == currentWallLine.getPosY() + TILE_SIZE  &&
-                          currentWallLine.getWalls().get(0).getPosX() == playerPosX) {
+                    //  Here it knows that the current tile is a buff.
+//                    } else if(listOfWalls.get(0) instanceof PowerUp &&
+//                            playerPosY == listOfWalls.getPosY() + TILE_SIZE  &&
+//                            listOfWalls.get(0).getPosX() == playerPosX) {
+//
+//                        listOfWalls.get(0).setPlaced(false);
+//                        playerBuff = ((listOfWalls.get(0)).toString());
+//                        wallLineIterator.remove();
+//                    }
 
-                    currentWallLine.getWalls().get(0).setPlaced(false);
-                    playerBuff = ((currentWallLine.getWalls().get(0)).toString());
-                    wallLineIterator.remove();
-                }
+                    }
+
             }
 
             //  Removes non-visible walls and moves visible ones.
-            if (currentWallLine.getPosY() > BOARD_HEIGHT) {
+            if (listOfWalls.get(0).getPosY() > BOARD_HEIGHT) {
                 wallLineIterator.remove();
             } else {
 
                 //  Moves the horizontally moving tiles.
-                if (currentWallLine instanceof MovingWallLine) {
-                    for (Wall wall : currentWallLine.getWalls()) {
+                if (listOfWalls instanceof MovingWallLine) {
+                    for (Wall wall : listOfWalls) {
                         if(wall instanceof MovingWall) {
                             if (((MovingWall) wall).isMovingRight()) {
                                 wall.setPosX(wall.getPosX() + STEP_DISTANCE);
@@ -216,8 +214,8 @@ public class Logic {
                         }
                     }
                 }
-
-                currentWallLine.setPosY(currentWallLine.getPosY() + STEP_DISTANCE);
+                //  TODO: LEFT OFF HERE
+                moveWalls(listOfWalls);
             }
         }
 
@@ -277,14 +275,14 @@ public class Logic {
             int convertedPosX = currentProjectile.getPosX() / TILE_SIZE;
 
             if(currentWallLine != null) {
-                if(!(currentWallLine.getWalls().get(0) instanceof PowerUp) && currentProjectile.isLaunched()) {
+                if(!(currentWallLine.get(0) instanceof PowerUp) && currentProjectile.isLaunched()) {
                     if(!(currentWallLine instanceof MovingWallLine)) {
-                        if (currentWallLine.getWalls().get(convertedPosX).isPlaced() &&
+                        if (currentWallLine.get(convertedPosX).isPlaced() &&
                             currentWallLine.getPosY() <= currentProjectile.getPosY() + TILE_SIZE &&
                             currentWallLine.getPosY() >= currentProjectile.getPosY() - TILE_SIZE) {
 
-                            currentWallLine.getWalls().get(convertedPosX).setPlaced(false);
-                            currentWallLine.getWalls().get(convertedPosX).setJustDestroyed("shooter");
+                            currentWallLine.get(convertedPosX).setPlaced(false);
+                            currentWallLine.get(convertedPosX).setJustDestroyed("shooter");
                             SCORE_COUNT += 200;
                             projectileIterator.remove();
                         }
@@ -313,8 +311,8 @@ public class Logic {
 
     //  Checks whether there is no walls at the provided coordinates. Also handles player picking up the buff.
     public boolean noWallThere(int coords) {
-        for (WallLine wallLine : wallLineList) {
-            for (Wall wall : wallLine.getWalls()) {
+        for (WallLine wallLine : listOfWallLists) {
+            for (Wall wall : wallLine) {
                 if (!(wallLine instanceof MovingWallLine)) {
                     if (coords == wall.getPosX() &&
                             playerPosY < wallLine.getPosY() + TILE_SIZE &&
@@ -327,15 +325,37 @@ public class Logic {
                         return false;
                     }
                 }
-//                else if(coords >= ((MovingWallLine) wallLine).retrieveMovingWall().getPosX() &&
-//                          coords <= ((MovingWallLine) wallLine).retrieveMovingWall().getPosX() + TILE_SIZE &&
-//                          playerPosY < wallLine.getPosY() + TILE_SIZE && playerPosY > wallLine.getPosY() - TILE_SIZE) {
-//                    return false;
-//                }
             }
         }
 
         return true;
+    }
+
+    private boolean containsMovingWall(List<Wall> wallList) {
+        for(Wall wall : wallList) {
+            if (wall instanceof MovingWall) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private MovingWall retrieveMovingWall(List<Wall> wallList) {
+        for(Wall wall : wallList) {
+            if (wall instanceof MovingWall) {
+                return (MovingWall) wall;
+            }
+        }
+
+        return null;
+    }
+
+    private void moveWalls(List<Wall> wallList) {
+        int currentPosY = wallList.get(0).getPosY();
+        for(Wall wall : wallList) {
+            wall.setPosY(currentPosY + STEP_DISTANCE);
+        }
     }
 
     private boolean isOutOfBounds(int posX) {

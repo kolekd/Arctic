@@ -104,7 +104,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 graphics.drawImage(projectile, currentProjectile.getPosX(), currentProjectile.getPosY(), this);
             }
 
-            for (WallLine wallLine : logic.wallLineList) {
+            for (WallLine wallLine : logic.listOfWallLists) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
                     Wall currentWall = wallLine.getWalls().get(0);
                     if(wallLine.getWalls().size() < 2) {
