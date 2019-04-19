@@ -104,7 +104,6 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
             for (WallLine wallLine : logic.wallLineList) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-                    Wall wallOnI = wallLine.getWalls().get(i);
                     Wall currentWall = wallLine.getWalls().get(0);
                     if(wallLine.getWalls().size() < 2) {
                         if(currentWall instanceof PowerUp) {
@@ -117,17 +116,20 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                                 break;
                             }
                         }
-                    } else if(wallOnI.isPlaced()) {
-                        if (wallOnI instanceof MovingWall) {
-                            //  TODO - unique image for MovingWall
-                            graphics.drawImage(wall, (wallOnI.getPosX()), wallLine.getPosY(), this);
-                        } else {
-                            graphics.drawImage(wall, (i * TILE_SIZE), wallLine.getPosY(), this);
+                    } else {
+                        Wall wallOnI = wallLine.getWalls().get(i);
+                        if(wallOnI.isPlaced()) {
+                            if (wallOnI instanceof MovingWall) {
+                                //  TODO - unique image for MovingWall
+                                graphics.drawImage(wall, (wallOnI.getPosX()), wallLine.getPosY(), this);
+                            } else {
+                                graphics.drawImage(wall, (i * TILE_SIZE), wallLine.getPosY(), this);
+                            }
+                        } else if(wallOnI.getJustDestroyed().equals("breaker")) {
+                            graphics.drawString("1000", wallOnI.getPosX(), wallLine.getPosY() + (TILE_SIZE / 2));
+                        } else if(wallOnI.getJustDestroyed().equals("shooter")) {
+                            graphics.drawString("200", wallOnI.getPosX(), wallLine.getPosY() + (TILE_SIZE / 2));
                         }
-                    } else if(wallOnI.getJustDestroyed().equals("breaker")) {
-                        graphics.drawString("1000", wallOnI.getPosX(), wallLine.getPosY() + (TILE_SIZE / 2));
-                    } else if(wallOnI.getJustDestroyed().equals("shooter")) {
-                        graphics.drawString("200", wallOnI.getPosX(), wallLine.getPosY() + (TILE_SIZE / 2));
                     }
                 }
             }

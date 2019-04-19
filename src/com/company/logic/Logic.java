@@ -187,7 +187,6 @@ public class Logic {
                     currentWallLine.getWalls().get(0).setPlaced(false);
                     playerBuff = ((currentWallLine.getWalls().get(0)).toString());
                     wallLineIterator.remove();
-                    return;
                 }
             }
 
