@@ -2,6 +2,10 @@ package com.company.board;
 
 import com.company.logic.Logic;
 import com.company.model.*;
+import com.company.model.newmodel.Tile;
+import com.company.model.newmodel.Wall;
+import com.company.model.newmodel.PowerUp;
+import com.company.model.newmodel.MovingWall;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.List;
 
 import static com.company.logic.Constants.*;
 
@@ -104,32 +109,32 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 graphics.drawImage(projectile, currentProjectile.getPosX(), currentProjectile.getPosY(), this);
             }
 
-            for (WallLine wallLine : logic.listOfWallLists) {
+            for (List<Wall> wallList : logic.listOfWallLists) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-                    Wall currentWall = wallLine.getWalls().get(0);
-                    if(wallLine.getWalls().size() < 2) {
-                        if(currentWall instanceof PowerUp) {
-                            if(currentWall.isPlaced()) {
-                                if(((PowerUp)currentWall).isShooter()) {
-                                    graphics.drawImage(powerUpShooter, (currentWall.getPosX()), wallLine.getPosY(), this);
+                    Tile currentTile = wallList.get(0);
+                    if(wallList.size() < 2) {
+                        if(currentTile instanceof PowerUp) {
+                            if(currentTile.isPlaced()) {
+                                if(((PowerUp)currentTile).getName().equals("shooter")) {
+                                    graphics.drawImage(powerUpShooter, (currentTile.getPosX()), currentTile.getPosY(), this);
                                 } else {
-                                    graphics.drawImage(powerUpBreaker, (currentWall.getPosX()), wallLine.getPosY(), this);
+                                    graphics.drawImage(powerUpBreaker, (currentTile.getPosX()), currentTile.getPosY(), this);
                                 }
                                 break;
                             }
                         }
                     } else {
-                        Wall wallOnI = wallLine.getWalls().get(i);
-                        if(wallOnI.isPlaced()) {
-                            if (wallOnI instanceof MovingWall) {
-                                graphics.drawImage(movingWall, (wallOnI.getPosX()), wallLine.getPosY(), this);
+                        Tile tileOnI = wallList.get(i);
+                        if(tileOnI.isPlaced()) {
+                            if (tileOnI instanceof MovingWall) {
+                                graphics.drawImage(movingWall, (tileOnI.getPosX()), tileOnI.getPosY(), this);
                             } else {
-                                graphics.drawImage(wall, (i * TILE_SIZE), wallLine.getPosY(), this);
+                                graphics.drawImage(wall, (i * TILE_SIZE), tileOnI.getPosY(), this);
                             }
-                        } else if(wallOnI.getJustDestroyed().equals("breaker")) {
-                            drawWords(graphics, "1000", hitFont, wallOnI.getPosX() + (TILE_SIZE /4) - 7, wallLine.getPosY() + (TILE_SIZE /2));
-                        } else if(wallOnI.getJustDestroyed().equals("shooter")) {
-                            drawWords(graphics, "200", hitFont, wallOnI.getPosX() + (TILE_SIZE /4) - 3, wallLine.getPosY() + (TILE_SIZE /2));
+                        } else if(((Wall) tileOnI).getJustDestroyedBy().equals("breaker")) {
+                            drawWords(graphics, "1000", hitFont, tileOnI.getPosX() + (TILE_SIZE /4) - 7, tileOnI.getPosY() + (TILE_SIZE /2));
+                        } else if(((Wall) tileOnI).getJustDestroyedBy().equals("shooter")) {
+                            drawWords(graphics, "200", hitFont, tileOnI.getPosX() + (TILE_SIZE /4) - 3, tileOnI.getPosY() + (TILE_SIZE /2));
                         }
                     }
                 }
