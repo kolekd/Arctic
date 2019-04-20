@@ -318,14 +318,16 @@ public class Logic {
         for (List<Wall> wallList : listOfWallLists) {
             for (Tile wall : wallList) {
                 if (!(wallList instanceof MovingWallLine)) {
-                    if (coords == wall.getPosX() &&
-                            playerPosY < wall.getPosY() + TILE_SIZE &&
-                            playerPosY > wall.getPosY() - TILE_SIZE) {
+                    if (coords == wall.getPosX() && wall.isPlaced() &&
+                         playerPosY < wall.getPosY() + TILE_SIZE &&
+                         playerPosY > wall.getPosY() - TILE_SIZE) {
+
                         if(wall instanceof com.company.model.newmodel.PowerUp && wall.isPlaced()) {
                             wall.setPlaced(false);
                             playerBuff = wall.toString();
                             return true;
                         }
+
                         return false;
                     }
                 }
