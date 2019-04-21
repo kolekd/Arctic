@@ -111,32 +111,27 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
             for (List<Tile> tileList : logic.listOfTileLayers) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-                    Tile currentTile = tileList.get(0);
-                    if(tileList.size() < 2) {
-                        if(currentTile instanceof PowerUp) {
-                            if(currentTile.isPlaced()) {
-                                if(((PowerUp)currentTile).getName().equals("shooter")) {
-                                    graphics.drawImage(powerUpShooter, (currentTile.getPosX()), currentTile.getPosY(), this);
-                                } else {
-                                    graphics.drawImage(powerUpBreaker, (currentTile.getPosX()), currentTile.getPosY(), this);
-                                }
-                                break;
+                    Tile currentTile = tileList.get(i);
+                    if (currentTile.isPlaced()) {
+                        if (currentTile instanceof PowerUp) {
+                            String powerUpName = ((PowerUp) currentTile).getName();
+                            if (powerUpName.equals("shooter")) {
+                                graphics.drawImage(powerUpShooter, (currentTile.getPosX()), currentTile.getPosY(), this);
+                            } else if (powerUpName.equals("breaker")){
+                                graphics.drawImage(powerUpBreaker, (currentTile.getPosX()), currentTile.getPosY(), this);
                             }
+                        } else if (currentTile instanceof Wall) {
+                            graphics.drawImage(wall, currentTile.getPosX(), currentTile.getPosY(), this);
                         }
                     } else {
-                        Tile tileOnI = tileList.get(i);
-                        if(tileOnI.isPlaced()) {
-                            if (tileOnI instanceof MovingWall) {
-                                graphics.drawImage(movingWall, (tileOnI.getPosX()), tileOnI.getPosY(), this);
-                            } else {
-                                graphics.drawImage(wall, (i * TILE_SIZE), tileOnI.getPosY(), this);
-                            }
-                        } else if(((Wall) tileOnI).getJustDestroyedBy().equals("breaker")) {
-                            drawWords(graphics, "1000", hitFont, tileOnI.getPosX() + (TILE_SIZE /4) - 7, tileOnI.getPosY() + (TILE_SIZE /2));
-                        } else if(((Wall) tileOnI).getJustDestroyedBy().equals("shooter")) {
-                            drawWords(graphics, "200", hitFont, tileOnI.getPosX() + (TILE_SIZE /4) - 3, tileOnI.getPosY() + (TILE_SIZE /2));
+                        if (((Wall)currentTile).getJustDestroyedBy().equals("breaker")) {
+                            drawWords(graphics, "1000", hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 7, currentTile.getPosY() + (TILE_SIZE / 2));
+                        } else if (((Wall)currentTile).getJustDestroyedBy().equals("shooter")) {
+                            drawWords(graphics, "200", hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 3, currentTile.getPosY() + (TILE_SIZE / 2));
                         }
+
                     }
+
                 }
             }
 

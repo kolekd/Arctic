@@ -4,9 +4,8 @@ public class PowerUp extends Tile {
 
     private String name;
 
-    public PowerUp(int posX, int posY, boolean isPlaced, String name) {
+    public PowerUp(int posX, int posY, boolean isPlaced) {
         super(posX, posY, isPlaced);
-        this.name = name;
     }
 
     private PowerUp() {
