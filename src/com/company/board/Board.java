@@ -5,7 +5,6 @@ import com.company.model.*;
 import com.company.model.newmodel.Tile;
 import com.company.model.newmodel.Wall;
 import com.company.model.newmodel.PowerUp;
-import com.company.model.newmodel.MovingWall;
 
 import javax.swing.*;
 import java.awt.*;
