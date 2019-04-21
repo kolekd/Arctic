@@ -1,6 +1,8 @@
 package com.company.logic;
 
-import com.company.model.*;
+
+import com.company.model.MovingWallLine;
+import com.company.model.Projectile;
 import com.company.model.newmodel.Tile;
 import com.company.model.newmodel.Wall;
 import com.company.model.newmodel.MovingWall;
@@ -38,7 +40,7 @@ public class Logic {
     public boolean projectilesWillBeLaunched;
     private boolean movingWallOrPowerUp;
 
-    public List<List<Wall>> listOfWallLists;
+    public List<List<Tile>> listOfTileLayers;
     public List<Projectile> projectileList;
 
     public Timer timer;
@@ -59,7 +61,7 @@ public class Logic {
         projectilesWillBeLaunched = false;
         movingWallOrPowerUp = false;
 
-        listOfWallLists = new ArrayList<>();
+        listOfTileLayers = new ArrayList<>();
         projectileList = new ArrayList<>();
 
         TOTAL_TICK_COUNT = 0;
@@ -74,19 +76,19 @@ public class Logic {
     }
 
     private void generateWall() {
-        List<Wall> wallList = new ArrayList<>();
+        List<Tile> tileList = new ArrayList<>();
 
         int solidCount = 0;
         for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
             if(RandomDecision.get()) {
-                wallList.add(new Wall((i * TILE_SIZE), -TILE_SIZE, true));
+                tileList.add(new Wall((i * TILE_SIZE), -TILE_SIZE, true));
                 solidCount++;
             } else if(solidCount < MAX_TILES_IN_A_ROW - 1) {
-                wallList.add(new Wall((i * TILE_SIZE), -TILE_SIZE, false));
+                tileList.add(new Wall((i * TILE_SIZE), -TILE_SIZE, false));
             }
         }
 
-        listOfWallLists.add(wallList);
+        listOfTileLayers.add(tileList);
     }
 
 //    private void generateMovingWall() {
@@ -101,7 +103,7 @@ public class Logic {
 //            }
 //        }
 //
-//        listOfWallLists.add(wallList);
+//        listOfTileLayers.add(wallList);
 //    }
 
 //    private void generatePowerUp() {
@@ -119,7 +121,7 @@ public class Logic {
 //
 //        listOfWalls.add(powerUpBuilder.build());
 //
-//        listOfWallLists.add(wallLine);
+//        listOfTileLayers.add(wallLine);
 //    }
 
     //  This happens every tick.
@@ -128,48 +130,50 @@ public class Logic {
         TOTAL_TICK_COUNT++;
         SCORE_COUNT++;
 
-//        if(listOfWallLists.isEmpty()) {
+//        if(listOfTileLayers.isEmpty()) {
 //            checkProjectiles(null);
 //        }
 
         //  Goes through each individual row of walls ("wall lines").
-        Iterator<List<Wall>> wallLineIterator = listOfWallLists.iterator();
+        Iterator<List<Tile>> wallLineIterator = listOfTileLayers.iterator();
         while (wallLineIterator.hasNext()) {
-            List<Wall> listOfWalls = wallLineIterator.next();
-            Wall wallAtPlayerPosX = listOfWalls.get(playerPosX / TILE_SIZE);
+            List<Tile> tileList = wallLineIterator.next();
+            Tile tileAtPlayerPosX = tileList.get(playerPosX / TILE_SIZE);
 //            checkProjectiles(listOfWalls);
 
             /*  Checks whether the player is in the hitbox of a wall or a power-up.
                     - Wall - player unbuffed -> ends the game, player buffed -> removes the wall
                     - Power-up -> buffs the player.     */
-            for (int i = 0; i < listOfWalls.size(); i++) {
+            for (int i = 0; i < tileList.size(); i++) {
 //                if(!(listOfWalls.get(0) instanceof PowerUp)) {
                 if(gameRunning) {
 
                     //  These next 2 bunches of code handle showing gained score from destroying walls.
-                    if(listOfWalls.get(i).getJustDestroyedBy().length() > 0) {
-                        listOfWalls.get(i).setScoreDisplayCounter(listOfWalls.get(i).getScoreDisplayCounter() + 1);
-                    }
+                    if(tileList.get(i) instanceof Wall) {
+                        if(((Wall) tileList.get(i)).getJustDestroyedBy().length() > 0) {
+                            ((Wall) tileList.get(i)).setScoreDisplayCounter(((Wall) tileList.get(i)).getScoreDisplayCounter() + 1);
+                        }
 
-                    if(listOfWalls.get(i).getScoreDisplayCounter() > 10) {
-                        listOfWalls.get(i).setJustDestroyedBy("");
+                        if(((Wall) tileList.get(i)).getScoreDisplayCounter() > 10) {
+                            ((Wall) tileList.get(i)).setJustDestroyedBy("");
+                        }
                     }
 
                     boolean stopTheGame = false;
-                    if(!containsMovingWall(listOfWalls) &&
-                       wallAtPlayerPosX.isPlaced() &&
-                       playerPosY >= wallAtPlayerPosX.getPosY() - TILE_SIZE &&
-                       playerPosY <= wallAtPlayerPosX.getPosY() + TILE_SIZE
+                    if(!containsMovingWall(tileList) &&
+                       tileAtPlayerPosX.isPlaced() &&
+                       playerPosY >= tileAtPlayerPosX.getPosY() - TILE_SIZE &&
+                       playerPosY <= tileAtPlayerPosX.getPosY() + TILE_SIZE
                         ||
-                       retrieveMovingWall(listOfWalls) != null &&
-                       retrieveMovingWall(listOfWalls).isPlaced() &&
-                       playerPosY >= wallAtPlayerPosX.getPosY() - TILE_SIZE &&
-                       playerPosY <= wallAtPlayerPosX.getPosY() + TILE_SIZE &&
-                       playerPosX <= retrieveMovingWall(listOfWalls).getPosX() + TILE_SIZE &&
-                       playerPosX >= retrieveMovingWall(listOfWalls).getPosX() - TILE_SIZE) {
+                       retrieveMovingWall(tileList) != null &&
+                       retrieveMovingWall(tileList).isPlaced() &&
+                       playerPosY >= tileAtPlayerPosX.getPosY() - TILE_SIZE &&
+                       playerPosY <= tileAtPlayerPosX.getPosY() + TILE_SIZE &&
+                       playerPosX <= retrieveMovingWall(tileList).getPosX() + TILE_SIZE &&
+                       playerPosX >= retrieveMovingWall(tileList).getPosX() - TILE_SIZE) {
                             if(playerBuff.equals("breaker")) {
-                                wallAtPlayerPosX.setPlaced(false);
-                                wallAtPlayerPosX.setJustDestroyedBy("breaker");
+                                tileAtPlayerPosX.setPlaced(false);
+                                ((Wall)tileAtPlayerPosX).setJustDestroyedBy("breaker");
 //                                retrieveMovingWall(listOfWalls).setMoving(false);
                                 SCORE_COUNT += 1000;
                                 playerBuff = "";
@@ -198,26 +202,26 @@ public class Logic {
             }
 
             //  Removes non-visible walls and moves visible ones.
-            if (listOfWalls.get(0).getPosY() > BOARD_HEIGHT) {
+            if (tileList.get(0).getPosY() > BOARD_HEIGHT) {
                 wallLineIterator.remove();
             } else {
 
                 //  Moves the horizontally moving tiles.
-                if (listOfWalls instanceof MovingWallLine) {
-                    for (Wall wall : listOfWalls) {
-                        if(wall instanceof MovingWall) {
-                            if (((MovingWall) wall).isMovingRight()) {
-                                wall.setPosX(wall.getPosX() + STEP_DISTANCE);
+                if (tileList instanceof MovingWallLine) {
+                    for (Tile tile : tileList) {
+                        if(tile instanceof MovingWall) {
+                            if (((MovingWall) tile).isMovingRight()) {
+                                tile.setPosX(tile.getPosX() + STEP_DISTANCE);
                             } else {
-                                wall.setPosX(wall.getPosX() - STEP_DISTANCE);
+                                tile.setPosX(tile.getPosX() - STEP_DISTANCE);
                             }
 
-                            ((MovingWall) wall).bounceIfAtBorder();
+                            ((MovingWall) tile).bounceIfAtBorder();
                         }
                     }
                 }
 
-                moveWalls(listOfWalls);
+                moveTiles(tileList);
             }
         }
 
@@ -251,8 +255,6 @@ public class Logic {
                 GENERATED_WALLS_COUNT++;
 //            }
         }
-
-        //  TODO: LEFT OFF HERE
 
         /*  Shortens the time between each tick, resets TICK_COUNT and
                 increases the value the TICK_COUNT has to reach to run these methods.   */
@@ -315,7 +317,7 @@ public class Logic {
 
     //  Checks whether there is no walls at the provided coordinates. Also handles player picking up the buff.
     public boolean noWallThere(int coords) {
-        for (List<Wall> wallList : listOfWallLists) {
+        for (List<Tile> wallList : listOfTileLayers) {
             for (Tile wall : wallList) {
                 if (!(wallList instanceof MovingWallLine)) {
                     if (coords == wall.getPosX() && wall.isPlaced() &&
@@ -337,8 +339,8 @@ public class Logic {
         return true;
     }
 
-    private boolean containsMovingWall(List<Wall> wallList) {
-        for(Wall wall : wallList) {
+    private boolean containsMovingWall(List<Tile> tileList) {
+        for(Tile wall : tileList) {
             if (wall instanceof MovingWall) {
                 return true;
             }
@@ -347,20 +349,20 @@ public class Logic {
         return false;
     }
 
-    private MovingWall retrieveMovingWall(List<Wall> wallList) {
-        for(Wall wall : wallList) {
-            if (wall instanceof MovingWall) {
-                return (MovingWall) wall;
+    private MovingWall retrieveMovingWall(List<Tile> tileList) {
+        for(Tile tile : tileList) {
+            if (tile instanceof MovingWall) {
+                return (MovingWall) tile;
             }
         }
 
         return null;
     }
 
-    private void moveWalls(List<Wall> wallList) {
-        int currentPosY = wallList.get(0).getPosY();
-        for(Wall wall : wallList) {
-            wall.setPosY(currentPosY + STEP_DISTANCE);
+    private void moveTiles(List<Tile> tileList) {
+        int currentPosY = tileList.get(0).getPosY();
+        for(Tile tile : tileList) {
+            tile.setPosY(currentPosY + STEP_DISTANCE);
         }
     }
 

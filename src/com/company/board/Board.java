@@ -109,10 +109,10 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 graphics.drawImage(projectile, currentProjectile.getPosX(), currentProjectile.getPosY(), this);
             }
 
-            for (List<Wall> wallList : logic.listOfWallLists) {
+            for (List<Tile> tileList : logic.listOfTileLayers) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-                    Tile currentTile = wallList.get(0);
-                    if(wallList.size() < 2) {
+                    Tile currentTile = tileList.get(0);
+                    if(tileList.size() < 2) {
                         if(currentTile instanceof PowerUp) {
                             if(currentTile.isPlaced()) {
                                 if(((PowerUp)currentTile).getName().equals("shooter")) {
@@ -124,7 +124,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                             }
                         }
                     } else {
-                        Tile tileOnI = wallList.get(i);
+                        Tile tileOnI = tileList.get(i);
                         if(tileOnI.isPlaced()) {
                             if (tileOnI instanceof MovingWall) {
                                 graphics.drawImage(movingWall, (tileOnI.getPosX()), tileOnI.getPosY(), this);
