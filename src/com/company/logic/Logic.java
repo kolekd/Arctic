@@ -106,6 +106,8 @@ public class Logic {
 //        listOfTileLayers.add(wallList);
 //    }
 
+    // TODO: Implement new PowerUp model
+
 //    private void generatePowerUp() {
 //        List<Wall> listOfWalls = new ArrayList<>();
 //        WallLine wallLine = new WallLine(listOfWalls);
