@@ -5,6 +5,6 @@ import java.util.List;
 
 public class TileLayer extends ArrayList {
 
-    /* TODO: this - represents a generated row of tiles (moving wall, walls, power-up)
-                   */
+    /*  TODO: this - represents a generated row of tiles (moving wall, walls, power-up)
+    *              - has the functions like generateWall(), generatePowerUp etc.    */
 }

@@ -1,4 +1,6 @@
-package com.company.model.newmodel;
+package com.company.model;
+
+import static com.company.logic.Constants.TILE_SIZE;
 
 public class Tile {
 
@@ -13,6 +15,12 @@ public class Tile {
     }
 
     public Tile() {
+    }
+
+    public boolean overlapsWith(Tile tile) {
+         return tile.isPlaced() && this.isPlaced &&
+                this.posY >= tile.getPosY() - TILE_SIZE && this.posX >= tile.getPosX() - TILE_SIZE &&
+                this.posY <= tile.getPosY() + TILE_SIZE && this.posX <= tile.getPosX() + TILE_SIZE;
     }
 
     public int getPosX() {

@@ -1,4 +1,4 @@
-package com.company.model.newmodel;
+package com.company.model;
 
 public class PowerUp extends Tile {
 

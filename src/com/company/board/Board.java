@@ -1,10 +1,10 @@
 package com.company.board;
 
 import com.company.logic.Logic;
-import com.company.model.*;
-import com.company.model.newmodel.Tile;
-import com.company.model.newmodel.Wall;
-import com.company.model.newmodel.PowerUp;
+import com.company.model.Tile;
+import com.company.model.Wall;
+import com.company.model.PowerUp;
+import com.company.model.Projectile;
 
 import javax.swing.*;
 import java.awt.*;
@@ -104,8 +104,10 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         if(logic.gameRunning) {
             drawPlayer(graphics);
 
-            for (Projectile currentProjectile : logic.projectileList) {
-                graphics.drawImage(projectile, currentProjectile.getPosX(), currentProjectile.getPosY(), this);
+            for (Tile currentProjectile : logic.projectileList) {
+                if (currentProjectile.isPlaced()) {
+                    graphics.drawImage(projectile, currentProjectile.getPosX(), currentProjectile.getPosY(), this);
+                }
             }
 
             for (List<Tile> tileList : logic.listOfTileLayers) {
