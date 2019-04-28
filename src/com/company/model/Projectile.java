@@ -1,23 +1,22 @@
 package com.company.model;
 
-public class Projectile {
+import static com.company.logic.Constants.TILE_SIZE;
 
-    int posY;
-    int posX;
-    boolean isLaunched;
+public class Projectile extends Tile {
 
-    public Projectile(int posX, int posY, boolean isLaunched) {
-        this.posX = posX;
-        this.posY = posY;
-        this.isLaunched = isLaunched;
+    private boolean isLaunched;
+
+    public Projectile(int posX, int posY) {
+        super(posX, posY);
+        this.isPlaced = true;
+        this.isLaunched = true;
     }
 
-    public int getPosX() {
-        return posX;
-    }
-
-    public void setPosX(int posX) {
-        this.posX = posX;
+    @Override
+    public boolean overlapsWith(Tile tile) {
+        return tile.isPlaced() && this.isPlaced &&
+                posY >= tile.getPosY() - (TILE_SIZE + 4) && posX > tile.getPosX() - TILE_SIZE &&
+                posY <= tile.getPosY() + TILE_SIZE && posX < tile.getPosX() + TILE_SIZE;
     }
 
     public boolean isLaunched() {
@@ -28,11 +27,4 @@ public class Projectile {
         isLaunched = launched;
     }
 
-    public int getPosY() {
-        return posY;
-    }
-
-    public void setPosY(int posY) {
-        this.posY = posY;
-    }
 }

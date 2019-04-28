@@ -1,7 +1,9 @@
 package com.company.board;
 
 import com.company.logic.Logic;
-import com.company.model.*;
+import com.company.model.Tile;
+import com.company.model.Wall;
+import com.company.model.PowerUp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.List;
 
 import static com.company.logic.Constants.*;
 
@@ -100,38 +103,35 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         if(logic.gameRunning) {
             drawPlayer(graphics);
 
-            for (Projectile currentProjectile : logic.projectileList) {
-                graphics.drawImage(projectile, currentProjectile.getPosX(), currentProjectile.getPosY(), this);
+            for (Tile currentProjectile : logic.projectileList) {
+                if (currentProjectile.isPlaced()) {
+                    graphics.drawImage(projectile, currentProjectile.getPosX(), currentProjectile.getPosY(), this);
+                }
             }
 
-            for (WallLine wallLine : logic.wallLineList) {
+            for (List<Tile> tileList : logic.listOfTileLayers) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-                    Wall currentWall = wallLine.getWalls().get(0);
-                    if(wallLine.getWalls().size() < 2) {
-                        if(currentWall instanceof PowerUp) {
-                            if(currentWall.isPlaced()) {
-                                if(((PowerUp)currentWall).isShooter()) {
-                                    graphics.drawImage(powerUpShooter, (currentWall.getPosX()), wallLine.getPosY(), this);
-                                } else {
-                                    graphics.drawImage(powerUpBreaker, (currentWall.getPosX()), wallLine.getPosY(), this);
-                                }
-                                break;
+                    Tile currentTile = tileList.get(i);
+                    if (currentTile.isPlaced()) {
+                        if (currentTile instanceof PowerUp) {
+                            String powerUpName = ((PowerUp) currentTile).getName();
+                            if (powerUpName.equals("shooter")) {
+                                graphics.drawImage(powerUpShooter, (currentTile.getPosX()), currentTile.getPosY(), this);
+                            } else if (powerUpName.equals("breaker")){
+                                graphics.drawImage(powerUpBreaker, (currentTile.getPosX()), currentTile.getPosY(), this);
                             }
+                        } else if (currentTile instanceof Wall) {
+                            graphics.drawImage(wall, currentTile.getPosX(), currentTile.getPosY(), this);
                         }
                     } else {
-                        Wall wallOnI = wallLine.getWalls().get(i);
-                        if(wallOnI.isPlaced()) {
-                            if (wallOnI instanceof MovingWall) {
-                                graphics.drawImage(movingWall, (wallOnI.getPosX()), wallLine.getPosY(), this);
-                            } else {
-                                graphics.drawImage(wall, (i * TILE_SIZE), wallLine.getPosY(), this);
-                            }
-                        } else if(wallOnI.getJustDestroyed().equals("breaker")) {
-                            drawWords(graphics, "1000", hitFont, wallOnI.getPosX() + (TILE_SIZE /4) - 7, wallLine.getPosY() + (TILE_SIZE /2));
-                        } else if(wallOnI.getJustDestroyed().equals("shooter")) {
-                            drawWords(graphics, "200", hitFont, wallOnI.getPosX() + (TILE_SIZE /4) - 3, wallLine.getPosY() + (TILE_SIZE /2));
+                        if (((Wall)currentTile).getJustDestroyedBy().equals("breaker")) {
+                            drawWords(graphics, String.valueOf(BREAKER_SCORE_VALUE), hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 7, currentTile.getPosY() + (TILE_SIZE / 2));
+                        } else if (((Wall)currentTile).getJustDestroyedBy().equals("shooter")) {
+                            drawWords(graphics, String.valueOf(SHOOTER_SCORE_VALUE), hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 3, currentTile.getPosY() + (TILE_SIZE / 2));
                         }
+
                     }
+
                 }
             }
 
@@ -202,7 +202,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             if (logic.gameJustLaunched) {
                 launch();
             } else if(logic.playerBuff.equals("shooter") || DEBUG_MODE) {
-                logic.projectilesWillBeLaunched = true;
+                logic.launchProjectiles = true;
             }
         }
 

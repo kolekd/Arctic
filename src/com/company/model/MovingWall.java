@@ -1,7 +1,5 @@
 package com.company.model;
 
-import com.company.util.RandomDecision;
-
 import static com.company.logic.Constants.BOARD_WIDTH;
 import static com.company.logic.Constants.TILE_SIZE;
 
@@ -10,10 +8,11 @@ public class MovingWall extends Wall {
     boolean moving;
     boolean movingRight;
 
-    public MovingWall(boolean placed, int posX) {
-        super(placed, posX);
+    public MovingWall(int posX, int posY, boolean movingRight) {
+        super(posX, posY);
+        this.isPlaced = true;
         this.moving = true;
-        this.movingRight = RandomDecision.get();
+        this.movingRight = movingRight;
     }
 
     public void bounceIfAtBorder() {
@@ -24,19 +23,19 @@ public class MovingWall extends Wall {
         }
     }
 
-    public boolean isMovingRight() {
-        return movingRight;
-    }
-
-    public void setMovingRight(boolean movingRight) {
-        this.movingRight = movingRight;
-    }
-
     public boolean isMoving() {
         return moving;
     }
 
     public void setMoving(boolean moving) {
         this.moving = moving;
+    }
+
+    public boolean isMovingRight() {
+        return movingRight;
+    }
+
+    public void setMovingRight(boolean movingRight) {
+        this.movingRight = movingRight;
     }
 }
