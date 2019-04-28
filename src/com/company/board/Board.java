@@ -125,9 +125,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                         }
                     } else {
                         if (((Wall)currentTile).getJustDestroyedBy().equals("breaker")) {
-                            drawWords(graphics, "1000", hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 7, currentTile.getPosY() + (TILE_SIZE / 2));
+                            drawWords(graphics, String.valueOf(BREAKER_SCORE_VALUE), hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 7, currentTile.getPosY() + (TILE_SIZE / 2));
                         } else if (((Wall)currentTile).getJustDestroyedBy().equals("shooter")) {
-                            drawWords(graphics, "200", hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 3, currentTile.getPosY() + (TILE_SIZE / 2));
+                            drawWords(graphics, String.valueOf(SHOOTER_SCORE_VALUE), hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 3, currentTile.getPosY() + (TILE_SIZE / 2));
                         }
 
                     }

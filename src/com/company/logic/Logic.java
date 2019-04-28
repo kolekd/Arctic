@@ -166,7 +166,7 @@ public class Logic {
                             if (tile instanceof MovingWall) {
                                 ((MovingWall) tile).setMoving(false);
                             }
-                            SCORE_COUNT += 1000;
+                            SCORE_COUNT += BREAKER_SCORE_VALUE;
                             playerBuff = "";
                         } else {
                             stopTheGame = true;
@@ -209,7 +209,7 @@ public class Logic {
 
         //  Generates a wall or power-up.
         if (TOTAL_TICK_COUNT % WALL_GENERATION_FREQUENCY == 0) {
-            if (GENERATED_WALLS_COUNT % ANOMALLY_GENERATION_FREQUENCY == 0) {
+            if (GENERATED_WALLS_COUNT % ANOMALY_GENERATION_FREQUENCY == 0) {
                 if (movingWallOrPowerUp) {
                     generatePowerUp();
                     movingWallOrPowerUp = false;
@@ -257,7 +257,7 @@ public class Logic {
                 List<Tile> currentTileLayer = tileIterator.next();
 
                 for (Tile tile : currentTileLayer) {
-                    if (currentProjectile.overlapsWith(tile)) {
+                    if (currentProjectile.overlapsWith(tile) && tile instanceof Wall) {
                         tile.setPlaced(false);
                         ((Wall) tile).setJustDestroyedBy("shooter");
 
@@ -265,7 +265,7 @@ public class Logic {
                             ((MovingWall) tile).setMoving(false);
                         }
 
-                        SCORE_COUNT += 200;
+                        SCORE_COUNT += SHOOTER_SCORE_VALUE;
                         currentProjectile.setPlaced(false);
                         break outerloop;
                     }
