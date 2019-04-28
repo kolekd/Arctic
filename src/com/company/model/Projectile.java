@@ -1,15 +1,14 @@
 package com.company.model;
 
-import com.company.model.Tile;
-
 import static com.company.logic.Constants.TILE_SIZE;
 
 public class Projectile extends Tile {
 
-    boolean isLaunched;
+    private boolean isLaunched;
 
-    public Projectile(int posX, int posY, boolean isPlaced) {
-        super(posX, posY, isPlaced);
+    public Projectile(int posX, int posY) {
+        super(posX, posY);
+        this.isPlaced = true;
         this.isLaunched = true;
     }
 

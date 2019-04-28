@@ -8,13 +8,15 @@ public class Tile {
     int posY;
     boolean isPlaced;
 
-    public Tile(int posX, int posY, boolean isPlaced) {
+    Tile(int posX, int posY, boolean isPlaced) {
         this.posX = posX;
         this.posY = posY;
         this.isPlaced = isPlaced;
     }
 
-    public Tile() {
+    Tile(int posX, int posY) {
+        this.posX = posX;
+        this.posY = posY;
     }
 
     public boolean overlapsWith(Tile tile) {

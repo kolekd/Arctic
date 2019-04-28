@@ -4,12 +4,10 @@ public class PowerUp extends Tile {
 
     private String name;
 
-    public PowerUp(int posX, int posY, boolean isPlaced) {
-        super(posX, posY, isPlaced);
-    }
-
-    private PowerUp() {
-        super();
+    public PowerUp(int posX, int posY, String name) {
+        super(posX, posY);
+        this.isPlaced = true;
+        this.name = name;
     }
 
     public String getName() {
