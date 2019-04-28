@@ -6,7 +6,7 @@ import com.company.model.PowerUp;
 import com.company.model.Tile;
 import com.company.model.Wall;
 import com.company.model.MovingWall;
-import com.company.util.RandomDecision;
+import com.company.util.RandomUtil;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -80,7 +80,7 @@ public class Logic {
 
         int solidCount = 0;
         for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-            if (RandomDecision.get()) {
+            if (RandomUtil.get()) {
                 tileList.add(new Wall((i * TILE_SIZE), -TILE_SIZE, true));
                 solidCount++;
             } else if (solidCount < MAX_TILES_IN_A_ROW - 1) {
@@ -94,10 +94,10 @@ public class Logic {
     private void generateMovingWall() {
         List<Tile> tileList = new ArrayList<>();
 
-        int randomPosX = RandomDecision.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1);
+        int randomPosX = RandomUtil.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1);
         for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
             if (i == randomPosX) {
-                tileList.add(new MovingWall(i * TILE_SIZE, -TILE_SIZE, true, true, RandomDecision.get()));
+                tileList.add(new MovingWall(i * TILE_SIZE, -TILE_SIZE, RandomUtil.get()));
             } else {
                 tileList.add(new Wall((i * TILE_SIZE), -TILE_SIZE, false));
             }
@@ -109,18 +109,15 @@ public class Logic {
     private void generatePowerUp() {
         List<Tile> tileList = new ArrayList<>();
 
-        int randomPosX = RandomDecision.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1);
+        int randomPosX = RandomUtil.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1);
         for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
             if (i == randomPosX) {
-                PowerUp powerUp = new PowerUp(i * TILE_SIZE, -TILE_SIZE, true);
-
-                if (RandomDecision.get()) {
-                    powerUp.setName("breaker");
+                if (RandomUtil.get()) {
+                    tileList.add(new PowerUp(i * TILE_SIZE, -TILE_SIZE, "breaker"));
                 } else {
-                    powerUp.setName("shooter");
+                    tileList.add(new PowerUp(i * TILE_SIZE, -TILE_SIZE, "shooter"));
                 }
 
-                tileList.add(powerUp);
             } else {
                 tileList.add(new Wall(i * TILE_SIZE, -TILE_SIZE, false));
             }
@@ -204,10 +201,10 @@ public class Logic {
                 playerBuff = "";
             }
             if (!isOutOfBounds(playerPosX - TILE_SIZE)) {
-                projectileList.add(new Projectile(playerPosX - TILE_SIZE, playerPosY - TILE_SIZE, true));
+                projectileList.add(new Projectile(playerPosX - TILE_SIZE, playerPosY - TILE_SIZE));
             }
             if (!isOutOfBounds(playerPosX + TILE_SIZE)) {
-                projectileList.add(new Projectile(playerPosX + TILE_SIZE, playerPosY - TILE_SIZE, true));
+                projectileList.add(new Projectile(playerPosX + TILE_SIZE, playerPosY - TILE_SIZE));
             }
             projectilesWillBeLaunched = false;
         }

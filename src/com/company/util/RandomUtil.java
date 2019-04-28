@@ -2,7 +2,7 @@ package com.company.util;
 
 import java.util.Random;
 
-public class RandomDecision {
+public class RandomUtil {
 
     private static Random random = new Random();
 

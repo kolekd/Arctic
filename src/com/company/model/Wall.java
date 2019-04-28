@@ -11,7 +11,11 @@ public class Wall extends Tile {
         this.scoreDisplayCounter = 0;
     }
 
-    public Wall() {}
+    public Wall(int posX, int posY) {
+        super(posX, posY);
+        this.justDestroyedBy = "";
+        this.scoreDisplayCounter = 0;
+    }
 
     public void setJustDestroyedBy(String justDestroyedBy) {
         this.justDestroyedBy = justDestroyedBy;
