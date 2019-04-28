@@ -1,12 +1,12 @@
-package com.company.model;
+package com.company.model.wall;
 
 import static com.company.logic.Constants.BOARD_WIDTH;
 import static com.company.logic.Constants.TILE_SIZE;
 
 public class MovingWall extends Wall {
 
-    boolean moving;
-    boolean movingRight;
+    private boolean moving;
+    private boolean movingRight;
 
     public MovingWall(int posX, int posY, boolean movingRight) {
         super(posX, posY);

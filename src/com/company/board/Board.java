@@ -2,7 +2,7 @@ package com.company.board;
 
 import com.company.logic.Logic;
 import com.company.model.Tile;
-import com.company.model.Wall;
+import com.company.model.wall.Wall;
 import com.company.model.PowerUp;
 
 import javax.swing.*;
@@ -25,7 +25,6 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private Image playerBreakerBuff;
     private Image playerShooterBuff;
     private Image wall;
-    private Image movingWall;
     private Image powerUpBreaker;
     private Image powerUpShooter;
     private Image projectile;
@@ -75,9 +74,6 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
         ImageIcon wallIcon = new ImageIcon("src/resources/wall_tile.png");
         wall = wallIcon.getImage();
-
-        ImageIcon movingWallIcon = new ImageIcon("src/resources/moving_wall_tile.png");
-        movingWall = movingWallIcon.getImage();
 
         ImageIcon breakerPowerUpIcon = new ImageIcon("src/resources/power_up_breaker.png");
         powerUpBreaker = breakerPowerUpIcon.getImage();

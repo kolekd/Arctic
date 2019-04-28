@@ -1,9 +1,11 @@
-package com.company.model;
+package com.company.model.wall;
+
+import com.company.model.Tile;
 
 public class Wall extends Tile {
 
-    String justDestroyedBy;
-    int scoreDisplayCounter;
+    private String justDestroyedBy;
+    private int scoreDisplayCounter;
 
     public Wall(int posX, int posY, boolean isPlaced) {
         super(posX, posY, isPlaced);
@@ -11,7 +13,7 @@ public class Wall extends Tile {
         this.scoreDisplayCounter = 0;
     }
 
-    public Wall(int posX, int posY) {
+    Wall(int posX, int posY) {
         super(posX, posY);
         this.justDestroyedBy = "";
         this.scoreDisplayCounter = 0;

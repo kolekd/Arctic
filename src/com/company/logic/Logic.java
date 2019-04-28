@@ -4,8 +4,8 @@ package com.company.logic;
 import com.company.model.Projectile;
 import com.company.model.PowerUp;
 import com.company.model.Tile;
-import com.company.model.Wall;
-import com.company.model.MovingWall;
+import com.company.model.wall.Wall;
+import com.company.model.wall.MovingWall;
 import com.company.util.RandomUtil;
 
 import javax.swing.*;

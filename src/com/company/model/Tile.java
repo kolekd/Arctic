@@ -4,17 +4,17 @@ import static com.company.logic.Constants.TILE_SIZE;
 
 public class Tile {
 
-    int posX;
+    protected int posX;
     int posY;
-    boolean isPlaced;
+    protected boolean isPlaced;
 
-    Tile(int posX, int posY, boolean isPlaced) {
+    protected Tile(int posX, int posY, boolean isPlaced) {
         this.posX = posX;
         this.posY = posY;
         this.isPlaced = isPlaced;
     }
 
-    Tile(int posX, int posY) {
+    protected Tile(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
     }
