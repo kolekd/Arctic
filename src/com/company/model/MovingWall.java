@@ -8,9 +8,10 @@ public class MovingWall extends Wall {
     boolean moving;
     boolean movingRight;
 
-    public MovingWall(int posX, int posY, boolean isPlaced, boolean moving, boolean movingRight) {
-        super(posX, posY, isPlaced);
-        this.moving = moving;
+    public MovingWall(int posX, int posY, boolean movingRight) {
+        super(posX, posY);
+        this.isPlaced = true;
+        this.moving = true;
         this.movingRight = movingRight;
     }
 
