@@ -4,7 +4,6 @@ import com.company.logic.Logic;
 import com.company.model.Tile;
 import com.company.model.Wall;
 import com.company.model.PowerUp;
-import com.company.model.Projectile;
 
 import javax.swing.*;
 import java.awt.*;
@@ -203,7 +202,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             if (logic.gameJustLaunched) {
                 launch();
             } else if(logic.playerBuff.equals("shooter") || DEBUG_MODE) {
-                logic.projectilesWillBeLaunched = true;
+                logic.launchProjectiles = true;
             }
         }
 

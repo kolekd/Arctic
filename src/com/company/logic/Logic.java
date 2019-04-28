@@ -37,7 +37,7 @@ public class Logic {
     public int playerPosY;
     public String playerBuff;
 
-    public boolean projectilesWillBeLaunched;
+    public boolean launchProjectiles;
     private boolean movingWallOrPowerUp;
 
     public List<List<Tile>> listOfTileLayers;
@@ -58,7 +58,7 @@ public class Logic {
         playerPosY = BOARD_HEIGHT - (TILE_SIZE * 4);
         playerBuff = "";
 
-        projectilesWillBeLaunched = false;
+        launchProjectiles = false;
         movingWallOrPowerUp = false;
 
         listOfTileLayers = new ArrayList<>();
@@ -144,41 +144,39 @@ public class Logic {
             /*  Checks whether the player is in the hitbox of a wall or a power-up.
                     - Wall - player unbuffed -> ends the game, player buffed -> removes the wall
                     - Power-up -> buffs the player.     */
-            for (int i = 0; i < tileList.size(); i++) {
-                Tile tileAtI = tileList.get(i);
-
+            for (Tile tile : tileList) {
                 //  These next 2 bunches of code handle showing gained score from destroying walls.
-                if(tileAtI instanceof Wall) {
-                    if (((Wall) tileAtI).getJustDestroyedBy().length() > 0) {
-                        ((Wall) tileAtI).setScoreDisplayCounter(((Wall) tileAtI).getScoreDisplayCounter() + 1);
+                if (tile instanceof Wall) {
+                    if (((Wall) tile).getJustDestroyedBy().length() > 0) {
+                        ((Wall) tile).setScoreDisplayCounter(((Wall) tile).getScoreDisplayCounter() + 1);
                     }
 
-                    if (((Wall) tileAtI).getScoreDisplayCounter() > 10) {
-                        ((Wall) tileAtI).setJustDestroyedBy("");
+                    if (((Wall) tile).getScoreDisplayCounter() > 10) {
+                        ((Wall) tile).setJustDestroyedBy("");
                     }
                 }
 
                 boolean stopTheGame = false;
-                if (tileAtI.isPlaced() &&
-                        playerPosY >= tileAtI.getPosY() - TILE_SIZE &&
-                        playerPosY <= tileAtI.getPosY() + TILE_SIZE &&
-                        playerPosX > tileAtI.getPosX() - TILE_SIZE &&
-                        playerPosX < tileAtI.getPosX() + TILE_SIZE) {
-                    if (tileAtI instanceof Wall) {
+                if (tile.isPlaced() &&
+                        playerPosY >= tile.getPosY() - TILE_SIZE &&
+                        playerPosY <= tile.getPosY() + TILE_SIZE &&
+                        playerPosX > tile.getPosX() - TILE_SIZE &&
+                        playerPosX < tile.getPosX() + TILE_SIZE) {
+                    if (tile instanceof Wall) {
                         if (playerBuff.equals("breaker")) {
-                            tileAtI.setPlaced(false);
-                            ((Wall) tileAtI).setJustDestroyedBy("breaker");
-                            if (tileAtI instanceof MovingWall) {
-                                ((MovingWall) tileAtI).setMoving(false);
+                            tile.setPlaced(false);
+                            ((Wall) tile).setJustDestroyedBy("breaker");
+                            if (tile instanceof MovingWall) {
+                                ((MovingWall) tile).setMoving(false);
                             }
                             SCORE_COUNT += 1000;
                             playerBuff = "";
                         } else {
                             stopTheGame = true;
                         }
-                    } else if (tileAtI instanceof PowerUp) {
-                        playerBuff = ((PowerUp) tileAtI).getName();
-                        tileAtI.setPlaced(false);
+                    } else if (tile instanceof PowerUp) {
+                        playerBuff = ((PowerUp) tile).getName();
+                        tile.setPlaced(false);
                         wallLineIterator.remove();
                     }
                 }
@@ -197,9 +195,8 @@ public class Logic {
             }
         }
 
-        //  TODO: Projectile - ok
         //  Launches projectiles if they're supposed to be launched.
-        if (projectilesWillBeLaunched) {
+        if (launchProjectiles) {
             if (playerBuff.equals("shooter")) {
                 playerBuff = "";
             }
@@ -209,7 +206,8 @@ public class Logic {
             if (!isOutOfBounds(playerPosX + TILE_SIZE)) {
                 projectileList.add(new Projectile(playerPosX + TILE_SIZE, playerPosY - TILE_SIZE, true));
             }
-            projectilesWillBeLaunched = false;
+
+            launchProjectiles = false;
         }
 
         //  Generates a wall or power-up.
@@ -229,7 +227,6 @@ public class Logic {
             }
         }
 
-        //  TODO: Projectile - ok
         if(!projectileList.isEmpty()) {
             checkProjectiles();
         }
@@ -251,7 +248,6 @@ public class Logic {
         System.out.println(debugReport());
     }
 
-    //  TODO: Projectile - completely rework this
     // Checks if any projectile hit any wall. If so, removes them. If not, moves them further upwards.
     private void checkProjectiles() {
         Iterator<Tile> projectileIterator = projectileList.iterator();
