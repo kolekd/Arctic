@@ -1,49 +1,24 @@
 package com.company.model;
 
-public class Wall {
+public class Wall extends Tile {
 
-    boolean isPlaced;
-    int posX;
-    boolean isPowerUp;
-    String justDestroyed;
+    String justDestroyedBy;
     int scoreDisplayCounter;
 
-    public Wall(boolean placed, int posX) {
-        this.isPlaced = placed;
-        this.posX = posX;
-        this.isPowerUp = false;
-        this.justDestroyed = "";
+    public Wall(int posX, int posY, boolean isPlaced) {
+        super(posX, posY, isPlaced);
+        this.justDestroyedBy = "";
         this.scoreDisplayCounter = 0;
     }
 
     public Wall() {}
 
-    public boolean isPlaced() {
-        return isPlaced;
+    public void setJustDestroyedBy(String justDestroyedBy) {
+        this.justDestroyedBy = justDestroyedBy;
     }
 
-    public void setPlaced(boolean placed) {
-        this.isPlaced = placed;
-    }
-
-    public boolean isPowerUp() {
-        return isPowerUp;
-    }
-
-    public int getPosX() {
-        return posX;
-    }
-
-    public void setPosX(int posX) {
-        this.posX = posX;
-    }
-
-    public void setJustDestroyed(String justDestroyed) {
-        this.justDestroyed = justDestroyed;
-    }
-
-    public String getJustDestroyed() {
-        return justDestroyed;
+    public String getJustDestroyedBy() {
+        return justDestroyedBy;
     }
 
     public int getScoreDisplayCounter() {
