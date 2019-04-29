@@ -139,9 +139,10 @@ public class Logic {
             Tile tileAtPlayerPosX = tileList.get(playerPosX / TILE_SIZE);
 
             /*  Checks whether the player is in the hitbox of a wall or a power-up.
-                    - Wall - player unbuffed -> ends the game, player buffed -> removes the wall
-                    - Power-up -> buffs the player.     */
+                 - Wall - player unbuffed -> ends the game, player buffed -> removes the wall
+                 - Power-up -> buffs the player.  */
             for (Tile tile : tileList) {
+
                 //  These next 2 bunches of code handle showing gained score from destroying walls.
                 if (tile instanceof Wall) {
                     if (((Wall) tile).getJustDestroyedBy().length() > 0) {
@@ -207,7 +208,8 @@ public class Logic {
             launchProjectiles = false;
         }
 
-        //  Generates a wall or power-up.
+        /*  Generates wall. Based on the value of ANOMALY_GENERATION_FREQUENCY generates
+            a moving wall or a power-up instead.  */
         if (TOTAL_TICK_COUNT % WALL_GENERATION_FREQUENCY == 0) {
             if (GENERATED_WALLS_COUNT % ANOMALY_GENERATION_FREQUENCY == 0) {
                 if (movingWallOrPowerUp) {
@@ -245,7 +247,7 @@ public class Logic {
         System.out.println(debugReport());
     }
 
-    // Checks if any projectile hit any wall. If so, removes them. If not, moves them further upwards.
+    // Checks if any projectile hit any wall. If so, removes them both. If not, moves the projectile further upwards.
     private void checkProjectiles() {
         Iterator<Tile> projectileIterator = projectileList.iterator();
         while (projectileIterator.hasNext()) {
@@ -302,6 +304,7 @@ public class Logic {
         return true;
     }
 
+    //  Moves all the walls downwards and also moves moving walls horizontally.
     private void moveTiles(List<Tile> tileList) {
         int currentPosY = tileList.get(0).getPosY();
         for(Tile tile : tileList) {
