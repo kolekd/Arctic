@@ -105,7 +105,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 }
             }
 
-            for (List<Tile> tileList : logic.listOfTileLayers) {
+            for (List<Tile> tileList : logic.tileManager) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
                     Tile currentTile = tileList.get(i);
                     if (currentTile.isPlaced()) {

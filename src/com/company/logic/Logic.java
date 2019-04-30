@@ -1,12 +1,11 @@
 package com.company.logic;
 
 
-import com.company.model.Projectile;
 import com.company.model.PowerUp;
+import com.company.model.Projectile;
 import com.company.model.Tile;
-import com.company.model.wall.Wall;
 import com.company.model.wall.MovingWall;
-import com.company.util.RandomUtil;
+import com.company.model.wall.Wall;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -40,7 +39,7 @@ public class Logic {
     public boolean launchProjectiles;
     private boolean movingWallOrPowerUp;
 
-    public List<List<Tile>> listOfTileLayers;
+    public TileManager tileManager;
     public List<Tile> projectileList;
 
     public Timer timer;
@@ -61,7 +60,8 @@ public class Logic {
         launchProjectiles = false;
         movingWallOrPowerUp = false;
 
-        listOfTileLayers = new ArrayList<>();
+        tileManager = new TileManager();
+
         projectileList = new ArrayList<>();
 
         TOTAL_TICK_COUNT = 0;
@@ -75,57 +75,6 @@ public class Logic {
         timer.start();
     }
 
-    private void generateWall() {
-        List<Tile> tileList = new ArrayList<>();
-
-        int solidCount = 0;
-        for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-            if (RandomUtil.get()) {
-                tileList.add(new Wall((i * TILE_SIZE), -TILE_SIZE, true));
-                solidCount++;
-            } else if (solidCount < MAX_TILES_IN_A_ROW - 1) {
-                tileList.add(new Wall((i * TILE_SIZE), -TILE_SIZE, false));
-            }
-        }
-
-        listOfTileLayers.add(tileList);
-    }
-
-    private void generateMovingWall() {
-        List<Tile> tileList = new ArrayList<>();
-
-        int randomPosX = RandomUtil.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1);
-        for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-            if (i == randomPosX) {
-                tileList.add(new MovingWall(i * TILE_SIZE, -TILE_SIZE, RandomUtil.get()));
-            } else {
-                tileList.add(new Wall((i * TILE_SIZE), -TILE_SIZE, false));
-            }
-        }
-
-        listOfTileLayers.add(tileList);
-    }
-
-    private void generatePowerUp() {
-        List<Tile> tileList = new ArrayList<>();
-
-        int randomPosX = RandomUtil.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1);
-        for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-            if (i == randomPosX) {
-                if (RandomUtil.get()) {
-                    tileList.add(new PowerUp(i * TILE_SIZE, -TILE_SIZE, "breaker"));
-                } else {
-                    tileList.add(new PowerUp(i * TILE_SIZE, -TILE_SIZE, "shooter"));
-                }
-
-            } else {
-                tileList.add(new Wall(i * TILE_SIZE, -TILE_SIZE, false));
-            }
-        }
-
-        listOfTileLayers.add(tileList);
-    }
-
     //  This happens every tick.
     public void tickAction() {
         TICK_COUNT++;
@@ -133,7 +82,7 @@ public class Logic {
         SCORE_COUNT++;
 
         //  Goes through each individual row of walls ("wall lines").
-        Iterator<List<Tile>> wallLineIterator = listOfTileLayers.iterator();
+        Iterator<List<Tile>> wallLineIterator = tileManager.iterator();
         while (wallLineIterator.hasNext()) {
             List<Tile> tileList = wallLineIterator.next();
             Tile tileAtPlayerPosX = tileList.get(playerPosX / TILE_SIZE);
@@ -213,15 +162,15 @@ public class Logic {
         if (TOTAL_TICK_COUNT % WALL_GENERATION_FREQUENCY == 0) {
             if (GENERATED_WALLS_COUNT % ANOMALY_GENERATION_FREQUENCY == 0) {
                 if (movingWallOrPowerUp) {
-                    generatePowerUp();
+                    tileManager.generatePowerUp();
                     movingWallOrPowerUp = false;
                 } else {
-                    generateMovingWall();
+                    tileManager.generateMovingWall();
                     movingWallOrPowerUp = true;
                 }
                 GENERATED_WALLS_COUNT++;
             } else {
-                generateWall();
+                tileManager.generateWall();
                 GENERATED_WALLS_COUNT++;
             }
         }
@@ -253,7 +202,7 @@ public class Logic {
         while (projectileIterator.hasNext()) {
             Tile currentProjectile = projectileIterator.next();
 
-            Iterator<List<Tile>> tileIterator = listOfTileLayers.iterator();
+            Iterator<List<Tile>> tileIterator = tileManager.iterator();
             outerloop:
             while(tileIterator.hasNext()) {
                 List<Tile> currentTileLayer = tileIterator.next();
@@ -284,7 +233,7 @@ public class Logic {
 
     //  Checks whether there is no walls at the provided coordinates. Also handles player picking up the buff.
     public boolean noWallThere(int coords) {
-        for (List<Tile> wallList : listOfTileLayers) {
+        for (List<Tile> wallList : tileManager) {
             for (Tile wall : wallList) {
                 if (coords == wall.getPosX() && wall.isPlaced() &&
                      playerPosY <= wall.getPosY() + TILE_SIZE &&
