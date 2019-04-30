@@ -1,4 +1,4 @@
-package com.company.board;
+package com.company.graphics;
 
 import com.company.logic.Logic;
 import com.company.model.Tile;
@@ -99,7 +99,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         if(logic.gameRunning) {
             drawPlayer(graphics);
 
-            for (Tile currentProjectile : logic.projectileList) {
+            for (Tile currentProjectile : logic.projectileManager) {
                 if (currentProjectile.isPlaced()) {
                     graphics.drawImage(projectile, currentProjectile.getPosX(), currentProjectile.getPosY(), this);
                 }
@@ -183,12 +183,12 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
-        //  Left: move left if there's no wall or if at board border
+        //  Left: move left if there's no wall or if at graphics border
         if (key == KeyEvent.VK_LEFT && logic.playerPosX > 0 && logic.noWallThere(logic.playerPosX - TILE_SIZE)) {
             logic.playerPosX -= TILE_SIZE;
         }
 
-        //  Right: move right if there's no wall or if at board border
+        //  Right: move right if there's no wall or if at graphics border
         if (key == KeyEvent.VK_RIGHT && logic.playerPosX < BOARD_WIDTH - TILE_SIZE && logic.noWallThere(logic.playerPosX + TILE_SIZE)) {
             logic.playerPosX += TILE_SIZE;
         }
@@ -198,7 +198,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             if (logic.gameJustLaunched) {
                 launch();
             } else if(logic.playerBuff.equals("shooter") || DEBUG_MODE) {
-                logic.launchProjectiles = true;
+                logic.projectileManager.setLaunchProjectiles(true);
             }
         }
 

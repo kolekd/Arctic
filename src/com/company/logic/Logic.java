@@ -9,7 +9,6 @@ import com.company.model.wall.Wall;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,11 +35,10 @@ public class Logic {
     public int playerPosY;
     public String playerBuff;
 
-    public boolean launchProjectiles;
     private boolean movingWallOrPowerUp;
 
     public TileManager tileManager;
-    public List<Tile> projectileList;
+    public ProjectileManager projectileManager;
 
     public Timer timer;
 
@@ -57,12 +55,10 @@ public class Logic {
         playerPosY = BOARD_HEIGHT - (TILE_SIZE * 4);
         playerBuff = "";
 
-        launchProjectiles = false;
         movingWallOrPowerUp = false;
 
         tileManager = new TileManager();
-
-        projectileList = new ArrayList<>();
+        projectileManager = new ProjectileManager();
 
         TOTAL_TICK_COUNT = 0;
         TICK_COUNT = 0;
@@ -143,19 +139,8 @@ public class Logic {
         }
 
         //  Launches projectiles if they're supposed to be launched.
-        if (launchProjectiles) {
-            if (playerBuff.equals("shooter")) {
-                playerBuff = "";
-            }
-            if (!isOutOfBounds(playerPosX - TILE_SIZE)) {
-                projectileList.add(new Projectile(playerPosX - TILE_SIZE, playerPosY - TILE_SIZE));
-            }
-            if (!isOutOfBounds(playerPosX + TILE_SIZE)) {
-                projectileList.add(new Projectile(playerPosX + TILE_SIZE, playerPosY - TILE_SIZE));
-            }
-
-            launchProjectiles = false;
-        }
+        //  TODO: Make this a void method when Player.class is implemented.
+        playerBuff = projectileManager.launchIfNeeded(playerPosX, playerPosY, playerBuff);
 
         /*  Generates wall. Based on the value of ANOMALY_GENERATION_FREQUENCY generates
             a moving wall or a power-up instead.  */
@@ -175,7 +160,7 @@ public class Logic {
             }
         }
 
-        if(!projectileList.isEmpty()) {
+        if(!projectileManager.isEmpty()) {
             checkProjectiles();
         }
 
@@ -198,7 +183,7 @@ public class Logic {
 
     // Checks if any projectile hit any wall. If so, removes them both. If not, moves the projectile further upwards.
     private void checkProjectiles() {
-        Iterator<Tile> projectileIterator = projectileList.iterator();
+        Iterator<Tile> projectileIterator = projectileManager.iterator();
         while (projectileIterator.hasNext()) {
             Tile currentProjectile = projectileIterator.next();
 
@@ -275,9 +260,5 @@ public class Logic {
         return "Score:  " + SCORE_COUNT + "  Delay: " + timer.getDelay() + "  SI Frequency: " +
                 SPEED_INCREASE_FREQUENCY + "  SI Value: " + SPEED_INCREASE_VALUE + "  Walls generated: " +
                 GENERATED_WALLS_COUNT;
-    }
-
-    private boolean isOutOfBounds(int posX) {
-        return posX < 0 || posX > BOARD_WIDTH - TILE_SIZE;
     }
 }

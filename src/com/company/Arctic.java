@@ -1,6 +1,6 @@
 package com.company;
 
-import com.company.board.Board;
+import com.company.graphics.Board;
 
 import javax.swing.*;
 import java.awt.*;
