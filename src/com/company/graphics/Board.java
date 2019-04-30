@@ -221,6 +221,11 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             logic.playerBuff = "breaker";
         }
 
+        //  S: DEBUG MODE - gain Shooter power-up
+        if (key == KeyEvent.VK_S && DEBUG_MODE) {
+            logic.playerBuff = "shooter";
+        }
+
         repaint();
     }
 

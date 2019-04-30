@@ -2,7 +2,6 @@ package com.company.logic;
 
 
 import com.company.model.PowerUp;
-import com.company.model.Projectile;
 import com.company.model.Tile;
 import com.company.model.wall.MovingWall;
 import com.company.model.wall.Wall;
@@ -15,10 +14,6 @@ import java.util.List;
 import static com.company.logic.Constants.*;
 
 public class Logic {
-
-    // Kind of ez - val=10, freq=20, wgen=24, eachTickTileGoDownBy=TILE_SIZE / 4
-
-    // Nice & smooth - init_delay=50, min_delay=15, val=10, freq=20, wgen=48, eachTickTileGoDownBy=TILE_SIZE / 8
 
     private int SPEED_INCREASE_VALUE;
     private int SPEED_INCREASE_FREQUENCY;
@@ -77,7 +72,7 @@ public class Logic {
         TOTAL_TICK_COUNT++;
         SCORE_COUNT++;
 
-        //  Goes through each individual row of walls ("wall lines").
+        //  Goes through each individual row of walls.
         Iterator<List<Tile>> wallLineIterator = tileManager.iterator();
         while (wallLineIterator.hasNext()) {
             List<Tile> tileList = wallLineIterator.next();
@@ -138,9 +133,7 @@ public class Logic {
             }
         }
 
-        //  Launches projectiles if they're supposed to be launched.
-        //  TODO: Make this a void method when Player.class is implemented.
-        playerBuff = projectileManager.launchIfNeeded(playerPosX, playerPosY, playerBuff);
+        projectileManager.launchIfNeeded(playerPosX, playerPosY, playerBuff);
 
         /*  Generates wall. Based on the value of ANOMALY_GENERATION_FREQUENCY generates
             a moving wall or a power-up instead.  */
@@ -161,7 +154,7 @@ public class Logic {
         }
 
         if(!projectileManager.isEmpty()) {
-            checkProjectiles();
+            projectileManager.checkProjectiles(SCORE_COUNT, tileManager);
         }
 
         /*  Shortens the time between each tick, resets TICK_COUNT and
@@ -179,41 +172,6 @@ public class Logic {
             SPEED_INCREASE_VALUE--;
         }
         System.out.println(debugReport());
-    }
-
-    // Checks if any projectile hit any wall. If so, removes them both. If not, moves the projectile further upwards.
-    private void checkProjectiles() {
-        Iterator<Tile> projectileIterator = projectileManager.iterator();
-        while (projectileIterator.hasNext()) {
-            Tile currentProjectile = projectileIterator.next();
-
-            Iterator<List<Tile>> tileIterator = tileManager.iterator();
-            outerloop:
-            while(tileIterator.hasNext()) {
-                List<Tile> currentTileLayer = tileIterator.next();
-
-                for (Tile tile : currentTileLayer) {
-                    if (currentProjectile.overlapsWith(tile) && tile instanceof Wall) {
-                        tile.setPlaced(false);
-                        ((Wall) tile).setJustDestroyedBy("shooter");
-
-                        if(tile instanceof MovingWall) {
-                            ((MovingWall) tile).setMoving(false);
-                        }
-
-                        SCORE_COUNT += SHOOTER_SCORE_VALUE;
-                        currentProjectile.setPlaced(false);
-                        break outerloop;
-                    }
-                }
-            }
-
-            if(currentProjectile.getPosY() < -TILE_SIZE || !currentProjectile.isPlaced()) {
-                projectileIterator.remove();
-            } else {
-                currentProjectile.setPosY(currentProjectile.getPosY() - STEP_DISTANCE);
-            }
-        }
     }
 
     //  Checks whether there is no walls at the provided coordinates. Also handles player picking up the buff.
