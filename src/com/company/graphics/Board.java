@@ -86,9 +86,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     }
 
     private void drawPlayer(Graphics g) {
-        if(logic.playerBuff.equals("breaker")) {
+        if(logic.playerBuff.equals(BREAKER)) {
             g.drawImage(playerBreakerBuff, logic.playerPosX, logic.playerPosY, this);
-        } else if(logic.playerBuff.equals("shooter")) {
+        } else if(logic.playerBuff.equals(SHOOTER)) {
             g.drawImage(playerShooterBuff, logic.playerPosX, logic.playerPosY, this);
         } else {
             g.drawImage(player, logic.playerPosX, logic.playerPosY, this);
@@ -111,18 +111,18 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                     if (currentTile.isPlaced()) {
                         if (currentTile instanceof PowerUp) {
                             String powerUpName = ((PowerUp) currentTile).getName();
-                            if (powerUpName.equals("shooter")) {
+                            if (powerUpName.equals(SHOOTER)) {
                                 graphics.drawImage(powerUpShooter, (currentTile.getPosX()), currentTile.getPosY(), this);
-                            } else if (powerUpName.equals("breaker")){
+                            } else if (powerUpName.equals(BREAKER)){
                                 graphics.drawImage(powerUpBreaker, (currentTile.getPosX()), currentTile.getPosY(), this);
                             }
                         } else if (currentTile instanceof Wall) {
                             graphics.drawImage(wall, currentTile.getPosX(), currentTile.getPosY(), this);
                         }
                     } else {
-                        if (((Wall)currentTile).getJustDestroyedBy().equals("breaker")) {
+                        if (((Wall)currentTile).getJustDestroyedBy().equals(BREAKER)) {
                             drawWords(graphics, String.valueOf(BREAKER_SCORE_VALUE), hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 7, currentTile.getPosY() + (TILE_SIZE / 2));
-                        } else if (((Wall)currentTile).getJustDestroyedBy().equals("shooter")) {
+                        } else if (((Wall)currentTile).getJustDestroyedBy().equals(SHOOTER)) {
                             drawWords(graphics, String.valueOf(SHOOTER_SCORE_VALUE), hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 3, currentTile.getPosY() + (TILE_SIZE / 2));
                         }
 
@@ -145,7 +145,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private void gameOver(Graphics g) {
         String msg = "Game Over";
         String score = "Score: " + logic.SCORE_COUNT;
-        String restartMsg = "Press <R> to restart.";
+        String restartMsg = "Press <" + RESET_BUTTON + "> to restart.";
 
         drawWords(g, msg, font, (BOARD_WIDTH - metrics.stringWidth(msg)) / 2, BOARD_HEIGHT / 2);
         drawWords(g, score, font, (BOARD_WIDTH - metrics.stringWidth(score)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE);
@@ -153,8 +153,8 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     }
 
     private void gameStart(Graphics g) {
-        String title = "Arctic";
-        String startMsg = "Press <space> to start.";
+        String title = GAME_TITLE;
+        String startMsg = "Press <" + START_BUTTON + "> to start.";
 
         g.setColor(Color.black);
         drawWords(g, title, font, (BOARD_WIDTH - metrics.stringWidth(title)) / 2, (BOARD_HEIGHT / 2));
@@ -197,7 +197,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         if (key == KeyEvent.VK_SPACE) {
             if (logic.gameJustLaunched) {
                 launch();
-            } else if(logic.playerBuff.equals("shooter") || DEBUG_MODE) {
+            } else if(logic.playerBuff.equals(SHOOTER) || DEBUG_MODE) {
                 logic.projectileManager.setLaunchProjectiles(true);
             }
         }
@@ -218,12 +218,12 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
         //  B: DEBUG MODE - gain Breaker power-up
         if (key == KeyEvent.VK_B && DEBUG_MODE) {
-            logic.playerBuff = "breaker";
+            logic.playerBuff = BREAKER;
         }
 
         //  S: DEBUG MODE - gain Shooter power-up
         if (key == KeyEvent.VK_S && DEBUG_MODE) {
-            logic.playerBuff = "shooter";
+            logic.playerBuff = SHOOTER;
         }
 
         repaint();

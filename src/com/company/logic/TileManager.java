@@ -9,10 +9,28 @@ import com.company.util.RandomUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.company.logic.Constants.MAX_TILES_IN_A_ROW;
-import static com.company.logic.Constants.TILE_SIZE;
+import static com.company.logic.Constants.*;
+import static com.company.logic.Constants.STEP_DISTANCE;
 
 public class TileManager extends ArrayList<List<Tile>> {
+
+    //  Moves all the walls downwards and also moves moving walls horizontally.
+    void moveTiles(List<Tile> tileList) {
+        int currentPosY = tileList.get(0).getPosY();
+        for(Tile tile : tileList) {
+            if(tile instanceof MovingWall) {
+                if(((MovingWall) tile).isMovingRight()) {
+                    tile.setPosX(tile.getPosX() + STEP_DISTANCE);
+                } else {
+                    tile.setPosX(tile.getPosX() - STEP_DISTANCE);
+                }
+
+                ((MovingWall) tile).bounceIfAtBorder();
+            }
+
+            tile.setPosY(currentPosY + STEP_DISTANCE);
+        }
+    }
 
     void generateWall() {
         List<Tile> tileList = new ArrayList<>();

@@ -76,7 +76,7 @@ public class Logic {
         Iterator<List<Tile>> wallLineIterator = tileManager.iterator();
         while (wallLineIterator.hasNext()) {
             List<Tile> tileList = wallLineIterator.next();
-            Tile tileAtPlayerPosX = tileList.get(playerPosX / TILE_SIZE);
+            Tile sampleTile = tileList.get(0);
 
             /*  Checks whether the player is in the hitbox of a wall or a power-up.
                  - Wall - player unbuffed -> ends the game, player buffed -> removes the wall
@@ -101,9 +101,9 @@ public class Logic {
                         playerPosX > tile.getPosX() - TILE_SIZE &&
                         playerPosX < tile.getPosX() + TILE_SIZE) {
                     if (tile instanceof Wall) {
-                        if (playerBuff.equals("breaker")) {
+                        if (playerBuff.equals(BREAKER)) {
                             tile.setPlaced(false);
-                            ((Wall) tile).setJustDestroyedBy("breaker");
+                            ((Wall) tile).setJustDestroyedBy(BREAKER);
                             if (tile instanceof MovingWall) {
                                 ((MovingWall) tile).setMoving(false);
                             }
@@ -126,10 +126,10 @@ public class Logic {
             }
 
             //  Removes non-visible walls and moves visible ones.
-            if (tileAtPlayerPosX.getPosY() > BOARD_HEIGHT) {
+            if (sampleTile.getPosY() > BOARD_HEIGHT) {
                 wallLineIterator.remove();
             } else {
-                moveTiles(tileList);
+                tileManager.moveTiles(tileList);
             }
         }
 
@@ -194,24 +194,6 @@ public class Logic {
         }
 
         return true;
-    }
-
-    //  Moves all the walls downwards and also moves moving walls horizontally.
-    private void moveTiles(List<Tile> tileList) {
-        int currentPosY = tileList.get(0).getPosY();
-        for(Tile tile : tileList) {
-            if(tile instanceof MovingWall) {
-                if(((MovingWall) tile).isMovingRight()) {
-                    tile.setPosX(tile.getPosX() + STEP_DISTANCE);
-                } else {
-                    tile.setPosX(tile.getPosX() - STEP_DISTANCE);
-                }
-
-                ((MovingWall) tile).bounceIfAtBorder();
-            }
-
-            tile.setPosY(currentPosY + STEP_DISTANCE);
-        }
     }
 
     private String debugReport() {

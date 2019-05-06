@@ -27,5 +27,10 @@ public class Constants {
                                                                                     a wall using the Breaker power-up. */
     public static final int SHOOTER_SCORE_VALUE = 500;                      /*  <- Score points earned when breaking
                                                                                     a wall using the Shooter power-up. */
+    public static final String BREAKER = "breaker";
+    public static final String SHOOTER = "shooter";
 
+    public static final String GAME_TITLE = "Arctic";
+    public static final String RESET_BUTTON = "R";
+    public static final String START_BUTTON = "space";
 }
