@@ -1,4 +1,4 @@
-package com.company.logic;
+package com.company.logic.manager;
 
 import com.company.model.Projectile;
 import com.company.model.Tile;
@@ -17,7 +17,7 @@ public class ProjectileManager extends ArrayList<Tile> {
     private boolean launchProjectiles;
 
     // Checks if any projectile hit any wall. If so, removes them both. If not, moves the projectile further upwards.
-    void checkProjectiles(int SCORE_COUNT, List<List<Tile>> tileManager) {
+    public void checkProjectiles(int SCORE_COUNT, List<List<Tile>> tileManager) {
         Iterator<Tile> projectileIterator = this.iterator();
         while (projectileIterator.hasNext()) {
             Tile currentProjectile = projectileIterator.next();
@@ -53,7 +53,7 @@ public class ProjectileManager extends ArrayList<Tile> {
 
     //  Launches projectiles if they're supposed to be launched.
     //  TODO: Simplify params when Player.class is implemented.
-    void launchIfNeeded(int playerPosX, int playerPosY, String playerBuff) {
+    public String launchIfNeeded(int playerPosX, int playerPosY, String playerBuff) {
         if (launchProjectiles) {
             if (playerBuff.equals("shooter")) {
                 playerBuff = "";
@@ -67,6 +67,8 @@ public class ProjectileManager extends ArrayList<Tile> {
 
             launchProjectiles = false;
         }
+
+        return playerBuff;
     }
 
     private boolean isOutOfBounds(int posX) {

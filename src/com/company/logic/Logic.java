@@ -1,6 +1,8 @@
 package com.company.logic;
 
 
+import com.company.logic.manager.ProjectileManager;
+import com.company.logic.manager.TileManager;
 import com.company.model.PowerUp;
 import com.company.model.Tile;
 import com.company.model.wall.MovingWall;
@@ -15,15 +17,15 @@ import static com.company.logic.Constants.*;
 
 public class Logic {
 
-    private int SPEED_INCREASE_VALUE;
-    private int SPEED_INCREASE_FREQUENCY;
-    private int GENERATED_WALLS_COUNT;
+    private static int SPEED_INCREASE_VALUE;
+    private static int SPEED_INCREASE_FREQUENCY;
+    private static int GENERATED_WALLS_COUNT;
 
-    private int TOTAL_TICK_COUNT;
-    private int TICK_COUNT;
-    public int SCORE_COUNT;
+    private static int TOTAL_TICK_COUNT;
+    private static int TICK_COUNT;
+    public static int SCORE_COUNT;
 
-    public boolean gameRunning;
+    public static boolean gameRunning;
     public boolean gameJustLaunched;
 
     public int playerPosX;
@@ -35,7 +37,7 @@ public class Logic {
     public TileManager tileManager;
     public ProjectileManager projectileManager;
 
-    public Timer timer;
+    public static Timer timer;
 
     public Logic() {
         this.gameJustLaunched = true;
@@ -50,7 +52,7 @@ public class Logic {
         playerPosY = BOARD_HEIGHT - (TILE_SIZE * 4);
         playerBuff = "";
 
-        movingWallOrPowerUp = false;
+        movingWallOrPowerUp = true;
 
         tileManager = new TileManager();
         projectileManager = new ProjectileManager();
@@ -133,7 +135,7 @@ public class Logic {
             }
         }
 
-        projectileManager.launchIfNeeded(playerPosX, playerPosY, playerBuff);
+        playerBuff = projectileManager.launchIfNeeded(playerPosX, playerPosY, playerBuff);
 
         /*  Generates wall. Based on the value of ANOMALY_GENERATION_FREQUENCY generates
             a moving wall or a power-up instead.  */
@@ -178,15 +180,9 @@ public class Logic {
     public boolean noWallThere(int coords) {
         for (List<Tile> wallList : tileManager) {
             for (Tile wall : wallList) {
-                if (coords == wall.getPosX() && wall.isPlaced() &&
+                if (coords == wall.getPosX() && wall.isPlaced() && !(wall instanceof PowerUp) &&
                      playerPosY <= wall.getPosY() + TILE_SIZE &&
                      playerPosY >= wall.getPosY() - TILE_SIZE) {
-
-                    if(wall instanceof PowerUp && wall.isPlaced()) {
-                        wall.setPlaced(false);
-                        playerBuff = wall.toString();
-                        return true;
-                    }
 
                     return false;
                 }
@@ -199,6 +195,6 @@ public class Logic {
     private String debugReport() {
         return "Score:  " + SCORE_COUNT + "  Delay: " + timer.getDelay() + "  SI Frequency: " +
                 SPEED_INCREASE_FREQUENCY + "  SI Value: " + SPEED_INCREASE_VALUE + "  Walls generated: " +
-                GENERATED_WALLS_COUNT;
+                GENERATED_WALLS_COUNT + "  Buff: " + playerBuff;
     }
 }

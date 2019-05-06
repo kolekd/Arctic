@@ -1,7 +1,7 @@
 package com.company.logic;
 
 public class Constants {
-    public static final boolean DEBUG_MODE = false;
+    public static final boolean DEBUG_MODE = true;
 
     public static final int TILE_SIZE = 32;
 
@@ -9,7 +9,7 @@ public class Constants {
     public static final int BOARD_WIDTH = TILE_SIZE * 13;
     public static final int MAX_TILES_IN_A_ROW = BOARD_WIDTH/TILE_SIZE;     //  <- Number of maximum walls per wall line.
 
-    static final int STEP_DISTANCE = TILE_SIZE / 8;                         /*  <- Distance by which the walls and
+    public static final int STEP_DISTANCE = TILE_SIZE / 8;                         /*  <- Distance by which the walls and
                                                                                      projectiles move each tick. */
     static final int INITIAL_SPEED_INCREASE_FREQUENCY = 20;                 //  <- How often does the speed increase.
     static final int INITIAL_SPEED_INCREASE_VALUE = 6;                      //  <- By how much does the speed increase.

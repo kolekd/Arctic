@@ -1,4 +1,4 @@
-package com.company.logic;
+package com.company.logic.manager;
 
 import com.company.model.PowerUp;
 import com.company.model.Tile;
@@ -15,7 +15,7 @@ import static com.company.logic.Constants.STEP_DISTANCE;
 public class TileManager extends ArrayList<List<Tile>> {
 
     //  Moves all the walls downwards and also moves moving walls horizontally.
-    void moveTiles(List<Tile> tileList) {
+    public void moveTiles(List<Tile> tileList) {
         int currentPosY = tileList.get(0).getPosY();
         for(Tile tile : tileList) {
             if(tile instanceof MovingWall) {
@@ -32,7 +32,7 @@ public class TileManager extends ArrayList<List<Tile>> {
         }
     }
 
-    void generateWall() {
+    public void generateWall() {
         List<Tile> tileList = new ArrayList<>();
 
         int solidCount = 0;
@@ -48,7 +48,7 @@ public class TileManager extends ArrayList<List<Tile>> {
         add(tileList);
     }
 
-    void generateMovingWall() {
+    public void generateMovingWall() {
         List<Tile> tileList = new ArrayList<>();
 
         int randomPosX = RandomUtil.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1);
@@ -63,7 +63,7 @@ public class TileManager extends ArrayList<List<Tile>> {
         add(tileList);
     }
 
-    void generatePowerUp() {
+    public void generatePowerUp() {
         List<Tile> tileList = new ArrayList<>();
 
         int randomPosX = RandomUtil.randomNumberInRange(0, MAX_TILES_IN_A_ROW - 1);

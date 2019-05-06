@@ -96,7 +96,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     }
 
     private void doDrawing(Graphics graphics) {
-        if(logic.gameRunning) {
+        if(Logic.gameRunning) {
             drawPlayer(graphics);
 
             for (Tile currentProjectile : logic.projectileManager) {
@@ -119,7 +119,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                         } else if (currentTile instanceof Wall) {
                             graphics.drawImage(wall, currentTile.getPosX(), currentTile.getPosY(), this);
                         }
-                    } else {
+                    } else if (!(currentTile instanceof PowerUp)){
                         if (((Wall)currentTile).getJustDestroyedBy().equals(BREAKER)) {
                             drawWords(graphics, String.valueOf(BREAKER_SCORE_VALUE), hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 7, currentTile.getPosY() + (TILE_SIZE / 2));
                         } else if (((Wall)currentTile).getJustDestroyedBy().equals(SHOOTER)) {
@@ -131,7 +131,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 }
             }
 
-            drawWords(graphics, String.valueOf(logic.SCORE_COUNT), font, (TILE_SIZE / 4), (BOARD_HEIGHT) - 6);
+            drawWords(graphics, String.valueOf(Logic.SCORE_COUNT), font, (TILE_SIZE / 4), (BOARD_HEIGHT) - 6);
 
             Toolkit.getDefaultToolkit().sync();
 
@@ -143,11 +143,11 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     }
 
     private void gameOver(Graphics g) {
-        String msg = "Game Over";
-        String score = "Score: " + logic.SCORE_COUNT;
+        String gameOver = "Game Over";
+        String score = "Score: " + Logic.SCORE_COUNT;
         String restartMsg = "Press <" + RESET_BUTTON + "> to restart.";
 
-        drawWords(g, msg, font, (BOARD_WIDTH - metrics.stringWidth(msg)) / 2, BOARD_HEIGHT / 2);
+        drawWords(g, gameOver, font, (BOARD_WIDTH - metrics.stringWidth(gameOver)) / 2, BOARD_HEIGHT / 2);
         drawWords(g, score, font, (BOARD_WIDTH - metrics.stringWidth(score)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE);
         drawWords(g, restartMsg, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(restartMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 2);
     }
@@ -203,16 +203,24 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         }
 
         // R: restart
-        if (key == KeyEvent.VK_R && !logic.gameRunning) {
-            launch();
+        if (key == KeyEvent.VK_R) {
+            if(!DEBUG_MODE) {
+                if(Logic.gameRunning) {
+                    launch();
+                }
+            } else {
+                Logic.timer.stop();
+                Logic.gameRunning = false;
+                launch();
+            }
         }
 
         //  Down: DEBUG MODE - time freeze
         if (key == KeyEvent.VK_DOWN && DEBUG_MODE) {
-            if(logic.timer.isRunning()) {
-                logic.timer.stop();
+            if(Logic.timer.isRunning()) {
+                Logic.timer.stop();
             } else {
-                logic.timer.start();
+                Logic.timer.start();
             }
         }
 
