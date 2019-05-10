@@ -9,15 +9,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.company.logic.Constants.*;
-import static com.company.logic.Constants.STEP_DISTANCE;
+import static com.company.Constants.*;
 
 public class ProjectileManager extends ArrayList<Tile> {
 
-    private boolean launchProjectiles;
-
     // Checks if any projectile hit any wall. If so, removes them both. If not, moves the projectile further upwards.
-    public void checkProjectiles(int SCORE_COUNT, List<List<Tile>> tileManager) {
+    public void checkProjectiles(List<List<Tile>> tileManager) {
         Iterator<Tile> projectileIterator = this.iterator();
         while (projectileIterator.hasNext()) {
             Tile currentProjectile = projectileIterator.next();
@@ -52,30 +49,17 @@ public class ProjectileManager extends ArrayList<Tile> {
     }
 
     //  Launches projectiles if they're supposed to be launched.
-    //  TODO: Simplify params when Player.class is implemented.
-    public String launchIfNeeded(int playerPosX, int playerPosY, String playerBuff) {
-        if (launchProjectiles) {
-            if (playerBuff.equals("shooter")) {
-                playerBuff = "";
-            }
-            if (!isOutOfBounds(playerPosX - TILE_SIZE)) {
-                add(new Projectile(playerPosX - TILE_SIZE, playerPosY - TILE_SIZE));
-            }
-            if (!isOutOfBounds(playerPosX + TILE_SIZE)) {
-                add(new Projectile(playerPosX + TILE_SIZE, playerPosY - TILE_SIZE));
-            }
-
-            launchProjectiles = false;
+    public void launch(int posX, int posY) {
+        if (!isOutOfBounds(posX - TILE_SIZE)) {
+            add(new Projectile(posX - TILE_SIZE, posY - TILE_SIZE));
         }
-
-        return playerBuff;
+        if (!isOutOfBounds(posX + TILE_SIZE)) {
+            add(new Projectile(posX + TILE_SIZE, posY - TILE_SIZE));
+        }
     }
 
     private boolean isOutOfBounds(int posX) {
         return posX < 0 || posX > BOARD_WIDTH - TILE_SIZE;
     }
 
-    public void setLaunchProjectiles(boolean launchProjectiles) {
-        this.launchProjectiles = launchProjectiles;
-    }
 }

@@ -9,12 +9,10 @@ import com.company.util.RandomUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.company.logic.Constants.*;
-import static com.company.logic.Constants.STEP_DISTANCE;
+import static com.company.Constants.*;
+import static com.company.Constants.STEP_DISTANCE;
 
 public class TileManager extends ArrayList<List<Tile>> {
-
-
 
     //  Moves all the walls downwards and also moves moving walls horizontally.
     public void moveTiles(List<Tile> tileList) {

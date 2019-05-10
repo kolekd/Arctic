@@ -13,7 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.List;
 
-import static com.company.logic.Constants.*;
+import static com.company.Constants.*;
 
 public class Board extends JPanel implements KeyListener, ActionListener {
 
@@ -198,7 +198,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             if (logic.gameJustLaunched) {
                 launch();
             } else if(logic.player.getBuff().equals(SHOOTER) || DEBUG_MODE) {
-                logic.projectileManager.setLaunchProjectiles(true);
+                logic.player.setLaunchProjectiles(true);
             }
         }
 

@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.company.logic.Constants.*;
+import static com.company.Constants.*;
 
 public class Logic {
 
@@ -24,7 +24,6 @@ public class Logic {
 
     private static int TOTAL_TICK_COUNT;
     private static int TICK_COUNT;
-    public static int SCORE_COUNT;
 
     public static boolean gameRunning;
     public boolean gameJustLaunched;
@@ -56,7 +55,6 @@ public class Logic {
 
         TOTAL_TICK_COUNT = 0;
         TICK_COUNT = 0;
-        SCORE_COUNT = 0;
 
         gameJustLaunched = false;
         gameRunning = true;
@@ -132,7 +130,11 @@ public class Logic {
             }
         }
 
-        player.setBuff(projectileManager.launchIfNeeded(player.getPosX(), player.getPosY(), player.getBuff()));
+        if(player.willLaunchProjectiles()) {
+            projectileManager.launch(player.getPosX(), player.getPosY());
+            player.setLaunchProjectiles(false);
+            player.setBuff("");
+        }
 
         /*  Generates wall. Based on the value of ANOMALY_GENERATION_FREQUENCY generates
             a moving wall or a power-up instead.  */
@@ -153,7 +155,7 @@ public class Logic {
         }
 
         if(!projectileManager.isEmpty()) {
-            projectileManager.checkProjectiles(SCORE_COUNT, tileManager);
+            projectileManager.checkProjectiles(tileManager);
         }
 
         /*  Shortens the time between each tick, resets TICK_COUNT and
