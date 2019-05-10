@@ -86,12 +86,12 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     }
 
     private void drawPlayer(Graphics g) {
-        if(logic.playerBuff.equals(BREAKER)) {
-            g.drawImage(playerBreakerBuff, logic.playerPosX, logic.playerPosY, this);
-        } else if(logic.playerBuff.equals(SHOOTER)) {
-            g.drawImage(playerShooterBuff, logic.playerPosX, logic.playerPosY, this);
+        if(logic.player.getBuff().equals(BREAKER)) {
+            g.drawImage(playerBreakerBuff, logic.player.getPosX(), logic.player.getPosY(), this);
+        } else if(logic.player.getBuff().equals(SHOOTER)) {
+            g.drawImage(playerShooterBuff, logic.player.getPosX(), logic.player.getPosY(), this);
         } else {
-            g.drawImage(player, logic.playerPosX, logic.playerPosY, this);
+            g.drawImage(player, logic.player.getPosX(), logic.player.getPosY(), this);
         }
     }
 
@@ -184,20 +184,20 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         int key = e.getKeyCode();
 
         //  Left: move left if there's no wall or if at graphics border
-        if (key == KeyEvent.VK_LEFT && logic.playerPosX > 0 && logic.noWallThere(logic.playerPosX - TILE_SIZE)) {
-            logic.playerPosX -= TILE_SIZE;
+        if (key == KeyEvent.VK_LEFT && logic.player.getPosX() > 0 && logic.noWallThere(logic.player.getPosX() - TILE_SIZE)) {
+            logic.player.setPosX(logic.player.getPosX() -TILE_SIZE);
         }
 
         //  Right: move right if there's no wall or if at graphics border
-        if (key == KeyEvent.VK_RIGHT && logic.playerPosX < BOARD_WIDTH - TILE_SIZE && logic.noWallThere(logic.playerPosX + TILE_SIZE)) {
-            logic.playerPosX += TILE_SIZE;
+        if (key == KeyEvent.VK_RIGHT && logic.player.getPosX() < BOARD_WIDTH - TILE_SIZE && logic.noWallThere(logic.player.getPosX() + TILE_SIZE)) {
+            logic.player.setPosX(logic.player.getPosX() + TILE_SIZE);
         }
 
         //  SPACE: launch the game at app start; launch projectiles when buffed; DEBUG MODE - launch projectiles
         if (key == KeyEvent.VK_SPACE) {
             if (logic.gameJustLaunched) {
                 launch();
-            } else if(logic.playerBuff.equals(SHOOTER) || DEBUG_MODE) {
+            } else if(logic.player.getBuff().equals(SHOOTER) || DEBUG_MODE) {
                 logic.projectileManager.setLaunchProjectiles(true);
             }
         }
@@ -226,12 +226,12 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
         //  B: DEBUG MODE - gain Breaker power-up
         if (key == KeyEvent.VK_B && DEBUG_MODE) {
-            logic.playerBuff = BREAKER;
+            logic.player.setBuff(BREAKER);
         }
 
         //  S: DEBUG MODE - gain Shooter power-up
         if (key == KeyEvent.VK_S && DEBUG_MODE) {
-            logic.playerBuff = SHOOTER;
+            logic.player.setBuff(SHOOTER);
         }
 
         repaint();

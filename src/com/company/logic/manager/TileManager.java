@@ -14,6 +14,8 @@ import static com.company.logic.Constants.STEP_DISTANCE;
 
 public class TileManager extends ArrayList<List<Tile>> {
 
+
+
     //  Moves all the walls downwards and also moves moving walls horizontally.
     public void moveTiles(List<Tile> tileList) {
         int currentPosY = tileList.get(0).getPosY();

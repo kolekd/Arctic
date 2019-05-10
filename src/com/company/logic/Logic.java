@@ -3,6 +3,7 @@ package com.company.logic;
 
 import com.company.logic.manager.ProjectileManager;
 import com.company.logic.manager.TileManager;
+import com.company.model.Player;
 import com.company.model.PowerUp;
 import com.company.model.Tile;
 import com.company.model.wall.MovingWall;
@@ -28,11 +29,9 @@ public class Logic {
     public static boolean gameRunning;
     public boolean gameJustLaunched;
 
-    public int playerPosX;
-    public int playerPosY;
-    public String playerBuff;
-
     private boolean movingWallOrPowerUp;
+
+    public Player player;
 
     public TileManager tileManager;
     public ProjectileManager projectileManager;
@@ -48,11 +47,9 @@ public class Logic {
         SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY;
         GENERATED_WALLS_COUNT = 0;
 
-        playerPosX = (BOARD_WIDTH / 2) - (TILE_SIZE / 2);
-        playerPosY = BOARD_HEIGHT - (TILE_SIZE * 4);
-        playerBuff = "";
+        player = new Player(INITIAL_PLAYER_POS_X, INITIAL_PLAYER_POS_Y);
 
-        movingWallOrPowerUp = true;
+        movingWallOrPowerUp = false;
 
         tileManager = new TileManager();
         projectileManager = new ProjectileManager();
@@ -98,24 +95,24 @@ public class Logic {
 
                 boolean stopTheGame = false;
                 if (tile.isPlaced() &&
-                        playerPosY >= tile.getPosY() - TILE_SIZE &&
-                        playerPosY <= tile.getPosY() + TILE_SIZE &&
-                        playerPosX > tile.getPosX() - TILE_SIZE &&
-                        playerPosX < tile.getPosX() + TILE_SIZE) {
+                        player.getPosY() >= tile.getPosY() - TILE_SIZE &&
+                        player.getPosY() <= tile.getPosY() + TILE_SIZE &&
+                        player.getPosX() > tile.getPosX() - TILE_SIZE &&
+                        player.getPosX() < tile.getPosX() + TILE_SIZE) {
                     if (tile instanceof Wall) {
-                        if (playerBuff.equals(BREAKER)) {
+                        if (player.getBuff().equals(BREAKER)) {
                             tile.setPlaced(false);
                             ((Wall) tile).setJustDestroyedBy(BREAKER);
                             if (tile instanceof MovingWall) {
                                 ((MovingWall) tile).setMoving(false);
                             }
                             SCORE_COUNT += BREAKER_SCORE_VALUE;
-                            playerBuff = "";
+                            player.setBuff("");
                         } else {
                             stopTheGame = true;
                         }
                     } else if (tile instanceof PowerUp) {
-                        playerBuff = ((PowerUp) tile).getName();
+                        player.setBuff(((PowerUp) tile).getName());
                         tile.setPlaced(false);
                         wallLineIterator.remove();
                     }
@@ -135,7 +132,7 @@ public class Logic {
             }
         }
 
-        playerBuff = projectileManager.launchIfNeeded(playerPosX, playerPosY, playerBuff);
+        player.setBuff(projectileManager.launchIfNeeded(player.getPosX(), player.getPosY(), player.getBuff()));
 
         /*  Generates wall. Based on the value of ANOMALY_GENERATION_FREQUENCY generates
             a moving wall or a power-up instead.  */
@@ -181,8 +178,8 @@ public class Logic {
         for (List<Tile> wallList : tileManager) {
             for (Tile wall : wallList) {
                 if (coords == wall.getPosX() && wall.isPlaced() && !(wall instanceof PowerUp) &&
-                     playerPosY <= wall.getPosY() + TILE_SIZE &&
-                     playerPosY >= wall.getPosY() - TILE_SIZE) {
+                     player.getPosY() <= wall.getPosY() + TILE_SIZE &&
+                     player.getPosY() >= wall.getPosY() - TILE_SIZE) {
 
                     return false;
                 }
@@ -195,6 +192,6 @@ public class Logic {
     private String debugReport() {
         return "Score:  " + SCORE_COUNT + "  Delay: " + timer.getDelay() + "  SI Frequency: " +
                 SPEED_INCREASE_FREQUENCY + "  SI Value: " + SPEED_INCREASE_VALUE + "  Walls generated: " +
-                GENERATED_WALLS_COUNT + "  Buff: " + playerBuff;
+                GENERATED_WALLS_COUNT + "  Buff: " + player.getBuff();
     }
 }
