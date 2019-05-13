@@ -24,6 +24,7 @@ public class Logic {
 
     private static int TOTAL_TICK_COUNT;
     private static int TICK_COUNT;
+    public static int SCORE_COUNT;
 
     public static boolean gameRunning;
     public boolean gameJustLaunched;
@@ -55,6 +56,7 @@ public class Logic {
 
         TOTAL_TICK_COUNT = 0;
         TICK_COUNT = 0;
+        SCORE_COUNT = 0;
 
         gameJustLaunched = false;
         gameRunning = true;
