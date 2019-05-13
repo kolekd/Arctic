@@ -1,4 +1,4 @@
-package com.company.board;
+package com.company.graphics;
 
 import com.company.logic.Logic;
 import com.company.model.Tile;
@@ -13,7 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.List;
 
-import static com.company.logic.Constants.*;
+import static com.company.Constants.*;
 
 public class Board extends JPanel implements KeyListener, ActionListener {
 
@@ -86,43 +86,43 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     }
 
     private void drawPlayer(Graphics g) {
-        if(logic.playerBuff.equals("breaker")) {
-            g.drawImage(playerBreakerBuff, logic.playerPosX, logic.playerPosY, this);
-        } else if(logic.playerBuff.equals("shooter")) {
-            g.drawImage(playerShooterBuff, logic.playerPosX, logic.playerPosY, this);
+        if(logic.player.getBuff().equals(BREAKER)) {
+            g.drawImage(playerBreakerBuff, logic.player.getPosX(), logic.player.getPosY(), this);
+        } else if(logic.player.getBuff().equals(SHOOTER)) {
+            g.drawImage(playerShooterBuff, logic.player.getPosX(), logic.player.getPosY(), this);
         } else {
-            g.drawImage(player, logic.playerPosX, logic.playerPosY, this);
+            g.drawImage(player, logic.player.getPosX(), logic.player.getPosY(), this);
         }
     }
 
     private void doDrawing(Graphics graphics) {
-        if(logic.gameRunning) {
+        if(Logic.gameRunning) {
             drawPlayer(graphics);
 
-            for (Tile currentProjectile : logic.projectileList) {
+            for (Tile currentProjectile : logic.projectileManager) {
                 if (currentProjectile.isPlaced()) {
                     graphics.drawImage(projectile, currentProjectile.getPosX(), currentProjectile.getPosY(), this);
                 }
             }
 
-            for (List<Tile> tileList : logic.listOfTileLayers) {
+            for (List<Tile> tileList : logic.tileManager) {
                 for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
                     Tile currentTile = tileList.get(i);
                     if (currentTile.isPlaced()) {
                         if (currentTile instanceof PowerUp) {
                             String powerUpName = ((PowerUp) currentTile).getName();
-                            if (powerUpName.equals("shooter")) {
+                            if (powerUpName.equals(SHOOTER)) {
                                 graphics.drawImage(powerUpShooter, (currentTile.getPosX()), currentTile.getPosY(), this);
-                            } else if (powerUpName.equals("breaker")){
+                            } else if (powerUpName.equals(BREAKER)){
                                 graphics.drawImage(powerUpBreaker, (currentTile.getPosX()), currentTile.getPosY(), this);
                             }
                         } else if (currentTile instanceof Wall) {
                             graphics.drawImage(wall, currentTile.getPosX(), currentTile.getPosY(), this);
                         }
-                    } else {
-                        if (((Wall)currentTile).getJustDestroyedBy().equals("breaker")) {
+                    } else if (!(currentTile instanceof PowerUp)){
+                        if (((Wall)currentTile).getJustDestroyedBy().equals(BREAKER)) {
                             drawWords(graphics, String.valueOf(BREAKER_SCORE_VALUE), hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 7, currentTile.getPosY() + (TILE_SIZE / 2));
-                        } else if (((Wall)currentTile).getJustDestroyedBy().equals("shooter")) {
+                        } else if (((Wall)currentTile).getJustDestroyedBy().equals(SHOOTER)) {
                             drawWords(graphics, String.valueOf(SHOOTER_SCORE_VALUE), hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 3, currentTile.getPosY() + (TILE_SIZE / 2));
                         }
 
@@ -131,7 +131,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 }
             }
 
-            drawWords(graphics, String.valueOf(logic.SCORE_COUNT), font, (TILE_SIZE / 4), (BOARD_HEIGHT) - 6);
+            drawWords(graphics, String.valueOf(Logic.SCORE_COUNT), font, (TILE_SIZE / 4), (BOARD_HEIGHT) - 6);
 
             Toolkit.getDefaultToolkit().sync();
 
@@ -143,18 +143,18 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     }
 
     private void gameOver(Graphics g) {
-        String msg = "Game Over";
-        String score = "Score: " + logic.SCORE_COUNT;
-        String restartMsg = "Press <R> to restart.";
+        String gameOver = "Game Over";
+        String score = "Score: " + Logic.SCORE_COUNT;
+        String restartMsg = "Press <" + RESET_BUTTON + "> to restart.";
 
-        drawWords(g, msg, font, (BOARD_WIDTH - metrics.stringWidth(msg)) / 2, BOARD_HEIGHT / 2);
+        drawWords(g, gameOver, font, (BOARD_WIDTH - metrics.stringWidth(gameOver)) / 2, BOARD_HEIGHT / 2);
         drawWords(g, score, font, (BOARD_WIDTH - metrics.stringWidth(score)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE);
         drawWords(g, restartMsg, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(restartMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 2);
     }
 
     private void gameStart(Graphics g) {
-        String title = "Arctic";
-        String startMsg = "Press <space> to start.";
+        String title = GAME_TITLE;
+        String startMsg = "Press <" + START_BUTTON + "> to start.";
 
         g.setColor(Color.black);
         drawWords(g, title, font, (BOARD_WIDTH - metrics.stringWidth(title)) / 2, (BOARD_HEIGHT / 2));
@@ -183,42 +183,55 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
-        //  Left: move left if there's no wall or if at board border
-        if (key == KeyEvent.VK_LEFT && logic.playerPosX > 0 && logic.noWallThere(logic.playerPosX - TILE_SIZE)) {
-            logic.playerPosX -= TILE_SIZE;
+        //  Left: move left if there's no wall or if at graphics border
+        if (key == KeyEvent.VK_LEFT && logic.player.getPosX() > 0 && logic.noWallThere(logic.player.getPosX() - TILE_SIZE)) {
+            logic.player.setPosX(logic.player.getPosX() -TILE_SIZE);
         }
 
-        //  Right: move right if there's no wall or if at board border
-        if (key == KeyEvent.VK_RIGHT && logic.playerPosX < BOARD_WIDTH - TILE_SIZE && logic.noWallThere(logic.playerPosX + TILE_SIZE)) {
-            logic.playerPosX += TILE_SIZE;
+        //  Right: move right if there's no wall or if at graphics border
+        if (key == KeyEvent.VK_RIGHT && logic.player.getPosX() < BOARD_WIDTH - TILE_SIZE && logic.noWallThere(logic.player.getPosX() + TILE_SIZE)) {
+            logic.player.setPosX(logic.player.getPosX() + TILE_SIZE);
         }
 
         //  SPACE: launch the game at app start; launch projectiles when buffed; DEBUG MODE - launch projectiles
         if (key == KeyEvent.VK_SPACE) {
             if (logic.gameJustLaunched) {
                 launch();
-            } else if(logic.playerBuff.equals("shooter") || DEBUG_MODE) {
-                logic.launchProjectiles = true;
+            } else if(logic.player.getBuff().equals(SHOOTER) || DEBUG_MODE) {
+                logic.player.setLaunchProjectiles(true);
             }
         }
 
         // R: restart
-        if (key == KeyEvent.VK_R && !logic.gameRunning) {
-            launch();
+        if (key == KeyEvent.VK_R) {
+            if(!DEBUG_MODE) {
+                if(Logic.gameRunning) {
+                    launch();
+                }
+            } else {
+                Logic.timer.stop();
+                Logic.gameRunning = false;
+                launch();
+            }
         }
 
         //  Down: DEBUG MODE - time freeze
         if (key == KeyEvent.VK_DOWN && DEBUG_MODE) {
-            if(logic.timer.isRunning()) {
-                logic.timer.stop();
+            if(Logic.timer.isRunning()) {
+                Logic.timer.stop();
             } else {
-                logic.timer.start();
+                Logic.timer.start();
             }
         }
 
         //  B: DEBUG MODE - gain Breaker power-up
         if (key == KeyEvent.VK_B && DEBUG_MODE) {
-            logic.playerBuff = "breaker";
+            logic.player.setBuff(BREAKER);
+        }
+
+        //  S: DEBUG MODE - gain Shooter power-up
+        if (key == KeyEvent.VK_S && DEBUG_MODE) {
+            logic.player.setBuff(SHOOTER);
         }
 
         repaint();

@@ -1,7 +1,7 @@
 package com.company.model.wall;
 
-import static com.company.logic.Constants.BOARD_WIDTH;
-import static com.company.logic.Constants.TILE_SIZE;
+import static com.company.Constants.BOARD_WIDTH;
+import static com.company.Constants.TILE_SIZE;
 
 public class MovingWall extends Wall {
 
