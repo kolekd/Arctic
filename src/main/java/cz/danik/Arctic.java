@@ -1,6 +1,6 @@
-package com.company;
+package cz.danik;
 
-import com.company.graphics.Board;
+import cz.danik.graphics.Board;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,15 +1,15 @@
-package com.company.logic.manager;
+package cz.danik.logic.manager;
 
-import com.company.model.Projectile;
-import com.company.model.Tile;
-import com.company.model.wall.MovingWall;
-import com.company.model.wall.Wall;
+import cz.danik.model.Projectile;
+import cz.danik.model.Tile;
+import cz.danik.model.wall.MovingWall;
+import cz.danik.model.wall.Wall;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.company.Constants.*;
+import static cz.danik.Constants.*;
 
 public class ProjectileManager extends ArrayList<Tile> {
 

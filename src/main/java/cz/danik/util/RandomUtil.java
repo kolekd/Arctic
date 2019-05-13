@@ -1,4 +1,4 @@
-package com.company.util;
+package cz.danik.util;
 
 import java.util.Random;
 

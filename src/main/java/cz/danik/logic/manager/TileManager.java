@@ -1,16 +1,16 @@
-package com.company.logic.manager;
+package cz.danik.logic.manager;
 
-import com.company.model.PowerUp;
-import com.company.model.Tile;
-import com.company.model.wall.MovingWall;
-import com.company.model.wall.Wall;
-import com.company.util.RandomUtil;
+import cz.danik.model.PowerUp;
+import cz.danik.model.Tile;
+import cz.danik.model.wall.MovingWall;
+import cz.danik.model.wall.Wall;
+import cz.danik.util.RandomUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.company.Constants.*;
-import static com.company.Constants.STEP_DISTANCE;
+import static cz.danik.Constants.*;
+import static cz.danik.Constants.STEP_DISTANCE;
 
 public class TileManager extends ArrayList<List<Tile>> {
 

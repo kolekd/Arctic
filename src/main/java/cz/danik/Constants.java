@@ -1,4 +1,4 @@
-package com.company;
+package cz.danik;
 
 public class Constants {
     public static final boolean DEBUG_MODE = true;

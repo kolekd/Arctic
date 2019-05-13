@@ -1,6 +1,6 @@
-package com.company.model.wall;
+package cz.danik.model.wall;
 
-import com.company.model.Tile;
+import cz.danik.model.Tile;
 
 public class Wall extends Tile {
 

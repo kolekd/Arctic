@@ -1,9 +1,9 @@
-package com.company.graphics;
+package cz.danik.graphics;
 
-import com.company.logic.Logic;
-import com.company.model.Tile;
-import com.company.model.wall.Wall;
-import com.company.model.PowerUp;
+import cz.danik.logic.Logic;
+import cz.danik.model.Tile;
+import cz.danik.model.wall.Wall;
+import cz.danik.model.PowerUp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.List;
 
-import static com.company.Constants.*;
+import static cz.danik.Constants.*;
 
 public class Board extends JPanel implements KeyListener, ActionListener {
 

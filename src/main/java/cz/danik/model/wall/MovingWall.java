@@ -1,7 +1,6 @@
-package com.company.model.wall;
+package cz.danik.model.wall;
 
-import static com.company.Constants.BOARD_WIDTH;
-import static com.company.Constants.TILE_SIZE;
+import cz.danik.Constants;
 
 public class MovingWall extends Wall {
 
@@ -18,7 +17,7 @@ public class MovingWall extends Wall {
     public void bounceIfAtBorder() {
         if(posX <= 0) {
             movingRight = true;
-        } else if (posX >= BOARD_WIDTH - TILE_SIZE) {
+        } else if (posX >= Constants.BOARD_WIDTH - Constants.TILE_SIZE) {
             movingRight = false;
         }
     }

@@ -1,4 +1,4 @@
-package com.company.model;
+package cz.danik.model;
 
 public class Player extends Tile {
 

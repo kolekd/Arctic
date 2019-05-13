@@ -1,20 +1,19 @@
-package com.company.logic;
+package cz.danik.logic;
 
 
-import com.company.logic.manager.ProjectileManager;
-import com.company.logic.manager.TileManager;
-import com.company.model.Player;
-import com.company.model.PowerUp;
-import com.company.model.Tile;
-import com.company.model.wall.MovingWall;
-import com.company.model.wall.Wall;
+import cz.danik.logic.manager.ProjectileManager;
+import cz.danik.logic.manager.TileManager;
+import cz.danik.model.Player;
+import cz.danik.model.PowerUp;
+import cz.danik.model.Tile;
+import cz.danik.model.wall.MovingWall;
+import cz.danik.model.wall.Wall;
+import cz.danik.Constants;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.List;
-
-import static com.company.Constants.*;
 
 public class Logic {
 
@@ -43,11 +42,11 @@ public class Logic {
     }
 
     public void initGame(ActionListener listener) {
-        SPEED_INCREASE_VALUE = INITIAL_SPEED_INCREASE_VALUE;
-        SPEED_INCREASE_FREQUENCY = INITIAL_SPEED_INCREASE_FREQUENCY;
+        SPEED_INCREASE_VALUE = Constants.INITIAL_SPEED_INCREASE_VALUE;
+        SPEED_INCREASE_FREQUENCY = Constants.INITIAL_SPEED_INCREASE_FREQUENCY;
         GENERATED_WALLS_COUNT = 0;
 
-        player = new Player(INITIAL_PLAYER_POS_X, INITIAL_PLAYER_POS_Y);
+        player = new Player(Constants.INITIAL_PLAYER_POS_X, Constants.INITIAL_PLAYER_POS_Y);
 
         movingWallOrPowerUp = false;
 
@@ -61,7 +60,7 @@ public class Logic {
         gameJustLaunched = false;
         gameRunning = true;
 
-        timer = new Timer(INITIAL_DELAY, listener);
+        timer = new Timer(Constants.INITIAL_DELAY, listener);
         timer.start();
     }
 
@@ -95,18 +94,18 @@ public class Logic {
 
                 boolean stopTheGame = false;
                 if (tile.isPlaced() &&
-                        player.getPosY() >= tile.getPosY() - TILE_SIZE &&
-                        player.getPosY() <= tile.getPosY() + TILE_SIZE &&
-                        player.getPosX() > tile.getPosX() - TILE_SIZE &&
-                        player.getPosX() < tile.getPosX() + TILE_SIZE) {
+                        player.getPosY() >= tile.getPosY() - Constants.TILE_SIZE &&
+                        player.getPosY() <= tile.getPosY() + Constants.TILE_SIZE &&
+                        player.getPosX() > tile.getPosX() - Constants.TILE_SIZE &&
+                        player.getPosX() < tile.getPosX() + Constants.TILE_SIZE) {
                     if (tile instanceof Wall) {
-                        if (player.getBuff().equals(BREAKER)) {
+                        if (player.getBuff().equals(Constants.BREAKER)) {
                             tile.setPlaced(false);
-                            ((Wall) tile).setJustDestroyedBy(BREAKER);
+                            ((Wall) tile).setJustDestroyedBy(Constants.BREAKER);
                             if (tile instanceof MovingWall) {
                                 ((MovingWall) tile).setMoving(false);
                             }
-                            SCORE_COUNT += BREAKER_SCORE_VALUE;
+                            SCORE_COUNT += Constants.BREAKER_SCORE_VALUE;
                             player.setBuff("");
                         } else {
                             stopTheGame = true;
@@ -125,7 +124,7 @@ public class Logic {
             }
 
             //  Removes non-visible walls and moves visible ones.
-            if (sampleTile.getPosY() > BOARD_HEIGHT) {
+            if (sampleTile.getPosY() > Constants.BOARD_HEIGHT) {
                 wallLineIterator.remove();
             } else {
                 tileManager.moveTiles(tileList);
@@ -140,8 +139,8 @@ public class Logic {
 
         /*  Generates wall. Based on the value of ANOMALY_GENERATION_FREQUENCY generates
             a moving wall or a power-up instead.  */
-        if (TOTAL_TICK_COUNT % WALL_GENERATION_FREQUENCY == 0) {
-            if (GENERATED_WALLS_COUNT % ANOMALY_GENERATION_FREQUENCY == 0) {
+        if (TOTAL_TICK_COUNT % Constants.WALL_GENERATION_FREQUENCY == 0) {
+            if (GENERATED_WALLS_COUNT % Constants.ANOMALY_GENERATION_FREQUENCY == 0) {
                 if (movingWallOrPowerUp) {
                     tileManager.generatePowerUp();
                     movingWallOrPowerUp = false;
@@ -162,16 +161,16 @@ public class Logic {
 
         /*  Shortens the time between each tick, resets TICK_COUNT and
                 increases the value the TICK_COUNT has to reach to run these methods.   */
-        if (TICK_COUNT > SPEED_INCREASE_FREQUENCY && timer.getDelay() > MIN_DELAY) {
+        if (TICK_COUNT > SPEED_INCREASE_FREQUENCY && timer.getDelay() > Constants.MIN_DELAY) {
             timer.setDelay(timer.getDelay() - SPEED_INCREASE_VALUE);
-            SPEED_INCREASE_FREQUENCY += INITIAL_SPEED_INCREASE_FREQUENCY;
+            SPEED_INCREASE_FREQUENCY += Constants.INITIAL_SPEED_INCREASE_FREQUENCY;
             TICK_COUNT = 0;
         }
 
         /*  At a certain point the value by which the time between each tick is shortened
                 gets gradually decremented to prevent extreme game speed increase.  */
-        if (TOTAL_TICK_COUNT > POINT_OF_DECREMENTING_SI_VALUE &&
-                TOTAL_TICK_COUNT % SI_VALUE_DECREASE_FREQUENCY == 0 && SPEED_INCREASE_VALUE > 1) {
+        if (TOTAL_TICK_COUNT > Constants.POINT_OF_DECREMENTING_SI_VALUE &&
+                TOTAL_TICK_COUNT % Constants.SI_VALUE_DECREASE_FREQUENCY == 0 && SPEED_INCREASE_VALUE > 1) {
             SPEED_INCREASE_VALUE--;
         }
         System.out.println(debugReport());
@@ -182,8 +181,8 @@ public class Logic {
         for (List<Tile> wallList : tileManager) {
             for (Tile wall : wallList) {
                 if (coords == wall.getPosX() && wall.isPlaced() && !(wall instanceof PowerUp) &&
-                     player.getPosY() <= wall.getPosY() + TILE_SIZE &&
-                     player.getPosY() >= wall.getPosY() - TILE_SIZE) {
+                     player.getPosY() <= wall.getPosY() + Constants.TILE_SIZE &&
+                     player.getPosY() >= wall.getPosY() - Constants.TILE_SIZE) {
 
                     return false;
                 }

@@ -1,6 +1,6 @@
-package com.company.model;
+package cz.danik.model;
 
-import static com.company.Constants.TILE_SIZE;
+import cz.danik.Constants;
 
 public class Projectile extends Tile {
 
@@ -15,8 +15,8 @@ public class Projectile extends Tile {
     @Override
     public boolean overlapsWith(Tile tile) {
         return tile.isPlaced() && this.isPlaced &&
-                posY >= tile.getPosY() - (TILE_SIZE + 4) && posX > tile.getPosX() - TILE_SIZE &&
-                posY <= tile.getPosY() + TILE_SIZE && posX < tile.getPosX() + TILE_SIZE;
+                posY >= tile.getPosY() - (Constants.TILE_SIZE + 4) && posX > tile.getPosX() - Constants.TILE_SIZE &&
+                posY <= tile.getPosY() + Constants.TILE_SIZE && posX < tile.getPosX() + Constants.TILE_SIZE;
     }
 
     public boolean isLaunched() {

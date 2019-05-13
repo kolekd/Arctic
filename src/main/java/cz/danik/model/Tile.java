@@ -1,6 +1,6 @@
-package com.company.model;
+package cz.danik.model;
 
-import static com.company.Constants.TILE_SIZE;
+import cz.danik.Constants;
 
 public class Tile {
 
@@ -21,8 +21,8 @@ public class Tile {
 
     public boolean overlapsWith(Tile tile) {
          return tile.isPlaced() && this.isPlaced &&
-                this.posY >= tile.getPosY() - TILE_SIZE && this.posX >= tile.getPosX() - TILE_SIZE &&
-                this.posY <= tile.getPosY() + TILE_SIZE && this.posX <= tile.getPosX() + TILE_SIZE;
+                this.posY >= tile.getPosY() - Constants.TILE_SIZE && this.posX >= tile.getPosX() - Constants.TILE_SIZE &&
+                this.posY <= tile.getPosY() + Constants.TILE_SIZE && this.posX <= tile.getPosX() + Constants.TILE_SIZE;
     }
 
     public int getPosX() {
