@@ -63,25 +63,25 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     }
 
     private void loadImages() {
-        ImageIcon playerIcon = new ImageIcon("src/resources/player_tile.png");
+        ImageIcon playerIcon = new ImageIcon("src/main/resources/img/player_tile.png");
         player = playerIcon.getImage();
 
-        ImageIcon playerBreakerBuffIcon = new ImageIcon("src/resources/player_tile_buffed_breaker.png");
+        ImageIcon playerBreakerBuffIcon = new ImageIcon("src/main/resources/img/player_tile_buffed_breaker.png");
         playerBreakerBuff = playerBreakerBuffIcon.getImage();
 
-        ImageIcon playerShooterBuffIcon = new ImageIcon("src/resources/player_tile_buffed_shooter.png");
+        ImageIcon playerShooterBuffIcon = new ImageIcon("src/main/resources/img/player_tile_buffed_shooter.png");
         playerShooterBuff = playerShooterBuffIcon.getImage();
 
-        ImageIcon wallIcon = new ImageIcon("src/resources/wall_tile.png");
+        ImageIcon wallIcon = new ImageIcon("src/main/resources/img/wall_tile.png");
         wall = wallIcon.getImage();
 
-        ImageIcon breakerPowerUpIcon = new ImageIcon("src/resources/power_up_breaker.png");
+        ImageIcon breakerPowerUpIcon = new ImageIcon("src/main/resources/img/power_up_breaker.png");
         powerUpBreaker = breakerPowerUpIcon.getImage();
 
-        ImageIcon shooterPowerUpIcon = new ImageIcon("src/resources/power_up_shooter.png");
+        ImageIcon shooterPowerUpIcon = new ImageIcon("src/main/resources/img/power_up_shooter.png");
         powerUpShooter = shooterPowerUpIcon.getImage();
 
-        ImageIcon projectileIcon = new ImageIcon("src/resources/projectile.png");
+        ImageIcon projectileIcon = new ImageIcon("src/main/resources/img/projectile.png");
         projectile = projectileIcon.getImage();
     }
 

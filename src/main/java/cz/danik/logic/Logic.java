@@ -156,7 +156,7 @@ public class Logic {
         }
 
         if(!projectileManager.isEmpty()) {
-            projectileManager.checkProjectiles(tileManager);
+            projectileManager.checkProjectiles(SCORE_COUNT, tileManager);
         }
 
         /*  Shortens the time between each tick, resets TICK_COUNT and

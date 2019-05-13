@@ -14,7 +14,7 @@ import static cz.danik.Constants.*;
 public class ProjectileManager extends ArrayList<Tile> {
 
     // Checks if any projectile hit any wall. If so, removes them both. If not, moves the projectile further upwards.
-    public void checkProjectiles(List<List<Tile>> tileManager) {
+    public void checkProjectiles(int SCORE_COUNT, List<List<Tile>> tileManager) {
         Iterator<Tile> projectileIterator = this.iterator();
         while (projectileIterator.hasNext()) {
             Tile currentProjectile = projectileIterator.next();
