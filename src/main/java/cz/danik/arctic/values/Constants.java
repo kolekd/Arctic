@@ -45,15 +45,17 @@ public class Constants {
     public static final String MULTI_PLAYER_TEXT = "Multiplayer";
     public static final String DEBUG_MODE_TEXT = "Debug mode: ";
 
-    public static final String MENU_WINDOW = "menu";
+    public static final String MAIN_MENU_WINDOW = "menu";
+    public static final String MULTIPLAYER_MENU_WINDOW = "multimenu";
     public static final String GAME_WINDOW = "game";
     public static final String GAME_OVER_WINDOW = "over";
     public static final String GAME_PAUSED_WINDOW = "paused";
 
-    public static final int MENU_TEXT_POSITIONER = (BOARD_HEIGHT / 2) + (TILE_SIZE / 2);
+    private static final int MENU_TEXT_POSITIONER = (BOARD_HEIGHT / 2) + (TILE_SIZE / 2);
     public static final int SINGLE_PLAYER_TEXT_POSITION = MENU_TEXT_POSITIONER;
     public static final int MULTI_PLAYER_TEXT_POSITION = MENU_TEXT_POSITIONER + TILE_SIZE;
     public static final int DEBUG_MODE_TEXT_POSITION = MENU_TEXT_POSITIONER + (TILE_SIZE * 2);
+    public static final int TITLE_TEXT_POSITION = BOARD_HEIGHT / 4;
 
     public static final int MENU_CURSOR_OFFSET = -(TILE_SIZE / 2);
     public static final int SINGLE_PLAYER_CURSOR_POSITION = SINGLE_PLAYER_TEXT_POSITION + MENU_CURSOR_OFFSET;

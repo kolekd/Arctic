@@ -69,7 +69,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         cursorAt = INITIAL_CURSOR_POSITION;
 
         DEBUG_MODE = DEBUG_MODE_DEFAULT_VALUE;
-        CURRENT_WINDOW = MENU_WINDOW;
+        CURRENT_WINDOW = MAIN_MENU_WINDOW;
 
         loadImages();
     }
@@ -125,7 +125,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             case GAME_WINDOW:
                 gameRunning(graphics);
                 break;
-            case MENU_WINDOW:
+            case MAIN_MENU_WINDOW:
                 gameMenu(graphics);
                 break;
             case GAME_OVER_WINDOW:
@@ -133,6 +133,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 break;
             case GAME_PAUSED_WINDOW:
                 gamePause(graphics);
+                break;
+            case MULTIPLAYER_MENU_WINDOW:
+                gameMenuMultiplayer(graphics);
                 break;
         }
     }
@@ -209,12 +212,19 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         drawCursors(g, cursorAt, this);
 
         g.setColor(new Color(0, 11, 196));
-        drawWords(g, title, titleFont, (BOARD_WIDTH - titleMetrics.stringWidth(title)) / 2, BOARD_HEIGHT / 3);
+        drawWords(g, title, titleFont, (BOARD_WIDTH - titleMetrics.stringWidth(title)) / 2, TITLE_TEXT_POSITION);
 
         g.setColor(Color.black);
         drawWords(g, singlePlayer, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(singlePlayer)) / 2, SINGLE_PLAYER_TEXT_POSITION);
         drawWords(g, multiPlayer, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(multiPlayer)) / 2, MULTI_PLAYER_TEXT_POSITION);
         drawWords(g, debugMode, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(debugMode)) / 2, DEBUG_MODE_TEXT_POSITION);
+    }
+
+    private void gameMenuMultiplayer(Graphics g) {
+        //TODO
+
+
+
     }
 
     private void drawCursors(Graphics graphics, int posY, ImageObserver observer) {
@@ -305,11 +315,24 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
                 //  Q: exit to menu
                 if(key == KeyEvent.VK_Q) {
-                    CURRENT_WINDOW = MENU_WINDOW;
+                    CURRENT_WINDOW = MAIN_MENU_WINDOW;
                 }
 
                 break;
-            case MENU_WINDOW:
+            case GAME_OVER_WINDOW:
+                //  R: restart
+                if (key == KeyEvent.VK_R) {
+                    CURRENT_WINDOW = GAME_WINDOW;
+                    launch();
+                }
+
+                //  Q: exit to menu
+                if(key == KeyEvent.VK_Q) {
+                    CURRENT_WINDOW = MAIN_MENU_WINDOW;
+                }
+
+                break;
+            case MAIN_MENU_WINDOW:
 
                 //  ENTER: enter current choice
                 if (key == KeyEvent.VK_ENTER) {
@@ -338,17 +361,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 }
 
                 break;
-            case GAME_OVER_WINDOW:
-                //  R: restart
-                if (key == KeyEvent.VK_R) {
-                    CURRENT_WINDOW = GAME_WINDOW;
-                    launch();
-                }
+            case MULTIPLAYER_MENU_WINDOW:
 
-                //  Q: exit to menu
-                if(key == KeyEvent.VK_Q) {
-                    CURRENT_WINDOW = MENU_WINDOW;
-                }
+                //TODO
 
                 break;
         }
