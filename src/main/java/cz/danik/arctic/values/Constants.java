@@ -25,6 +25,7 @@ public class Constants {
                                                                                    'speed decrease value' start decreasing. */
     public static final int WALL_GENERATION_FREQUENCY = 85;                        //  <- How often do the walls spawn.
     public static final int ANOMALY_GENERATION_FREQUENCY = 10;                     //  <- Per how many wall spawns.
+    public static final boolean INITIAL_WALL_OR_POWERUP = false;
 
     public static final int BREAKER_SCORE_VALUE = 1000;                     /*  <- Score points earned when breaking
                                                                                     a wall using the Breaker power-up. */
