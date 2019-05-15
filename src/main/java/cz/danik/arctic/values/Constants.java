@@ -1,7 +1,7 @@
 package cz.danik.arctic.values;
 
 public class Constants {
-    public static final boolean DEBUG_MODE = true;
+    public static final boolean DEBUG_MODE_DEFAULT_VALUE = false;
 
     public static final int TILE_SIZE = 32;
 
@@ -33,7 +33,35 @@ public class Constants {
     public static final String BREAKER = "breaker";
     public static final String SHOOTER = "shooter";
 
-    public static final String GAME_TITLE = "Arctic";
-    public static final String RESET_BUTTON = "R";
+    // Menu
+    public static final String GAME_TITLE_TEXT = "Arctic";
+    public static final String RESET_BUTTON_TEXT = "R";
     public static final String START_BUTTON = "space";
+    public static final String SINGLE_PLAYER_TEXT = "Singleplayer";
+    public static final String MULTI_PLAYER_TEXT = "Multiplayer";
+    public static final String DEBUG_MODE_TEXT = "Debug mode: ";
+
+    public static final String MENU_WINDOW = "menu";
+    public static final String GAME_WINDOW = "game";
+    public static final String GAME_OVER_WINDOW = "over";
+
+    public static final int MENU_TEXT_POSITIONER = (BOARD_HEIGHT / 2) + (TILE_SIZE / 2);
+    public static final int SINGLE_PLAYER_TEXT_POSITION = MENU_TEXT_POSITIONER;
+    public static final int MULTI_PLAYER_TEXT_POSITION = MENU_TEXT_POSITIONER + TILE_SIZE;
+    public static final int DEBUG_MODE_TEXT_POSITION = MENU_TEXT_POSITIONER + (TILE_SIZE * 2);
+
+    public static final int MENU_CURSOR_OFFSET = -(TILE_SIZE / 2);
+    public static final int SINGLE_PLAYER_CURSOR_POSITION = SINGLE_PLAYER_TEXT_POSITION + MENU_CURSOR_OFFSET;
+    public static final int MULTI_PLAYER_CURSOR_POSITION = MULTI_PLAYER_TEXT_POSITION + MENU_CURSOR_OFFSET;
+    public static final int DEBUG_MODE_CURSOR_POSITION = DEBUG_MODE_TEXT_POSITION + MENU_CURSOR_OFFSET;
+
+    public static final int INITIAL_CURSOR_POSITION = SINGLE_PLAYER_CURSOR_POSITION;
+
+    public static final int CURSOR_1_X_POSITION = (BOARD_WIDTH / 4) - TILE_SIZE / 2;
+    public static final int CURSOR_2_X_POSITION = ((BOARD_WIDTH / 4) * 3) - TILE_SIZE / 2;
+
+    public static final int MENU_LINE_COUNT = 3;
+    public static final int MENU_CURSOR_LIMIT = INITIAL_CURSOR_POSITION + ((MENU_LINE_COUNT - 1) * TILE_SIZE);
+
+
 }

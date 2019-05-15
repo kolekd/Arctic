@@ -21,7 +21,7 @@ import static cz.danik.arctic.values.Constants.*;
 public class Logic {
 
     public static boolean gameRunning;
-    public boolean gameJustLaunched;
+    public static boolean GO_TO_MENU;
 
     private boolean movingWallOrPowerUp;
 
@@ -31,7 +31,7 @@ public class Logic {
     public ProjectileManager projectileManager;
 
     public Logic() {
-        this.gameJustLaunched = true;
+        GO_TO_MENU = true;
     }
 
     public void initGame(ActionListener listener) {
@@ -50,7 +50,7 @@ public class Logic {
         TICK_COUNT = 0;
         SCORE_COUNT = 0;
 
-        gameJustLaunched = false;
+        GO_TO_MENU = false;
         gameRunning = true;
 
         GameFlow.timer = new Timer(INITIAL_DELAY, listener);
