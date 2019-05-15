@@ -1,5 +1,6 @@
 package cz.danik.arctic.graphics;
 
+import cz.danik.arctic.logic.GameFlow;
 import cz.danik.arctic.logic.Logic;
 import cz.danik.arctic.model.Tile;
 import cz.danik.arctic.model.wall.Wall;
@@ -38,9 +39,6 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private FontMetrics slimMetrics;
 
     private Logic logic;
-
-    Globals globals;
-
 
     public Board() {
         addKeyListener(this);
@@ -215,7 +213,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                     launch();
                 }
             } else {
-                Logic.timer.stop();
+                GameFlow.timer.stop();
                 Logic.gameRunning = false;
                 launch();
             }
@@ -223,10 +221,10 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
         //  Down: DEBUG MODE - time freeze
         if (key == KeyEvent.VK_DOWN && DEBUG_MODE) {
-            if(Logic.timer.isRunning()) {
-                Logic.timer.stop();
+            if(GameFlow.timer.isRunning()) {
+                GameFlow.timer.stop();
             } else {
-                Logic.timer.start();
+                GameFlow.timer.start();
             }
         }
 
