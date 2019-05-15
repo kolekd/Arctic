@@ -16,6 +16,8 @@ import java.awt.event.KeyListener;
 import java.awt.image.ImageObserver;
 import java.util.List;
 
+import static cz.danik.arctic.logic.GameFlow.PRIMARY_TIMER;
+import static cz.danik.arctic.logic.GameFlow.SECONDARY_TIMER;
 import static cz.danik.arctic.values.Constants.*;
 import static cz.danik.arctic.values.Globals.*;
 
@@ -147,8 +149,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         }
 
         for (List<Tile> tileList : logic.tileManager) {
+            Tile currentTile;
             for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-                Tile currentTile = tileList.get(i);
+                currentTile = tileList.get(i);
                 if (currentTile.isPlaced()) {
                     if (currentTile instanceof PowerUp) {
                         String powerUpName = ((PowerUp) currentTile).getName();
@@ -236,7 +239,11 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        logic.tickAction();
+        if(e.getSource().equals(PRIMARY_TIMER)) {
+            logic.tickAction();
+        } else if (e.getSource().equals(SECONDARY_TIMER)) {
+            logic.tickActionSecondary();
+        }
         repaint();
     }
 
@@ -266,16 +273,16 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
                 // R: DEBUG MODE - restart
                 if (key == KeyEvent.VK_R && DEBUG_MODE) {
-                    GameFlow.timer.stop();
+                    GameFlow.stopTimers();
                     launch();
                 }
 
                 //  Down: DEBUG MODE - time freeze
                 if (key == KeyEvent.VK_DOWN && DEBUG_MODE) {
-                    if (GameFlow.timer.isRunning()) {
-                        GameFlow.timer.stop();
+                    if (PRIMARY_TIMER.isRunning()) {
+                        GameFlow.stopTimers();
                     } else {
-                        GameFlow.timer.start();
+                        GameFlow.startTimers();
                     }
                 }
 
@@ -291,7 +298,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
                 //  ESC: pause menu
                 if (key == KeyEvent.VK_ESCAPE) {
-                    GameFlow.timer.stop();
+                    GameFlow.stopTimers();
                     CURRENT_WINDOW = GAME_PAUSED_WINDOW;
                 }
 
@@ -299,7 +306,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             case GAME_PAUSED_WINDOW:
                 //  ESC: resume game
                 if(key == KeyEvent.VK_ESCAPE) {
-                    GameFlow.timer.start();
+                    GameFlow.startTimers();
                     CURRENT_WINDOW = GAME_WINDOW;
                 }
 

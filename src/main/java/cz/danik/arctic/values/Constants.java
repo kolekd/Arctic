@@ -16,7 +16,8 @@ public class Constants {
                                                                                      projectiles move each tick. */
     public static final int INITIAL_SPEED_INCREASE_FREQUENCY = 20;                 //  <- How often does the speed increase.
     public static final int INITIAL_SPEED_INCREASE_VALUE = 6;                      //  <- By how much does the speed increase.
-    public static final int INITIAL_DELAY = 50;                                    //  <- Starting speed.
+    public static final int INITIAL_DELAY_PRIMARY = 50;                            //  <- Primary timer starting speed.
+    public static final int INITIAL_DELAY_SECONDARY = 12;                          //  <- Secondary timer starting speed.
 
     public static final int MIN_DELAY = 3;                                         //  <- Maximum speed.
     public static final int SI_VALUE_DECREASE_FREQUENCY =  80;                     /*  <- How often does the
@@ -25,8 +26,10 @@ public class Constants {
                                                                                    'speed decrease value' start decreasing. */
     public static final int WALL_GENERATION_FREQUENCY = 85;                        //  <- How often do the walls spawn.
     public static final int ANOMALY_GENERATION_FREQUENCY = 10;                     //  <- Per how many wall spawns.
-    public static final boolean INITIAL_WALL_OR_POWERUP = false;
+    public static final boolean INITIAL_WALL_OR_POWER_UP = false;
 
+
+    public static final int ON_BREAK_SCORE_DISPLAY_TIME = 45;
     public static final int BREAKER_SCORE_VALUE = 1000;                     /*  <- Score points earned when breaking
                                                                                     a wall using the Breaker power-up. */
     public static final int SHOOTER_SCORE_VALUE = 500;                      /*  <- Score points earned when breaking
@@ -50,12 +53,12 @@ public class Constants {
     public static final String GAME_OVER_WINDOW = "over";
     public static final String GAME_PAUSED_WINDOW = "paused";
 
-    public static final int MENU_TEXT_POSITIONER = (BOARD_HEIGHT / 2) + (TILE_SIZE / 2);
+    private static final int MENU_TEXT_POSITIONER = (BOARD_HEIGHT / 2) + (TILE_SIZE / 2);
     public static final int SINGLE_PLAYER_TEXT_POSITION = MENU_TEXT_POSITIONER;
     public static final int MULTI_PLAYER_TEXT_POSITION = MENU_TEXT_POSITIONER + TILE_SIZE;
     public static final int DEBUG_MODE_TEXT_POSITION = MENU_TEXT_POSITIONER + (TILE_SIZE * 2);
 
-    public static final int MENU_CURSOR_OFFSET = -(TILE_SIZE / 2);
+    private static final int MENU_CURSOR_OFFSET = -(TILE_SIZE / 2);
     public static final int SINGLE_PLAYER_CURSOR_POSITION = SINGLE_PLAYER_TEXT_POSITION + MENU_CURSOR_OFFSET;
     public static final int MULTI_PLAYER_CURSOR_POSITION = MULTI_PLAYER_TEXT_POSITION + MENU_CURSOR_OFFSET;
     public static final int DEBUG_MODE_CURSOR_POSITION = DEBUG_MODE_TEXT_POSITION + MENU_CURSOR_OFFSET;
@@ -65,7 +68,7 @@ public class Constants {
     public static final int CURSOR_1_X_POSITION = (BOARD_WIDTH / 4) - TILE_SIZE / 2;
     public static final int CURSOR_2_X_POSITION = ((BOARD_WIDTH / 4) * 3) - TILE_SIZE / 2;
 
-    public static final int MENU_LINE_COUNT = 3;
+    private static final int MENU_LINE_COUNT = 3;
     public static final int MENU_CURSOR_LIMIT = INITIAL_CURSOR_POSITION + ((MENU_LINE_COUNT - 1) * TILE_SIZE);
 
 

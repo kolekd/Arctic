@@ -13,7 +13,7 @@ import static cz.danik.arctic.values.Constants.*;
 
 public class TileManager extends ArrayList<List<Tile>> {
 
-    private boolean movingWallOrPowerUp = INITIAL_WALL_OR_POWERUP;
+    private boolean movingWallOrPowerUp = INITIAL_WALL_OR_POWER_UP;
 
     //  Moves all the walls downwards and also moves moving walls horizontally.
     public void moveTiles(List<Tile> tileList) {
