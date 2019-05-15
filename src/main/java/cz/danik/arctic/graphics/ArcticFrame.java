@@ -14,7 +14,7 @@ public class ArcticFrame extends JFrame {
         setResizable(false);
         pack();
 
-        setTitle("ArcticFrame");
+        setTitle("Arctic");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }

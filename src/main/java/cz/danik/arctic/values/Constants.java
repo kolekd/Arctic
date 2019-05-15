@@ -36,7 +36,10 @@ public class Constants {
     // Menu
     public static final String GAME_TITLE_TEXT = "Arctic";
     public static final String RESET_BUTTON_TEXT = "R";
-    public static final String START_BUTTON = "space";
+    public static final String START_BUTTON_TEXT = "space";
+    public static final String GO_TO_MENU_BUTTON_TEXT = "Q";
+    public static final String RESUME_BUTTON_TEXT = "esc";
+
     public static final String SINGLE_PLAYER_TEXT = "Singleplayer";
     public static final String MULTI_PLAYER_TEXT = "Multiplayer";
     public static final String DEBUG_MODE_TEXT = "Debug mode: ";
@@ -44,6 +47,7 @@ public class Constants {
     public static final String MENU_WINDOW = "menu";
     public static final String GAME_WINDOW = "game";
     public static final String GAME_OVER_WINDOW = "over";
+    public static final String GAME_PAUSED_WINDOW = "paused";
 
     public static final int MENU_TEXT_POSITIONER = (BOARD_HEIGHT / 2) + (TILE_SIZE / 2);
     public static final int SINGLE_PLAYER_TEXT_POSITION = MENU_TEXT_POSITIONER;
