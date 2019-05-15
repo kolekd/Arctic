@@ -20,9 +20,6 @@ import static cz.danik.arctic.values.Constants.*;
 
 public class Logic {
 
-    public static boolean gameRunning;
-    public boolean gameJustLaunched;
-
     private boolean movingWallOrPowerUp;
 
     public Player player;
@@ -30,9 +27,7 @@ public class Logic {
     public TileManager tileManager;
     public ProjectileManager projectileManager;
 
-    public Logic() {
-        this.gameJustLaunched = true;
-    }
+    public Logic() {}
 
     public void initGame(ActionListener listener) {
         SPEED_INCREASE_VALUE = INITIAL_SPEED_INCREASE_VALUE;
@@ -49,9 +44,6 @@ public class Logic {
         TOTAL_TICK_COUNT = 0;
         TICK_COUNT = 0;
         SCORE_COUNT = 0;
-
-        gameJustLaunched = false;
-        gameRunning = true;
 
         GameFlow.timer = new Timer(INITIAL_DELAY, listener);
         GameFlow.timer.start();
@@ -112,7 +104,7 @@ public class Logic {
 
                 if (stopTheGame) {
                     GameFlow.timer.stop();
-                    gameRunning = false;
+                    CURRENT_WINDOW = GAME_OVER_WINDOW;
                 }
             }
 

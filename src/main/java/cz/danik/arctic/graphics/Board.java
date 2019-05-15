@@ -2,11 +2,10 @@ package cz.danik.arctic.graphics;
 
 import cz.danik.arctic.logic.GameFlow;
 import cz.danik.arctic.logic.Logic;
+import cz.danik.arctic.model.PowerUp;
 import cz.danik.arctic.model.Tile;
 import cz.danik.arctic.model.wall.Wall;
-import cz.danik.arctic.model.PowerUp;
 import cz.danik.arctic.values.Globals;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,9 +13,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.ImageObserver;
 import java.util.List;
 
 import static cz.danik.arctic.values.Constants.*;
+import static cz.danik.arctic.values.Globals.*;
 
 public class Board extends JPanel implements KeyListener, ActionListener {
 
@@ -31,14 +32,21 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private Image powerUpBreaker;
     private Image powerUpShooter;
     private Image projectile;
+    private Image cursor1;
+    private Image cursor2;
 
+    private Font titleFont;
     private Font font;
     private Font slimFont;
     private Font hitFont;
+
     private FontMetrics metrics;
     private FontMetrics slimMetrics;
+    private FontMetrics titleMetrics;
 
     private Logic logic;
+
+    private int cursorAt;
 
     public Board() {
         addKeyListener(this);
@@ -48,13 +56,20 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         setBackground(new Color(238,238,238));
         setFont(font);
 
+        titleFont = new Font("Helvetica", Font.BOLD, 40);
         font = new Font("Helvetica", Font.BOLD, 18);
         slimFont = new Font("Helvetica", Font.PLAIN,16);
         hitFont = new Font("Helvetica", Font.BOLD, 13);
+
+        titleMetrics = getFontMetrics(titleFont);
         slimMetrics = getFontMetrics(slimFont);
         metrics = getFontMetrics(font);
 
         logic = new Logic();
+        cursorAt = INITIAL_CURSOR_POSITION;
+
+        DEBUG_MODE = DEBUG_MODE_DEFAULT_VALUE;
+        CURRENT_WINDOW = MENU_WINDOW;
 
         loadImages();
     }
@@ -87,6 +102,12 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
         ImageIcon projectileIcon = new ImageIcon("src/main/resources/img/projectile.png");
         projectile = projectileIcon.getImage();
+
+        ImageIcon cursor1Icon  = new ImageIcon("src/main/resources/img/cursor_right.png");
+        cursor1 = cursor1Icon.getImage();
+
+        ImageIcon cursor2Icon  = new ImageIcon("src/main/resources/img/cursor_left.png");
+        cursor2 = cursor2Icon.getImage();
     }
 
     private void drawPlayer(Graphics g) {
@@ -100,69 +121,105 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     }
 
     private void doDrawing(Graphics graphics) {
-        if(Logic.gameRunning) {
-            drawPlayer(graphics);
+        switch (CURRENT_WINDOW) {
+            case GAME_WINDOW:
+                gameRunning(graphics);
+                break;
+            case MENU_WINDOW:
+                gameMenu(graphics);
+                break;
+            case GAME_OVER_WINDOW:
+                gameOver(graphics);
+                break;
+            case GAME_PAUSED_WINDOW:
+                gamePause(graphics);
+                break;
+        }
+    }
 
-            for (Tile currentProjectile : logic.projectileManager) {
-                if (currentProjectile.isPlaced()) {
-                    graphics.drawImage(projectile, currentProjectile.getPosX(), currentProjectile.getPosY(), this);
-                }
+    private void gameRunning(Graphics graphics) {
+        drawPlayer(graphics);
+
+        for (Tile currentProjectile : logic.projectileManager) {
+            if (currentProjectile.isPlaced()) {
+                graphics.drawImage(projectile, currentProjectile.getPosX(), currentProjectile.getPosY(), this);
             }
+        }
 
-            for (List<Tile> tileList : logic.tileManager) {
-                for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
-                    Tile currentTile = tileList.get(i);
-                    if (currentTile.isPlaced()) {
-                        if (currentTile instanceof PowerUp) {
-                            String powerUpName = ((PowerUp) currentTile).getName();
-                            if (powerUpName.equals(SHOOTER)) {
-                                graphics.drawImage(powerUpShooter, (currentTile.getPosX()), currentTile.getPosY(), this);
-                            } else if (powerUpName.equals(BREAKER)){
-                                graphics.drawImage(powerUpBreaker, (currentTile.getPosX()), currentTile.getPosY(), this);
-                            }
-                        } else if (currentTile instanceof Wall) {
-                            graphics.drawImage(wall, currentTile.getPosX(), currentTile.getPosY(), this);
+        for (List<Tile> tileList : logic.tileManager) {
+            for (int i = 0; i < MAX_TILES_IN_A_ROW; i++) {
+                Tile currentTile = tileList.get(i);
+                if (currentTile.isPlaced()) {
+                    if (currentTile instanceof PowerUp) {
+                        String powerUpName = ((PowerUp) currentTile).getName();
+                        if (powerUpName.equals(SHOOTER)) {
+                            graphics.drawImage(powerUpShooter, (currentTile.getPosX()), currentTile.getPosY(), this);
+                        } else if (powerUpName.equals(BREAKER)){
+                            graphics.drawImage(powerUpBreaker, (currentTile.getPosX()), currentTile.getPosY(), this);
                         }
-                    } else if (!(currentTile instanceof PowerUp)){
-                        if (((Wall)currentTile).getJustDestroyedBy().equals(BREAKER)) {
-                            drawWords(graphics, String.valueOf(BREAKER_SCORE_VALUE), hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 7, currentTile.getPosY() + (TILE_SIZE / 2));
-                        } else if (((Wall)currentTile).getJustDestroyedBy().equals(SHOOTER)) {
-                            drawWords(graphics, String.valueOf(SHOOTER_SCORE_VALUE), hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 3, currentTile.getPosY() + (TILE_SIZE / 2));
-                        }
-
+                    } else if (currentTile instanceof Wall) {
+                        graphics.drawImage(wall, currentTile.getPosX(), currentTile.getPosY(), this);
+                    }
+                } else if (!(currentTile instanceof PowerUp)){
+                    if (((Wall)currentTile).getJustDestroyedBy().equals(BREAKER)) {
+                        drawWords(graphics, String.valueOf(BREAKER_SCORE_VALUE), hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 7, currentTile.getPosY() + (TILE_SIZE / 2));
+                    } else if (((Wall)currentTile).getJustDestroyedBy().equals(SHOOTER)) {
+                        drawWords(graphics, String.valueOf(SHOOTER_SCORE_VALUE), hitFont, currentTile.getPosX() + (TILE_SIZE / 4) - 3, currentTile.getPosY() + (TILE_SIZE / 2));
                     }
 
                 }
+
             }
-
-            drawWords(graphics, String.valueOf(Globals.SCORE_COUNT), font, (TILE_SIZE / 4), (BOARD_HEIGHT) - 6);
-
-            Toolkit.getDefaultToolkit().sync();
-
-        } else if (logic.gameJustLaunched) {
-            gameStart(graphics);
-        } else {
-            gameOver(graphics);
         }
+
+        drawWords(graphics, String.valueOf(Globals.SCORE_COUNT), font, (TILE_SIZE / 4), (BOARD_HEIGHT) - 6);
+
+        Toolkit.getDefaultToolkit().sync();
     }
 
     private void gameOver(Graphics g) {
         String gameOver = "Game Over";
         String score = "Score: " + Globals.SCORE_COUNT;
-        String restartMsg = "Press <" + RESET_BUTTON + "> to restart.";
+        String exit = GO_TO_MENU_BUTTON_TEXT + "   -->   exit to menu";
+        String restartMsg = RESET_BUTTON_TEXT + "   -->   restart.";
 
-        drawWords(g, gameOver, font, (BOARD_WIDTH - metrics.stringWidth(gameOver)) / 2, BOARD_HEIGHT / 2);
+        drawWords(g, gameOver, font, (BOARD_WIDTH - metrics.stringWidth(gameOver)) / 2, BOARD_HEIGHT / 3);
         drawWords(g, score, font, (BOARD_WIDTH - metrics.stringWidth(score)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE);
-        drawWords(g, restartMsg, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(restartMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 2);
+        drawWords(g, exit, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(exit)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 2);
+        drawWords(g, restartMsg, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(restartMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 3);
     }
 
-    private void gameStart(Graphics g) {
-        String title = GAME_TITLE;
-        String startMsg = "Press <" + START_BUTTON + "> to start.";
+    private void gamePause(Graphics g) {
+        String title = "Paused";
+        String exit = GO_TO_MENU_BUTTON_TEXT + "   -->   exit to menu";
+        String resume = RESUME_BUTTON_TEXT + "   -->   resume";
 
         g.setColor(Color.black);
-        drawWords(g, title, font, (BOARD_WIDTH - metrics.stringWidth(title)) / 2, (BOARD_HEIGHT / 2));
-        drawWords(g, startMsg, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(startMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 2);
+        drawWords(g, title, font, (BOARD_WIDTH - metrics.stringWidth(title)) / 2, (BOARD_HEIGHT / 3));
+        drawWords(g, exit, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(exit)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE);
+        drawWords(g, resume, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(resume)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 2);
+    }
+
+    private void gameMenu(Graphics g) {
+        String title = GAME_TITLE_TEXT;
+        String singlePlayer = SINGLE_PLAYER_TEXT;
+        String multiPlayer = MULTI_PLAYER_TEXT;
+        String debugMode = DEBUG_MODE_TEXT + DEBUG_MODE;
+
+        drawCursors(g, cursorAt, this);
+
+        g.setColor(new Color(0, 11, 196));
+        drawWords(g, title, titleFont, (BOARD_WIDTH - titleMetrics.stringWidth(title)) / 2, BOARD_HEIGHT / 3);
+
+        g.setColor(Color.black);
+        drawWords(g, singlePlayer, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(singlePlayer)) / 2, SINGLE_PLAYER_TEXT_POSITION);
+        drawWords(g, multiPlayer, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(multiPlayer)) / 2, MULTI_PLAYER_TEXT_POSITION);
+        drawWords(g, debugMode, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(debugMode)) / 2, DEBUG_MODE_TEXT_POSITION);
+    }
+
+    private void drawCursors(Graphics graphics, int posY, ImageObserver observer) {
+        graphics.drawImage(cursor1, CURSOR_1_X_POSITION, posY, observer);
+        graphics.drawImage(cursor2, CURSOR_2_X_POSITION, posY, observer);
     }
 
     private void drawWords(Graphics g, String words, Font font, int x, int y) {
@@ -187,55 +244,113 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
-        //  Left: move left if there's no wall or if at graphics border
-        if (key == KeyEvent.VK_LEFT && logic.player.getPosX() > 0 && logic.noWallThere(logic.player.getPosX() - TILE_SIZE)) {
-            logic.player.setPosX(logic.player.getPosX() -TILE_SIZE);
-        }
+        switch (CURRENT_WINDOW) {
+            case GAME_WINDOW:
 
-        //  Right: move right if there's no wall or if at graphics border
-        if (key == KeyEvent.VK_RIGHT && logic.player.getPosX() < BOARD_WIDTH - TILE_SIZE && logic.noWallThere(logic.player.getPosX() + TILE_SIZE)) {
-            logic.player.setPosX(logic.player.getPosX() + TILE_SIZE);
-        }
+                //  Left: move left if there's no wall or if at graphics border
+                if (key == KeyEvent.VK_LEFT && logic.player.getPosX() > 0 && logic.noWallThere(logic.player.getPosX() - TILE_SIZE)) {
+                    logic.player.setPosX(logic.player.getPosX() - TILE_SIZE);
+                }
 
-        //  SPACE: launch the game at app start; launch projectiles when buffed; DEBUG MODE - launch projectiles
-        if (key == KeyEvent.VK_SPACE) {
-            if (logic.gameJustLaunched) {
-                launch();
-            } else if(logic.player.getBuff().equals(SHOOTER) || DEBUG_MODE) {
-                logic.player.setLaunchProjectiles(true);
-            }
-        }
+                //  Right: move right if there's no wall or if at graphics border
+                if (key == KeyEvent.VK_RIGHT && logic.player.getPosX() < BOARD_WIDTH - TILE_SIZE && logic.noWallThere(logic.player.getPosX() + TILE_SIZE)) {
+                    logic.player.setPosX(logic.player.getPosX() + TILE_SIZE);
+                }
 
-        // R: restart
-        if (key == KeyEvent.VK_R) {
-            if(!DEBUG_MODE) {
-                if(Logic.gameRunning) {
+                //  SPACE: launch the game at app start; launch projectiles when buffed; DEBUG MODE - launch projectiles
+                if (key == KeyEvent.VK_SPACE) {
+                    if (logic.player.getBuff().equals(SHOOTER) || DEBUG_MODE) {
+                        logic.player.setLaunchProjectiles(true);
+                    }
+                }
+
+                // R: DEBUG MODE - restart
+                if (key == KeyEvent.VK_R && DEBUG_MODE) {
+                    GameFlow.timer.stop();
                     launch();
                 }
-            } else {
-                GameFlow.timer.stop();
-                Logic.gameRunning = false;
-                launch();
-            }
-        }
 
-        //  Down: DEBUG MODE - time freeze
-        if (key == KeyEvent.VK_DOWN && DEBUG_MODE) {
-            if(GameFlow.timer.isRunning()) {
-                GameFlow.timer.stop();
-            } else {
-                GameFlow.timer.start();
-            }
-        }
+                //  Down: DEBUG MODE - time freeze
+                if (key == KeyEvent.VK_DOWN && DEBUG_MODE) {
+                    if (GameFlow.timer.isRunning()) {
+                        GameFlow.timer.stop();
+                    } else {
+                        GameFlow.timer.start();
+                    }
+                }
 
-        //  B: DEBUG MODE - gain Breaker power-up
-        if (key == KeyEvent.VK_B && DEBUG_MODE) {
-            logic.player.setBuff(BREAKER);
-        }
+                //  B: DEBUG MODE - gain Breaker power-up
+                if (key == KeyEvent.VK_B && DEBUG_MODE) {
+                    logic.player.setBuff(BREAKER);
+                }
 
-        //  S: DEBUG MODE - gain Shooter power-up
-        if (key == KeyEvent.VK_S && DEBUG_MODE) {
-            logic.player.setBuff(SHOOTER);
+                //  S: DEBUG MODE - gain Shooter power-up
+                if (key == KeyEvent.VK_S && DEBUG_MODE) {
+                    logic.player.setBuff(SHOOTER);
+                }
+
+                //  ESC: pause menu
+                if (key == KeyEvent.VK_ESCAPE) {
+                    GameFlow.timer.stop();
+                    CURRENT_WINDOW = GAME_PAUSED_WINDOW;
+                }
+
+                break;
+            case GAME_PAUSED_WINDOW:
+                //  ESC: resume game
+                if(key == KeyEvent.VK_ESCAPE) {
+                    GameFlow.timer.start();
+                    CURRENT_WINDOW = GAME_WINDOW;
+                }
+
+                //  Q: exit to menu
+                if(key == KeyEvent.VK_Q) {
+                    CURRENT_WINDOW = MENU_WINDOW;
+                }
+
+                break;
+            case MENU_WINDOW:
+
+                //  ENTER: enter current choice
+                if (key == KeyEvent.VK_ENTER) {
+                    if (cursorAt == SINGLE_PLAYER_CURSOR_POSITION) {
+                        CURRENT_WINDOW = GAME_WINDOW;
+                        launch();
+                    } else if (cursorAt == MULTI_PLAYER_CURSOR_POSITION) {
+                        System.out.println("Multiplayer to be implemented.");
+                    } else if (cursorAt == DEBUG_MODE_CURSOR_POSITION) {
+                        DEBUG_MODE = !DEBUG_MODE;
+                    }
+                }
+
+                //  UP: move up in menu
+                if (key == KeyEvent.VK_UP) {
+                    if (cursorAt > INITIAL_CURSOR_POSITION) {
+                        cursorAt -= TILE_SIZE;
+                    }
+                }
+
+                //  DOWN: move down in menu
+                if (key == KeyEvent.VK_DOWN) {
+                    if (cursorAt < MENU_CURSOR_LIMIT) {
+                        cursorAt += TILE_SIZE;
+                    }
+                }
+
+                break;
+            case GAME_OVER_WINDOW:
+                //  R: restart
+                if (key == KeyEvent.VK_R) {
+                    CURRENT_WINDOW = GAME_WINDOW;
+                    launch();
+                }
+
+                //  Q: exit to menu
+                if(key == KeyEvent.VK_Q) {
+                    CURRENT_WINDOW = MENU_WINDOW;
+                }
+
+                break;
         }
 
         repaint();
