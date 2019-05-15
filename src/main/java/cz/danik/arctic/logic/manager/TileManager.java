@@ -10,9 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static cz.danik.arctic.values.Constants.*;
-import static cz.danik.arctic.values.Constants.STEP_DISTANCE;
 
 public class TileManager extends ArrayList<List<Tile>> {
+
+    private boolean movingWallOrPowerUp = INITIAL_WALL_OR_POWERUP;
 
     //  Moves all the walls downwards and also moves moving walls horizontally.
     public void moveTiles(List<Tile> tileList) {
@@ -47,6 +48,19 @@ public class TileManager extends ArrayList<List<Tile>> {
 
         add(tileList);
     }
+
+    /*  Generates wall. Based on the value of ANOMALY_GENERATION_FREQUENCY generates
+    a moving wall or a power-up instead.  */
+    public void generateAnomaly() {
+        if (movingWallOrPowerUp) {
+            generatePowerUp();
+            movingWallOrPowerUp = false;
+        } else {
+            generateMovingWall();
+            movingWallOrPowerUp = true;
+        }
+    }
+
 
     public void generateMovingWall() {
         List<Tile> tileList = new ArrayList<>();

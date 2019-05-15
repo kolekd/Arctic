@@ -20,8 +20,6 @@ import static cz.danik.arctic.values.Constants.*;
 
 public class Logic {
 
-    private boolean movingWallOrPowerUp;
-
     public Player player;
 
     public TileManager tileManager;
@@ -35,8 +33,6 @@ public class Logic {
         GENERATED_WALLS_COUNT = 0;
 
         player = new Player(INITIAL_PLAYER_POS_X, INITIAL_PLAYER_POS_Y);
-
-        movingWallOrPowerUp = false;
 
         tileManager = new TileManager();
         projectileManager = new ProjectileManager();
@@ -126,18 +122,12 @@ public class Logic {
             a moving wall or a power-up instead.  */
         if (TOTAL_TICK_COUNT % WALL_GENERATION_FREQUENCY == 0) {
             if (GENERATED_WALLS_COUNT % ANOMALY_GENERATION_FREQUENCY == 0) {
-                if (movingWallOrPowerUp) {
-                    tileManager.generatePowerUp();
-                    movingWallOrPowerUp = false;
-                } else {
-                    tileManager.generateMovingWall();
-                    movingWallOrPowerUp = true;
-                }
-                GENERATED_WALLS_COUNT++;
+                tileManager.generateAnomaly();
             } else {
                 tileManager.generateWall();
-                GENERATED_WALLS_COUNT++;
             }
+
+            GENERATED_WALLS_COUNT++;
         }
 
         if(!projectileManager.isEmpty()) {
