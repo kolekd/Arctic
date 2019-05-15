@@ -8,23 +8,17 @@ import cz.danik.arctic.model.PowerUp;
 import cz.danik.arctic.model.Tile;
 import cz.danik.arctic.model.wall.MovingWall;
 import cz.danik.arctic.model.wall.Wall;
-import cz.danik.arctic.values.Globals;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.List;
 
+import static cz.danik.arctic.logic.GameFlow.*;
+import static cz.danik.arctic.values.Globals.*;
 import static cz.danik.arctic.values.Constants.*;
 
 public class Logic {
-
-    private static int SPEED_INCREASE_VALUE;
-    private static int SPEED_INCREASE_FREQUENCY;
-    private static int GENERATED_WALLS_COUNT;
-
-    private static int TOTAL_TICK_COUNT;
-    private static int TICK_COUNT;
 
     public static boolean gameRunning;
     public boolean gameJustLaunched;
@@ -35,8 +29,6 @@ public class Logic {
 
     public TileManager tileManager;
     public ProjectileManager projectileManager;
-
-    public static Timer timer;
 
     public Logic() {
         this.gameJustLaunched = true;
@@ -56,20 +48,20 @@ public class Logic {
 
         TOTAL_TICK_COUNT = 0;
         TICK_COUNT = 0;
-        Globals.SCORE_COUNT = 0;
+        SCORE_COUNT = 0;
 
         gameJustLaunched = false;
         gameRunning = true;
 
-        timer = new Timer(INITIAL_DELAY, listener);
-        timer.start();
+        GameFlow.timer = new Timer(INITIAL_DELAY, listener);
+        GameFlow.timer.start();
     }
 
     //  This happens every tick.
     public void tickAction() {
         TICK_COUNT++;
         TOTAL_TICK_COUNT++;
-        Globals.SCORE_COUNT++;
+        SCORE_COUNT++;
 
         //  Goes through each individual row of walls.
         Iterator<List<Tile>> wallLineIterator = tileManager.iterator();
@@ -106,7 +98,7 @@ public class Logic {
                             if (tile instanceof MovingWall) {
                                 ((MovingWall) tile).setMoving(false);
                             }
-                            Globals.SCORE_COUNT += BREAKER_SCORE_VALUE;
+                            SCORE_COUNT += BREAKER_SCORE_VALUE;
                             player.setBuff("");
                         } else {
                             stopTheGame = true;
@@ -119,7 +111,7 @@ public class Logic {
                 }
 
                 if (stopTheGame) {
-                    timer.stop();
+                    GameFlow.timer.stop();
                     gameRunning = false;
                 }
             }
@@ -160,20 +152,8 @@ public class Logic {
             projectileManager.checkProjectiles(tileManager);
         }
 
-        /*  Shortens the time between each tick, resets TICK_COUNT and
-                increases the value the TICK_COUNT has to reach to run these methods.   */
-        if (TICK_COUNT > SPEED_INCREASE_FREQUENCY && timer.getDelay() > MIN_DELAY) {
-            timer.setDelay(timer.getDelay() - SPEED_INCREASE_VALUE);
-            SPEED_INCREASE_FREQUENCY += INITIAL_SPEED_INCREASE_FREQUENCY;
-            TICK_COUNT = 0;
-        }
+        GameFlow.manageSpeeds();
 
-        /*  At a certain point the value by which the time between each tick is shortened
-                gets gradually decremented to prevent extreme game speed increase.  */
-        if (TOTAL_TICK_COUNT > POINT_OF_DECREMENTING_SI_VALUE &&
-                TOTAL_TICK_COUNT % SI_VALUE_DECREASE_FREQUENCY == 0 && SPEED_INCREASE_VALUE > 1) {
-            SPEED_INCREASE_VALUE--;
-        }
         System.out.println(debugReport());
     }
 
@@ -194,7 +174,7 @@ public class Logic {
     }
 
     private String debugReport() {
-        return "Score: " + Globals.SCORE_COUNT + "  Delay: " + timer.getDelay() + "  SI Frequency: " +
+        return "Score: " + SCORE_COUNT + "  Delay: " + GameFlow.timer.getDelay() + "  SI Frequency: " +
                 SPEED_INCREASE_FREQUENCY + "  SI Value: " + SPEED_INCREASE_VALUE + "  Walls generated: " +
                 GENERATED_WALLS_COUNT + "  Buff: " + player.getBuff();
     }
