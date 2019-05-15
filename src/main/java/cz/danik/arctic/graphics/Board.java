@@ -66,7 +66,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         metrics = getFontMetrics(font);
 
         logic = new Logic();
-        cursorAt = INITIAL_CURSOR_POSITION;
+        cursorAt = LINE_1_CURSOR_POSITION;
 
         DEBUG_MODE = DEBUG_MODE_DEFAULT_VALUE;
         CURRENT_WINDOW = MAIN_MENU_WINDOW;
@@ -183,8 +183,8 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private void gameOver(Graphics g) {
         String gameOver = "Game Over";
         String score = "Score: " + Globals.SCORE_COUNT;
-        String exit = GO_TO_MENU_BUTTON_TEXT + "   -->   exit to menu";
-        String restartMsg = RESET_BUTTON_TEXT + "   -->   restart.";
+        String exit = GO_TO_MENU_KEY_TEXT + "   -->   exit to menu";
+        String restartMsg = RESET_KEY_TEXT + "   -->   restart.";
 
         drawWords(g, gameOver, font, (BOARD_WIDTH - metrics.stringWidth(gameOver)) / 2, BOARD_HEIGHT / 3);
         drawWords(g, score, font, (BOARD_WIDTH - metrics.stringWidth(score)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE);
@@ -194,8 +194,8 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
     private void gamePause(Graphics g) {
         String title = "Paused";
-        String exit = GO_TO_MENU_BUTTON_TEXT + "   -->   exit to menu";
-        String resume = RESUME_BUTTON_TEXT + "   -->   resume";
+        String exit = GO_TO_MENU_KEY_TEXT + "   -->   exit to menu";
+        String resume = RESUME_KEY_TEXT + "   -->   resume";
 
         g.setColor(Color.black);
         drawWords(g, title, font, (BOARD_WIDTH - metrics.stringWidth(title)) / 2, (BOARD_HEIGHT / 3));
@@ -215,16 +215,31 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         drawWords(g, title, titleFont, (BOARD_WIDTH - titleMetrics.stringWidth(title)) / 2, TITLE_TEXT_POSITION);
 
         g.setColor(Color.black);
-        drawWords(g, singlePlayer, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(singlePlayer)) / 2, SINGLE_PLAYER_TEXT_POSITION);
-        drawWords(g, multiPlayer, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(multiPlayer)) / 2, MULTI_PLAYER_TEXT_POSITION);
-        drawWords(g, debugMode, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(debugMode)) / 2, DEBUG_MODE_TEXT_POSITION);
+        drawWords(g, singlePlayer, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(singlePlayer)) / 2, LINE_1_TEXT_POSITION);
+        drawWords(g, multiPlayer, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(multiPlayer)) / 2, LINE_2_TEXT_POSITION);
+        drawWords(g, debugMode, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(debugMode)) / 2, LINE_3_TEXT_POSITION);
     }
 
     private void gameMenuMultiplayer(Graphics g) {
         //TODO
 
+        String title = GAME_TITLE_TEXT;
+        String subtitle = MULTI_PLAYER_TEXT;
+        String start = START_GAME_TEXT;
+        String addPlayer = ADD_PLAYER_TEXT;
+        String removePlayer = REMOVE_PLAYER_TEXT;
 
+        drawCursors(g, cursorAt, this);
 
+        g.setColor(new Color(0, 11, 196));
+        drawWords(g, title, titleFont, (BOARD_WIDTH - titleMetrics.stringWidth(title)) / 2, TITLE_TEXT_POSITION);
+
+        g.setColor(Color.black);
+        drawWords(g, subtitle, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(subtitle)) / 2, SUBTITLE_TEXT_POSITION);
+
+        drawWords(g, "line 1", slimFont, (BOARD_WIDTH - slimMetrics.stringWidth("line 1")) / 2, LINE_1_TEXT_POSITION);
+        drawWords(g, "line 2", slimFont, (BOARD_WIDTH - slimMetrics.stringWidth("line 2")) / 2, LINE_2_TEXT_POSITION);
+        drawWords(g, "line 3", slimFont, (BOARD_WIDTH - slimMetrics.stringWidth("line 3")) / 2, LINE_3_TEXT_POSITION);
     }
 
     private void drawCursors(Graphics graphics, int posY, ImageObserver observer) {
@@ -336,19 +351,23 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
                 //  ENTER: enter current choice
                 if (key == KeyEvent.VK_ENTER) {
-                    if (cursorAt == SINGLE_PLAYER_CURSOR_POSITION) {
+                    if (cursorAt == LINE_1_CURSOR_POSITION) {
                         CURRENT_WINDOW = GAME_WINDOW;
                         launch();
-                    } else if (cursorAt == MULTI_PLAYER_CURSOR_POSITION) {
+                    } else if (cursorAt == LINE_2_CURSOR_POSITION) {
+                        //TODO
+
+                        CURRENT_WINDOW = MULTIPLAYER_MENU_WINDOW;
+                        cursorAt = LINE_1_CURSOR_POSITION;
                         System.out.println("Multiplayer to be implemented.");
-                    } else if (cursorAt == DEBUG_MODE_CURSOR_POSITION) {
+                    } else if (cursorAt == LINE_3_CURSOR_POSITION) {
                         DEBUG_MODE = !DEBUG_MODE;
                     }
                 }
 
                 //  UP: move up in menu
                 if (key == KeyEvent.VK_UP) {
-                    if (cursorAt > INITIAL_CURSOR_POSITION) {
+                    if (cursorAt > LINE_1_CURSOR_POSITION) {
                         cursorAt -= TILE_SIZE;
                     }
                 }
@@ -364,6 +383,20 @@ public class Board extends JPanel implements KeyListener, ActionListener {
             case MULTIPLAYER_MENU_WINDOW:
 
                 //TODO
+
+                //  UP: move up in menu
+                if (key == KeyEvent.VK_UP) {
+                    if (cursorAt > LINE_1_CURSOR_POSITION) {
+                        cursorAt -= TILE_SIZE;
+                    }
+                }
+
+                //  DOWN: move down in menu
+                if (key == KeyEvent.VK_DOWN) {
+                    if (cursorAt < MENU_CURSOR_LIMIT) {
+                        cursorAt += TILE_SIZE;
+                    }
+                }
 
                 break;
         }
