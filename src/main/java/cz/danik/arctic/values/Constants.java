@@ -50,12 +50,12 @@ public class Constants {
     public static final String GAME_OVER_WINDOW = "over";
     public static final String GAME_PAUSED_WINDOW = "paused";
 
-    public static final int MENU_TEXT_POSITIONER = (BOARD_HEIGHT / 2) + (TILE_SIZE / 2);
+    private static final int MENU_TEXT_POSITIONER = (BOARD_HEIGHT / 2) + (TILE_SIZE / 2);
     public static final int SINGLE_PLAYER_TEXT_POSITION = MENU_TEXT_POSITIONER;
     public static final int MULTI_PLAYER_TEXT_POSITION = MENU_TEXT_POSITIONER + TILE_SIZE;
     public static final int DEBUG_MODE_TEXT_POSITION = MENU_TEXT_POSITIONER + (TILE_SIZE * 2);
 
-    public static final int MENU_CURSOR_OFFSET = -(TILE_SIZE / 2);
+    private static final int MENU_CURSOR_OFFSET = -(TILE_SIZE / 2);
     public static final int SINGLE_PLAYER_CURSOR_POSITION = SINGLE_PLAYER_TEXT_POSITION + MENU_CURSOR_OFFSET;
     public static final int MULTI_PLAYER_CURSOR_POSITION = MULTI_PLAYER_TEXT_POSITION + MENU_CURSOR_OFFSET;
     public static final int DEBUG_MODE_CURSOR_POSITION = DEBUG_MODE_TEXT_POSITION + MENU_CURSOR_OFFSET;
@@ -65,7 +65,7 @@ public class Constants {
     public static final int CURSOR_1_X_POSITION = (BOARD_WIDTH / 4) - TILE_SIZE / 2;
     public static final int CURSOR_2_X_POSITION = ((BOARD_WIDTH / 4) * 3) - TILE_SIZE / 2;
 
-    public static final int MENU_LINE_COUNT = 3;
+    private static final int MENU_LINE_COUNT = 3;
     public static final int MENU_CURSOR_LIMIT = INITIAL_CURSOR_POSITION + ((MENU_LINE_COUNT - 1) * TILE_SIZE);
 
 

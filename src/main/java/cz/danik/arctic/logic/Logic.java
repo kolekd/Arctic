@@ -39,10 +39,15 @@ public class Logic {
 
         TOTAL_TICK_COUNT = 0;
         TICK_COUNT = 0;
+
+        SECONDARY_TICK_COUNT = 0;
+
         SCORE_COUNT = 0;
 
-        GameFlow.timer = new Timer(INITIAL_DELAY, listener);
-        GameFlow.timer.start();
+        PRIMARY_TIMER = new Timer(INITIAL_DELAY, listener);
+        SECONDARY_TIMER = new Timer(15, listener);
+
+        GameFlow.startTimers();
     }
 
     //  This happens every tick.
@@ -97,9 +102,9 @@ public class Logic {
                         wallLineIterator.remove();
                     }
                 }
-
+ 
                 if (stopTheGame) {
-                    GameFlow.timer.stop();
+                    GameFlow.stopTimers();
                     CURRENT_WINDOW = GAME_OVER_WINDOW;
                 }
             }
@@ -134,9 +139,14 @@ public class Logic {
             projectileManager.checkProjectiles(tileManager);
         }
 
-        GameFlow.manageSpeeds();
+        manageSpeeds();
 
         System.out.println(debugReport());
+    }
+
+    public void tickActionSecondary() {
+        SECONDARY_TICK_COUNT++;
+        projectileManager.move();
     }
 
     //  Checks whether there is no walls at the provided coordinates. Also handles player picking up the buff.
@@ -156,7 +166,7 @@ public class Logic {
     }
 
     private String debugReport() {
-        return "Score: " + SCORE_COUNT + "  Delay: " + GameFlow.timer.getDelay() + "  SI Frequency: " +
+        return "Score: " + SCORE_COUNT + "  Delay: " + PRIMARY_TIMER.getDelay() + "  SI Frequency: " +
                 SPEED_INCREASE_FREQUENCY + "  SI Value: " + SPEED_INCREASE_VALUE + "  Walls generated: " +
                 GENERATED_WALLS_COUNT + "  Buff: " + player.getBuff();
     }
