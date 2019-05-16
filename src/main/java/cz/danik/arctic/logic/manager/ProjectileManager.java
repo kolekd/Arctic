@@ -40,6 +40,13 @@ public class ProjectileManager extends ArrayList<Tile> {
                     }
                 }
             }
+        }
+    }
+
+    public void move() {
+        Iterator<Tile> projectileIterator = this.iterator();
+        while (projectileIterator.hasNext()) {
+            Tile currentProjectile = projectileIterator.next();
 
             if(currentProjectile.getPosY() < -TILE_SIZE || !currentProjectile.isPlaced()) {
                 projectileIterator.remove();

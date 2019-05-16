@@ -39,10 +39,14 @@ public class Logic {
 
         TOTAL_TICK_COUNT = 0;
         TICK_COUNT = 0;
+        SECONDARY_TICK_COUNT = 0;
+
         SCORE_COUNT = 0;
 
-        GameFlow.timer = new Timer(INITIAL_DELAY, listener);
-        GameFlow.timer.start();
+        PRIMARY_TIMER = new Timer(INITIAL_DELAY_PRIMARY, listener);
+        SECONDARY_TIMER = new Timer(INITIAL_DELAY_SECONDARY, listener);
+
+        GameFlow.startTimers();
     }
 
     //  This happens every tick.
@@ -61,17 +65,6 @@ public class Logic {
                  - Wall - player unbuffed -> ends the game, player buffed -> removes the wall
                  - Power-up -> buffs the player.  */
             for (Tile tile : tileList) {
-
-                //  These next 2 bunches of code handle showing gained score from destroying walls.
-                if (tile instanceof Wall) {
-                    if (((Wall) tile).getJustDestroyedBy().length() > 0) {
-                        ((Wall) tile).setScoreDisplayCounter(((Wall) tile).getScoreDisplayCounter() + 1);
-                    }
-
-                    if (((Wall) tile).getScoreDisplayCounter() > 10) {
-                        ((Wall) tile).setJustDestroyedBy("");
-                    }
-                }
 
                 boolean stopTheGame = false;
                 if (tile.isPlaced() &&
@@ -99,7 +92,7 @@ public class Logic {
                 }
 
                 if (stopTheGame) {
-                    GameFlow.timer.stop();
+                    GameFlow.stopTimers();
                     CURRENT_WINDOW = GAME_OVER_WINDOW;
                 }
             }
@@ -134,9 +127,30 @@ public class Logic {
             projectileManager.checkProjectiles(tileManager);
         }
 
-        GameFlow.manageSpeeds();
+        manageSpeeds();
 
         System.out.println(debugReport());
+    }
+
+    public void tickActionSecondary() {
+        SECONDARY_TICK_COUNT++;
+        projectileManager.move();
+
+        for (List<Tile> tileList : tileManager) {
+            for (Tile tile : tileList) {
+                //  These next 2 bunches of code handle showing gained score from destroying walls.
+                if (tile instanceof Wall) {
+                    if (((Wall) tile).getJustDestroyedBy().length() > 0) {
+                        ((Wall) tile).setScoreDisplayCounter(((Wall) tile).getScoreDisplayCounter() + 1);
+                    }
+
+                    if (((Wall) tile).getScoreDisplayCounter() > ON_BREAK_SCORE_DISPLAY_TIME) {
+                        ((Wall) tile).setJustDestroyedBy("");
+                    }
+                }
+
+            }
+        }
     }
 
     //  Checks whether there is no walls at the provided coordinates. Also handles player picking up the buff.
@@ -156,7 +170,7 @@ public class Logic {
     }
 
     private String debugReport() {
-        return "Score: " + SCORE_COUNT + "  Delay: " + GameFlow.timer.getDelay() + "  SI Frequency: " +
+        return "Score: " + SCORE_COUNT + "  Delay: " + PRIMARY_TIMER.getDelay() + "  SI Frequency: " +
                 SPEED_INCREASE_FREQUENCY + "  SI Value: " + SPEED_INCREASE_VALUE + "  Walls generated: " +
                 GENERATED_WALLS_COUNT + "  Buff: " + player.getBuff();
     }

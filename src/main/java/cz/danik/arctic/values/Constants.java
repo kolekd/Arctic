@@ -16,7 +16,8 @@ public class Constants {
                                                                                      projectiles move each tick. */
     public static final int INITIAL_SPEED_INCREASE_FREQUENCY = 20;                 //  <- How often does the speed increase.
     public static final int INITIAL_SPEED_INCREASE_VALUE = 6;                      //  <- By how much does the speed increase.
-    public static final int INITIAL_DELAY = 50;                                    //  <- Starting speed.
+    public static final int INITIAL_DELAY_PRIMARY = 50;                            //  <- Primary timer starting speed.
+    public static final int INITIAL_DELAY_SECONDARY = 12;                          //  <- Secondary timer starting speed.
 
     public static final int MIN_DELAY = 3;                                         //  <- Maximum speed.
     public static final int SI_VALUE_DECREASE_FREQUENCY =  80;                     /*  <- How often does the
@@ -25,8 +26,10 @@ public class Constants {
                                                                                    'speed decrease value' start decreasing. */
     public static final int WALL_GENERATION_FREQUENCY = 85;                        //  <- How often do the walls spawn.
     public static final int ANOMALY_GENERATION_FREQUENCY = 10;                     //  <- Per how many wall spawns.
-    public static final boolean INITIAL_WALL_OR_POWERUP = false;
+    public static final boolean INITIAL_WALL_OR_POWER_UP = false;
 
+
+    public static final int ON_BREAK_SCORE_DISPLAY_TIME = 45;
     public static final int BREAKER_SCORE_VALUE = 1000;                     /*  <- Score points earned when breaking
                                                                                     a wall using the Breaker power-up. */
     public static final int SHOOTER_SCORE_VALUE = 500;                      /*  <- Score points earned when breaking
@@ -73,6 +76,5 @@ public class Constants {
 
     public static final int MENU_LINE_COUNT = 3;
     public static final int MENU_CURSOR_LIMIT = LINE_1_CURSOR_POSITION + ((MENU_LINE_COUNT - 1) * TILE_SIZE);
-
 
 }
