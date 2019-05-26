@@ -1,5 +1,6 @@
 package cz.danik.arctic.graphics;
 
+import cz.danik.arctic.graphics.menu.Menu;
 import cz.danik.arctic.logic.GameFlow;
 import cz.danik.arctic.logic.Logic;
 import cz.danik.arctic.model.PowerUp;
@@ -14,12 +15,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.ImageObserver;
+import java.util.ArrayList;
 import java.util.List;
 
 import static cz.danik.arctic.logic.GameFlow.PRIMARY_TIMER;
 import static cz.danik.arctic.logic.GameFlow.SECONDARY_TIMER;
 import static cz.danik.arctic.values.Constants.*;
-import static cz.danik.arctic.values.Globals.*;
+import static cz.danik.arctic.values.Globals.CURRENT_WINDOW;
+import static cz.danik.arctic.values.Globals.DEBUG_MODE;
 
 public class Board extends JPanel implements KeyListener, ActionListener {
 
@@ -49,6 +52,10 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private Logic logic;
 
     private int cursorAt;
+
+    //  This is just here temporarily.
+    private static int MENU_LINE_COUNT = 3;
+    private static int MENU_CURSOR_LIMIT = LINE_1_CURSOR_POSITION + ((MENU_LINE_COUNT - 1) * TILE_SIZE);
 
     public Board() {
         addKeyListener(this);
@@ -128,16 +135,20 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 gameRunning(graphics);
                 break;
             case MAIN_MENU_WINDOW:
-                gameMenu(graphics);
+                mainMenu(graphics);
+                MENU_LINE_COUNT = 3;
+                MENU_CURSOR_LIMIT = LINE_1_CURSOR_POSITION + ((MENU_LINE_COUNT - 1) * TILE_SIZE);
                 break;
             case GAME_OVER_WINDOW:
                 gameOver(graphics);
                 break;
             case GAME_PAUSED_WINDOW:
-                gamePause(graphics);
+                gamePaused(graphics);
                 break;
             case MULTIPLAYER_MENU_WINDOW:
-                gameMenuMultiplayer(graphics);
+                multiplayerMenu(graphics);
+                MENU_LINE_COUNT = 4;
+                MENU_CURSOR_LIMIT = LINE_1_CURSOR_POSITION + ((MENU_LINE_COUNT - 1) * TILE_SIZE);
                 break;
         }
     }
@@ -184,6 +195,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     }
 
     private void gameOver(Graphics g) {
+
         String gameOver = "Game Over";
         String score = "Score: " + Globals.SCORE_COUNT;
         String exit = GO_TO_MENU_KEY_TEXT + "   -->   exit to menu";
@@ -195,54 +207,61 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         drawWords(g, restartMsg, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(restartMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 3);
     }
 
-    private void gamePause(Graphics g) {
-        String title = "Paused";
-        String exit = GO_TO_MENU_KEY_TEXT + "   -->   exit to menu";
-        String resume = RESUME_KEY_TEXT + "   -->   resume";
+    private void gamePaused(Graphics g) {
 
-        g.setColor(Color.black);
-        drawWords(g, title, font, (BOARD_WIDTH - metrics.stringWidth(title)) / 2, (BOARD_HEIGHT / 3));
-        drawWords(g, exit, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(exit)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE);
-        drawWords(g, resume, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(resume)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 2);
+        List<String> lines = new ArrayList<>();
+        lines.add(GO_TO_MENU_KEY_TEXT + "   -->   exit to menu");
+        lines.add(RESUME_KEY_TEXT + "   -->   resume");
+
+        drawMenu(g, new Menu.Builder().withSubTitle(PAUSED_TEXT).withLines(lines).build());
     }
 
-    private void gameMenu(Graphics g) {
-        String title = GAME_TITLE_TEXT;
-        String singlePlayer = SINGLE_PLAYER_TEXT;
-        String multiPlayer = MULTI_PLAYER_TEXT;
-        String debugMode = DEBUG_MODE_TEXT + DEBUG_MODE;
+    private void mainMenu(Graphics g) {
+
+        List<String> lines = new ArrayList<>();
+        lines.add(SINGLE_PLAYER_TEXT);
+        lines.add(MULTI_PLAYER_TEXT);
+        lines.add(DEBUG_MODE_TEXT + DEBUG_MODE);
+
+        drawMenu(g, new Menu.Builder().withTitle(GAME_TITLE_TEXT).withLines(lines).build());
 
         drawCursors(g, cursorAt, this);
-
-        g.setColor(new Color(0, 11, 196));
-        drawWords(g, title, titleFont, (BOARD_WIDTH - titleMetrics.stringWidth(title)) / 2, TITLE_TEXT_POSITION);
-
-        g.setColor(Color.black);
-        drawWords(g, singlePlayer, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(singlePlayer)) / 2, LINE_1_TEXT_POSITION);
-        drawWords(g, multiPlayer, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(multiPlayer)) / 2, LINE_2_TEXT_POSITION);
-        drawWords(g, debugMode, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(debugMode)) / 2, LINE_3_TEXT_POSITION);
     }
 
-    private void gameMenuMultiplayer(Graphics g) {
+    private void multiplayerMenu(Graphics g) {
         //TODO
 
-        String title = GAME_TITLE_TEXT;
-        String subtitle = MULTI_PLAYER_TEXT;
-        String start = START_GAME_TEXT;
-        String addPlayer = ADD_PLAYER_TEXT;
-        String removePlayer = REMOVE_PLAYER_TEXT;
+        List<String> lines = new ArrayList<>();
+
+        lines.add(START_GAME_TEXT);
+        lines.add(ADD_PLAYER_TEXT);
+        lines.add(REMOVE_PLAYER_TEXT);
+        lines.add(GO_BACK);
+
+        drawMenu(g, new Menu.Builder().withTitle(GAME_TITLE_TEXT).withSubTitle(MULTI_PLAYER_TEXT).withLines(lines).build());
 
         drawCursors(g, cursorAt, this);
+    }
 
-        g.setColor(new Color(0, 11, 196));
-        drawWords(g, title, titleFont, (BOARD_WIDTH - titleMetrics.stringWidth(title)) / 2, TITLE_TEXT_POSITION);
-
+    private void drawMenu(Graphics g, Menu menu) {
         g.setColor(Color.black);
-        drawWords(g, subtitle, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(subtitle)) / 2, SUBTITLE_TEXT_POSITION);
 
-        drawWords(g, "line 1", slimFont, (BOARD_WIDTH - slimMetrics.stringWidth("line 1")) / 2, LINE_1_TEXT_POSITION);
-        drawWords(g, "line 2", slimFont, (BOARD_WIDTH - slimMetrics.stringWidth("line 2")) / 2, LINE_2_TEXT_POSITION);
-        drawWords(g, "line 3", slimFont, (BOARD_WIDTH - slimMetrics.stringWidth("line 3")) / 2, LINE_3_TEXT_POSITION);
+        if (!menu.getLines().isEmpty()) {
+            for (int i = 0; i < menu.getLines().size(); i++) {
+                String line = menu.getLines().get(i);
+                drawWords(g, line, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(line)) / 2, LINE_1_TEXT_POSITION + (i * TILE_SIZE));
+            }
+        }
+
+        if (menu.getTitle() != null && menu.getTitle().length() > 0) {
+            g.setColor(new Color(0, 11, 196));
+            drawWords(g, menu.getTitle(), titleFont, (BOARD_WIDTH - titleMetrics.stringWidth(menu.getTitle())) / 2, TITLE_TEXT_POSITION);
+            g.setColor(Color.black);
+        }
+
+        if (menu.getSubTitle() != null && menu.getSubTitle().length() > 0) {
+            drawWords(g, menu.getSubTitle(), slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(menu.getSubTitle())) / 2, SUBTITLE_TEXT_POSITION);
+        }
     }
 
     private void drawCursors(Graphics graphics, int posY, ImageObserver observer) {
@@ -338,6 +357,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 //  Q: exit to menu
                 if(key == KeyEvent.VK_Q) {
                     CURRENT_WINDOW = MAIN_MENU_WINDOW;
+                    cursorAt = LINE_1_CURSOR_POSITION;
                 }
 
                 break;
@@ -351,26 +371,11 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 //  Q: exit to menu
                 if(key == KeyEvent.VK_Q) {
                     CURRENT_WINDOW = MAIN_MENU_WINDOW;
+                    cursorAt = LINE_1_CURSOR_POSITION;
                 }
 
                 break;
             case MAIN_MENU_WINDOW:
-
-                //  ENTER: enter current choice
-                if (key == KeyEvent.VK_ENTER) {
-                    if (cursorAt == LINE_1_CURSOR_POSITION) {
-                        CURRENT_WINDOW = GAME_WINDOW;
-                        launch();
-                    } else if (cursorAt == LINE_2_CURSOR_POSITION) {
-                        //TODO
-
-                        CURRENT_WINDOW = MULTIPLAYER_MENU_WINDOW;
-                        cursorAt = LINE_1_CURSOR_POSITION;
-                        System.out.println("Multiplayer to be implemented.");
-                    } else if (cursorAt == LINE_3_CURSOR_POSITION) {
-                        DEBUG_MODE = !DEBUG_MODE;
-                    }
-                }
 
                 //  UP: move up in menu
                 if (key == KeyEvent.VK_UP) {
@@ -408,7 +413,42 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 break;
         }
 
+        //  ENTER: enter current choice
+        if (key == KeyEvent.VK_ENTER) {
+            enterAction();
+        }
+
         repaint();
+    }
+
+    private void enterAction() {
+        //  ENTER: enter current choice
+        if(CURRENT_WINDOW.equals(MAIN_MENU_WINDOW)) {
+            if (cursorAt == LINE_1_CURSOR_POSITION) {
+                CURRENT_WINDOW = GAME_WINDOW;
+                launch();
+            } else if (cursorAt == LINE_2_CURSOR_POSITION) {
+                //TODO
+
+                CURRENT_WINDOW = MULTIPLAYER_MENU_WINDOW;
+                cursorAt = LINE_1_CURSOR_POSITION;
+                System.out.println("Multiplayer to be implemented.");
+            } else if (cursorAt == LINE_3_CURSOR_POSITION) {
+                DEBUG_MODE = !DEBUG_MODE;
+            }
+        } else if (CURRENT_WINDOW.equals(MULTIPLAYER_MENU_WINDOW)) {
+            if (cursorAt == LINE_1_CURSOR_POSITION) {
+                CURRENT_WINDOW = GAME_WINDOW;
+                launch();
+            } else if (cursorAt == LINE_2_CURSOR_POSITION) {
+                System.out.println("Add player");
+            } else if (cursorAt == LINE_3_CURSOR_POSITION) {
+                System.out.println("Remove player");
+            } else if (cursorAt == LINE_4_CURSOR_POSITION) {
+                CURRENT_WINDOW = MAIN_MENU_WINDOW;
+                cursorAt = LINE_1_CURSOR_POSITION;
+            }
+        }
     }
 
     @Override

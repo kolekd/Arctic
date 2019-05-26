@@ -14,9 +14,9 @@ public class Constants {
 
     public static final int STEP_DISTANCE = TILE_SIZE / 8;                  /*  <- Distance by which the walls and
                                                                                      projectiles move each tick. */
-    public static final int INITIAL_SPEED_INCREASE_FREQUENCY = 20;                 //  <- How often does the speed increase.
-    public static final int INITIAL_SPEED_INCREASE_VALUE = 6;                      //  <- By how much does the speed increase.
-    public static final int INITIAL_DELAY_PRIMARY = 50;                            //  <- Primary timer starting speed.
+    public static final int INITIAL_SPEED_INCREASE_FREQUENCY = 23;                 //  <- How often does the speed increase.
+    public static final int INITIAL_SPEED_INCREASE_VALUE = 5;                      //  <- By how much does the speed increase.
+    public static final int INITIAL_DELAY_PRIMARY = 40;                            //  <- Primary timer starting speed.
     public static final int INITIAL_DELAY_SECONDARY = 12;                          //  <- Secondary timer starting speed.
 
     public static final int MIN_DELAY = 3;                                         //  <- Maximum speed.
@@ -52,6 +52,8 @@ public class Constants {
     public static final String START_GAME_TEXT = "Start the game";
     public static final String ADD_PLAYER_TEXT = "Add player.";
     public static final String REMOVE_PLAYER_TEXT = "Remove player.";
+    public static final String PAUSED_TEXT = "Paused";
+    public static final String GO_BACK = "<- Go back";
 
     public static final String MAIN_MENU_WINDOW = "menu";
     public static final String MULTIPLAYER_MENU_WINDOW = "multimenu";
@@ -63,6 +65,7 @@ public class Constants {
     public static final int LINE_1_TEXT_POSITION = MENU_TEXT_POSITIONER;
     public static final int LINE_2_TEXT_POSITION = MENU_TEXT_POSITIONER + TILE_SIZE;
     public static final int LINE_3_TEXT_POSITION = MENU_TEXT_POSITIONER + (TILE_SIZE * 2);
+    public static final int LINE_4_TEXT_POSITION = MENU_TEXT_POSITIONER + (TILE_SIZE * 3);
     public static final int TITLE_TEXT_POSITION = BOARD_HEIGHT / 4;
     public static final int SUBTITLE_TEXT_POSITION = (BOARD_HEIGHT / 4) + (TILE_SIZE * 2);
 
@@ -70,11 +73,12 @@ public class Constants {
     public static final int LINE_1_CURSOR_POSITION = LINE_1_TEXT_POSITION + MENU_CURSOR_OFFSET;
     public static final int LINE_2_CURSOR_POSITION = LINE_2_TEXT_POSITION + MENU_CURSOR_OFFSET;
     public static final int LINE_3_CURSOR_POSITION = LINE_3_TEXT_POSITION + MENU_CURSOR_OFFSET;
+    public static final int LINE_4_CURSOR_POSITION = LINE_4_TEXT_POSITION + MENU_CURSOR_OFFSET;
 
     public static final int CURSOR_1_X_POSITION = (BOARD_WIDTH / 4) - TILE_SIZE / 2;
     public static final int CURSOR_2_X_POSITION = ((BOARD_WIDTH / 4) * 3) - TILE_SIZE / 2;
 
-    public static final int MENU_LINE_COUNT = 3;
-    public static final int MENU_CURSOR_LIMIT = LINE_1_CURSOR_POSITION + ((MENU_LINE_COUNT - 1) * TILE_SIZE);
+//    public static final int MENU_LINE_COUNT = 3;
+//    public static final int MENU_CURSOR_LIMIT = LINE_1_CURSOR_POSITION + ((MENU_LINE_COUNT - 1) * TILE_SIZE);
 
 }

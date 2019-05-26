@@ -170,8 +170,13 @@ public class Logic {
     }
 
     private String debugReport() {
-        return "Score: " + SCORE_COUNT + "  Delay: " + PRIMARY_TIMER.getDelay() + "  SI Frequency: " +
-                SPEED_INCREASE_FREQUENCY + "  SI Value: " + SPEED_INCREASE_VALUE + "  Walls generated: " +
-                GENERATED_WALLS_COUNT + "  Buff: " + player.getBuff();
+        return    "Score: " + SCORE_COUNT +
+                "  Total TickCount: " + TOTAL_TICK_COUNT +
+                "  TickCount: " + TICK_COUNT +
+                "  Delay: " + PRIMARY_TIMER.getDelay() +
+                "  SI Frequency: " + SPEED_INCREASE_FREQUENCY +
+                "  SI Value: " + SPEED_INCREASE_VALUE +
+                "  Walls generated: " + GENERATED_WALLS_COUNT +
+                "  Buff: " + player.getBuff();
     }
 }
