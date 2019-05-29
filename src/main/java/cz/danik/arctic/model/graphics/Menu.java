@@ -1,4 +1,4 @@
-package cz.danik.arctic.graphics.model;
+package cz.danik.arctic.model.graphics;
 
 import java.util.List;
 

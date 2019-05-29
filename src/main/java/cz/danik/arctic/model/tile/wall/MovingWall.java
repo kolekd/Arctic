@@ -1,4 +1,4 @@
-package cz.danik.arctic.model.wall;
+package cz.danik.arctic.model.tile.wall;
 
 import cz.danik.arctic.values.Constants;
 

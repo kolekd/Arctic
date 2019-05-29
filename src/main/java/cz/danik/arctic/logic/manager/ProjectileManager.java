@@ -1,9 +1,9 @@
 package cz.danik.arctic.logic.manager;
 
-import cz.danik.arctic.model.Projectile;
-import cz.danik.arctic.model.Tile;
-import cz.danik.arctic.model.wall.MovingWall;
-import cz.danik.arctic.model.wall.Wall;
+import cz.danik.arctic.model.tile.Projectile;
+import cz.danik.arctic.model.tile.Tile;
+import cz.danik.arctic.model.tile.wall.MovingWall;
+import cz.danik.arctic.model.tile.wall.Wall;
 import cz.danik.arctic.values.Globals;
 
 import java.util.ArrayList;

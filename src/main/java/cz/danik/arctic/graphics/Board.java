@@ -1,11 +1,11 @@
 package cz.danik.arctic.graphics;
 
-import cz.danik.arctic.graphics.model.Menu;
+import cz.danik.arctic.model.graphics.Menu;
 import cz.danik.arctic.logic.GameFlow;
 import cz.danik.arctic.logic.Logic;
-import cz.danik.arctic.model.PowerUp;
-import cz.danik.arctic.model.Tile;
-import cz.danik.arctic.model.wall.Wall;
+import cz.danik.arctic.model.tile.PowerUp;
+import cz.danik.arctic.model.tile.Tile;
+import cz.danik.arctic.model.tile.wall.Wall;
 import cz.danik.arctic.values.Globals;
 
 import javax.swing.*;
@@ -21,8 +21,7 @@ import java.util.List;
 import static cz.danik.arctic.logic.GameFlow.PRIMARY_TIMER;
 import static cz.danik.arctic.logic.GameFlow.SECONDARY_TIMER;
 import static cz.danik.arctic.values.Constants.*;
-import static cz.danik.arctic.values.Globals.CURRENT_WINDOW;
-import static cz.danik.arctic.values.Globals.DEBUG_MODE;
+import static cz.danik.arctic.values.Globals.*;
 
 public class Board extends JPanel implements KeyListener, ActionListener {
 
@@ -140,6 +139,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 MENU_CURSOR_LIMIT = LINE_1_CURSOR_POSITION + ((MENU_LINE_COUNT - 1) * TILE_SIZE);
                 break;
             case GAME_OVER_WINDOW:
+                CURRENT_PLAYER++;
                 gameOver(graphics);
                 break;
             case GAME_PAUSED_WINDOW:
@@ -190,6 +190,10 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         }
 
         drawWords(graphics, String.valueOf(Globals.SCORE_COUNT), font, (TILE_SIZE / 4), (BOARD_HEIGHT) - 6);
+        drawWords(graphics, "Player " + CURRENT_PLAYER, font, (BOARD_WIDTH - (TILE_SIZE * 3)) + 10, (BOARD_HEIGHT) - 6);
+        drawWords(graphics, "Players " + NUMBER_OF_PLAYERS, font, BOARD_WIDTH / 2, (BOARD_HEIGHT) - 6);
+        drawWords(graphics, "MP: " + MULTIPLAYER_MODE, font, (BOARD_WIDTH - (TILE_SIZE * 3)) + 10, (BOARD_HEIGHT) - 6 - TILE_SIZE);
+
 
         Toolkit.getDefaultToolkit().sync();
     }
@@ -200,11 +204,25 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         String score = "Score: " + Globals.SCORE_COUNT;
         String exit = GO_TO_MENU_KEY_TEXT + "   -->   exit to menu";
         String restartMsg = RESET_KEY_TEXT + "   -->   restart.";
+        String pressForNext = START_KEY_TEXT + "   -->   launch next player";
+        String pressForScores = START_KEY_TEXT + "   -->   see scores";
+        String nextUp = "Next player: " + CURRENT_PLAYER;
+
+        if(!MULTIPLAYER_MODE){
+            drawWords(g, restartMsg, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(restartMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 3);
+        } else {
+            if(CURRENT_PLAYER > NUMBER_OF_PLAYERS) {
+                drawWords(g, pressForScores, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(pressForScores)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 3);
+                drawWords(g, restartMsg, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(restartMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 4);
+            } else {
+                drawWords(g, nextUp, slimFont, (BOARD_WIDTH - metrics.stringWidth(nextUp)) / 2, (BOARD_HEIGHT / 3) + TILE_SIZE);
+                drawWords(g, pressForNext, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(pressForNext)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 4);
+            }
+        }
 
         drawWords(g, gameOver, font, (BOARD_WIDTH - metrics.stringWidth(gameOver)) / 2, BOARD_HEIGHT / 3);
         drawWords(g, score, font, (BOARD_WIDTH - metrics.stringWidth(score)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE);
         drawWords(g, exit, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(exit)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 2);
-        drawWords(g, restartMsg, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(restartMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 3);
     }
 
     private void gamePaused(Graphics g) {
@@ -239,8 +257,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         lines.add(GO_BACK);
 
         drawMenu(g, new Menu.Builder().withTitle(GAME_TITLE_TEXT).withSubTitle(MULTI_PLAYER_TEXT).withLines(lines).build());
-
         drawCursors(g, cursorAt, this);
+
+        drawWords(g, "Players: " + NUMBER_OF_PLAYERS, font, (BOARD_WIDTH - metrics.stringWidth("Players: " + NUMBER_OF_PLAYERS)) / 2, BOARD_HEIGHT - (TILE_SIZE * 3));
     }
 
     private void drawMenu(Graphics g, Menu menu) {
@@ -362,8 +381,28 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
                 break;
             case GAME_OVER_WINDOW:
+
+                if(MULTIPLAYER_MODE && CURRENT_PLAYER <= NUMBER_OF_PLAYERS) {
+
+                    //  SPACE: next player
+                    if (key == KeyEvent.VK_SPACE) {
+                        CURRENT_WINDOW = GAME_WINDOW;
+                        launch();
+                    }
+
+                } else {
+
+                    //  R: restart
+                    if (key == KeyEvent.VK_R) {
+                        CURRENT_WINDOW = GAME_WINDOW;
+                        CURRENT_PLAYER = 1;
+                        launch();
+                    }
+
+                }
+
                 //  R: restart
-                if (key == KeyEvent.VK_R) {
+                if (!MULTIPLAYER_MODE && key == KeyEvent.VK_R) {
                     CURRENT_WINDOW = GAME_WINDOW;
                     launch();
                 }
@@ -372,6 +411,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 if(key == KeyEvent.VK_Q) {
                     CURRENT_WINDOW = MAIN_MENU_WINDOW;
                     cursorAt = LINE_1_CURSOR_POSITION;
+                    MULTIPLAYER_MODE = false;
                 }
 
                 break;
@@ -432,6 +472,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
                 CURRENT_WINDOW = MULTIPLAYER_MENU_WINDOW;
                 cursorAt = LINE_1_CURSOR_POSITION;
+                NUMBER_OF_PLAYERS = 2;
                 System.out.println("Multiplayer to be implemented.");
             } else if (cursorAt == LINE_3_CURSOR_POSITION) {
                 DEBUG_MODE = !DEBUG_MODE;
@@ -439,11 +480,17 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         } else if (CURRENT_WINDOW.equals(MULTIPLAYER_MENU_WINDOW)) {
             if (cursorAt == LINE_1_CURSOR_POSITION) {
                 CURRENT_WINDOW = GAME_WINDOW;
+                MULTIPLAYER_MODE = true;
+                CURRENT_PLAYER = 1;
                 launch();
             } else if (cursorAt == LINE_2_CURSOR_POSITION) {
+                NUMBER_OF_PLAYERS++;
                 System.out.println("Add player");
             } else if (cursorAt == LINE_3_CURSOR_POSITION) {
-                System.out.println("Remove player");
+                if(NUMBER_OF_PLAYERS > 2) {
+                    NUMBER_OF_PLAYERS--;
+                    System.out.println("Remove player");
+                }
             } else if (cursorAt == LINE_4_CURSOR_POSITION) {
                 CURRENT_WINDOW = MAIN_MENU_WINDOW;
                 cursorAt = LINE_1_CURSOR_POSITION;

@@ -1,4 +1,4 @@
-package cz.danik.arctic.model;
+package cz.danik.arctic.model.tile;
 
 import cz.danik.arctic.values.Constants;
 

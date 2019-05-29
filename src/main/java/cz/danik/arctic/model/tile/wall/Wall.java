@@ -1,6 +1,6 @@
-package cz.danik.arctic.model.wall;
+package cz.danik.arctic.model.tile.wall;
 
-import cz.danik.arctic.model.Tile;
+import cz.danik.arctic.model.tile.Tile;
 
 public class Wall extends Tile {
 
