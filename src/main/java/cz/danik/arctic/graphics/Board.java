@@ -1,6 +1,6 @@
 package cz.danik.arctic.graphics;
 
-import cz.danik.arctic.graphics.menu.Menu;
+import cz.danik.arctic.graphics.model.Menu;
 import cz.danik.arctic.logic.GameFlow;
 import cz.danik.arctic.logic.Logic;
 import cz.danik.arctic.model.PowerUp;

@@ -1,4 +1,4 @@
-package cz.danik.arctic.graphics.menu;
+package cz.danik.arctic.graphics.model;
 
 import java.util.List;
 
