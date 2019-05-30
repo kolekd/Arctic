@@ -8,5 +8,7 @@ public class Globals {
 
     public static boolean MULTIPLAYER_MODE;
     public static int NUMBER_OF_PLAYERS;
+
     public static int CURRENT_PLAYER;
+    public static int CURRENT_PLAYER_SCORE;
 }

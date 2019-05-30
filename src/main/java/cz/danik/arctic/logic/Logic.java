@@ -3,6 +3,7 @@ package cz.danik.arctic.logic;
 
 import cz.danik.arctic.logic.manager.ProjectileManager;
 import cz.danik.arctic.logic.manager.TileManager;
+import cz.danik.arctic.model.scoreboard.Score;
 import cz.danik.arctic.model.tile.Player;
 import cz.danik.arctic.model.tile.PowerUp;
 import cz.danik.arctic.model.tile.Tile;

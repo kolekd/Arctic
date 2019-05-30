@@ -60,6 +60,7 @@ public class Constants {
     public static final String GAME_WINDOW = "game";
     public static final String GAME_OVER_WINDOW = "over";
     public static final String GAME_PAUSED_WINDOW = "paused";
+    public static final String SCOREBOARD_WINDOW = "scoreboard";
 
     private static final int MENU_TEXT_POSITIONER = (BOARD_HEIGHT / 2) + (TILE_SIZE / 2);
     public static final int LINE_1_TEXT_POSITION = MENU_TEXT_POSITIONER;

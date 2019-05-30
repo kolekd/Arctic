@@ -3,6 +3,7 @@ package cz.danik.arctic.graphics;
 import cz.danik.arctic.model.graphics.Menu;
 import cz.danik.arctic.logic.GameFlow;
 import cz.danik.arctic.logic.Logic;
+import cz.danik.arctic.model.scoreboard.Score;
 import cz.danik.arctic.model.tile.PowerUp;
 import cz.danik.arctic.model.tile.Tile;
 import cz.danik.arctic.model.tile.wall.Wall;
@@ -49,6 +50,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private FontMetrics titleMetrics;
 
     private Logic logic;
+    private List<Score> scoreBoard = new ArrayList<>();
 
     private int cursorAt;
 
@@ -150,6 +152,9 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 MENU_LINE_COUNT = 4;
                 MENU_CURSOR_LIMIT = LINE_1_CURSOR_POSITION + ((MENU_LINE_COUNT - 1) * TILE_SIZE);
                 break;
+            case SCOREBOARD_WINDOW:
+                drawScoreBoard(graphics);
+                break;
         }
     }
 
@@ -190,15 +195,17 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         }
 
         drawWords(graphics, String.valueOf(Globals.SCORE_COUNT), font, (TILE_SIZE / 4), (BOARD_HEIGHT) - 6);
-        drawWords(graphics, "Player " + CURRENT_PLAYER, font, (BOARD_WIDTH - (TILE_SIZE * 3)) + 10, (BOARD_HEIGHT) - 6);
-        drawWords(graphics, "Players " + NUMBER_OF_PLAYERS, font, BOARD_WIDTH / 2, (BOARD_HEIGHT) - 6);
-        drawWords(graphics, "MP: " + MULTIPLAYER_MODE, font, (BOARD_WIDTH - (TILE_SIZE * 3)) + 10, (BOARD_HEIGHT) - 6 - TILE_SIZE);
 
+        if(MULTIPLAYER_MODE) {
+            drawWords(graphics, "Player " + CURRENT_PLAYER, font, (BOARD_WIDTH - (TILE_SIZE * 3)) + 10, (BOARD_HEIGHT) - 6);
+        }
 
         Toolkit.getDefaultToolkit().sync();
     }
 
     private void gameOver(Graphics g) {
+
+        scoreBoard.add(new Score(CURRENT_PLAYER, SCORE_COUNT));
 
         String gameOver = "Game Over";
         String score = "Score: " + Globals.SCORE_COUNT;
@@ -260,6 +267,31 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         drawCursors(g, cursorAt, this);
 
         drawWords(g, "Players: " + NUMBER_OF_PLAYERS, font, (BOARD_WIDTH - metrics.stringWidth("Players: " + NUMBER_OF_PLAYERS)) / 2, BOARD_HEIGHT - (TILE_SIZE * 3));
+    }
+
+    private void drawScoreBoard(Graphics g) {
+
+        String exit = GO_TO_MENU_KEY_TEXT + "   -->   exit to menu";
+
+        List<String> players = new ArrayList<>();
+        List<String> scores = new ArrayList<>();
+
+        for (Score score : scoreBoard) {
+            players.add(String.valueOf(score.getPlayerNumber()));
+            scores.add(String.valueOf(score.getPlayerScore()));
+        }
+
+        for (int i = 0; i < players.size(); i++) {
+            String line = players.get(i);
+            drawWords(g, "Player " + line, slimFont, ((BOARD_WIDTH - slimMetrics.stringWidth("Player " + line)) / 2) - (TILE_SIZE * 2), LINE_1_TEXT_POSITION + (i * TILE_SIZE));
+        }
+
+        for (int i = 0; i < scores.size(); i++) {
+            String line = scores.get(i);
+            drawWords(g, line, slimFont, ((BOARD_WIDTH - slimMetrics.stringWidth(line)) / 2) + (TILE_SIZE * 2), LINE_1_TEXT_POSITION + (i * TILE_SIZE));
+        }
+
+        drawWords(g, exit, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(exit)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 5);
     }
 
     private void drawMenu(Graphics g, Menu menu) {
@@ -392,6 +424,11 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
                 } else {
 
+                    //  SPACE: show scoreBoard
+                    if (key == KeyEvent.VK_SPACE) {
+                        CURRENT_WINDOW = SCOREBOARD_WINDOW;
+                    }
+
                     //  R: restart
                     if (key == KeyEvent.VK_R) {
                         CURRENT_WINDOW = GAME_WINDOW;
@@ -451,6 +488,15 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 }
 
                 break;
+            case SCOREBOARD_WINDOW:
+
+                //  Q: back to menu
+                if (key == KeyEvent.VK_Q) {
+                    CURRENT_WINDOW = MAIN_MENU_WINDOW;
+                    cursorAt = LINE_1_CURSOR_POSITION;
+                }
+
+                break;
         }
 
         //  ENTER: enter current choice
@@ -482,6 +528,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 CURRENT_WINDOW = GAME_WINDOW;
                 MULTIPLAYER_MODE = true;
                 CURRENT_PLAYER = 1;
+                scoreBoard.clear();
                 launch();
             } else if (cursorAt == LINE_2_CURSOR_POSITION) {
                 NUMBER_OF_PLAYERS++;
