@@ -53,7 +53,7 @@ public class Constants {
     public static final String ADD_PLAYER_TEXT = "Add player.";
     public static final String REMOVE_PLAYER_TEXT = "Remove player.";
     public static final String PAUSED_TEXT = "Paused";
-    public static final String GO_BACK = "<- Go back";
+    public static final String GO_BACK = "<- Go back <-";
 
     public static final String MAIN_MENU_WINDOW = "menu";
     public static final String MULTIPLAYER_MENU_WINDOW = "multimenu";
@@ -78,8 +78,5 @@ public class Constants {
 
     public static final int CURSOR_1_X_POSITION = (BOARD_WIDTH / 4) - TILE_SIZE / 2;
     public static final int CURSOR_2_X_POSITION = ((BOARD_WIDTH / 4) * 3) - TILE_SIZE / 2;
-
-//    public static final int MENU_LINE_COUNT = 3;
-//    public static final int MENU_CURSOR_LIMIT = LINE_1_CURSOR_POSITION + ((MENU_LINE_COUNT - 1) * TILE_SIZE);
 
 }

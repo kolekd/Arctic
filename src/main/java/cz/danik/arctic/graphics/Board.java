@@ -40,6 +40,8 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private Image cursor1;
     private Image cursor2;
 
+    private Color titleColour;
+
     private Font titleFont;
     private Font font;
     private Font slimFont;
@@ -65,6 +67,8 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         setFocusable(true);
         setBackground(new Color(238,238,238));
         setFont(font);
+
+        titleColour = new Color(0, 11, 196);
 
         titleFont = new Font("Helvetica", Font.BOLD, 40);
         font = new Font("Helvetica", Font.BOLD, 18);
@@ -213,7 +217,8 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         String restartMsg = RESET_KEY_TEXT + "   -->   restart.";
         String pressForNext = START_KEY_TEXT + "   -->   launch next player";
         String pressForScores = START_KEY_TEXT + "   -->   see scores";
-        String nextUp = "Next player: " + CURRENT_PLAYER;
+        String nextUp = "Next up: ";
+        String player = "Player " + CURRENT_PLAYER;
 
         if(!MULTIPLAYER_MODE){
             drawWords(g, restartMsg, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(restartMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 3);
@@ -222,12 +227,17 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 drawWords(g, pressForScores, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(pressForScores)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 3);
                 drawWords(g, restartMsg, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(restartMsg)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 4);
             } else {
-                drawWords(g, nextUp, slimFont, (BOARD_WIDTH - metrics.stringWidth(nextUp)) / 2, (BOARD_HEIGHT / 3) + TILE_SIZE);
+                drawWords(g, nextUp, slimFont, ((BOARD_WIDTH - slimMetrics.stringWidth(nextUp)) / 2) - ((TILE_SIZE * 2) + TILE_SIZE / 2), (BOARD_HEIGHT / 3) + TILE_SIZE);
+
+                g.setColor(titleColour);
+                drawWords(g, player, font, (BOARD_WIDTH - metrics.stringWidth(player)) / 2, (BOARD_HEIGHT / 3) + TILE_SIZE);
+                g.setColor(Color.black);
+
                 drawWords(g, pressForNext, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(pressForNext)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 4);
             }
         }
 
-        drawWords(g, gameOver, font, (BOARD_WIDTH - metrics.stringWidth(gameOver)) / 2, BOARD_HEIGHT / 3);
+        drawWords(g, gameOver, font, (BOARD_WIDTH - metrics.stringWidth(gameOver)) / 2, (BOARD_HEIGHT / 3) - TILE_SIZE);
         drawWords(g, score, font, (BOARD_WIDTH - metrics.stringWidth(score)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE);
         drawWords(g, exit, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(exit)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 2);
     }
@@ -272,6 +282,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private void drawScoreBoard(Graphics g) {
 
         String exit = GO_TO_MENU_KEY_TEXT + "   -->   exit to menu";
+        String scoreBoardString = "Scoreboard";
 
         List<String> players = new ArrayList<>();
         List<String> scores = new ArrayList<>();
@@ -283,15 +294,19 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
         for (int i = 0; i < players.size(); i++) {
             String line = players.get(i);
-            drawWords(g, "Player " + line, slimFont, ((BOARD_WIDTH - slimMetrics.stringWidth("Player " + line)) / 2) - (TILE_SIZE * 2), LINE_1_TEXT_POSITION + (i * TILE_SIZE));
+            drawWords(g, "Player " + line, slimFont, ((BOARD_WIDTH - slimMetrics.stringWidth("Player " + line)) / 2) - (TILE_SIZE * 2), (LINE_1_TEXT_POSITION + (i * TILE_SIZE)) - TILE_SIZE);
         }
 
         for (int i = 0; i < scores.size(); i++) {
             String line = scores.get(i);
-            drawWords(g, line, slimFont, ((BOARD_WIDTH - slimMetrics.stringWidth(line)) / 2) + (TILE_SIZE * 2), LINE_1_TEXT_POSITION + (i * TILE_SIZE));
+            drawWords(g, line, slimFont, ((BOARD_WIDTH - slimMetrics.stringWidth(line)) / 2) + (TILE_SIZE * 2), (LINE_1_TEXT_POSITION + (i * TILE_SIZE)) - TILE_SIZE);
         }
 
-        drawWords(g, exit, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(exit)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 5);
+        g.setColor(titleColour);
+        drawWords(g, scoreBoardString, titleFont, (BOARD_WIDTH - titleMetrics.stringWidth(scoreBoardString)) / 2, TITLE_TEXT_POSITION);
+        g.setColor(Color.black);
+
+        drawWords(g, exit, slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(exit)) / 2, (BOARD_HEIGHT / 2) + TILE_SIZE * 6);
     }
 
     private void drawMenu(Graphics g, Menu menu) {
@@ -305,13 +320,13 @@ public class Board extends JPanel implements KeyListener, ActionListener {
         }
 
         if (menu.getTitle() != null && menu.getTitle().length() > 0) {
-            g.setColor(new Color(0, 11, 196));
+            g.setColor(titleColour);
             drawWords(g, menu.getTitle(), titleFont, (BOARD_WIDTH - titleMetrics.stringWidth(menu.getTitle())) / 2, TITLE_TEXT_POSITION);
             g.setColor(Color.black);
         }
 
         if (menu.getSubTitle() != null && menu.getSubTitle().length() > 0) {
-            drawWords(g, menu.getSubTitle(), slimFont, (BOARD_WIDTH - slimMetrics.stringWidth(menu.getSubTitle())) / 2, SUBTITLE_TEXT_POSITION);
+            drawWords(g, menu.getSubTitle(), font, (BOARD_WIDTH - metrics.stringWidth(menu.getSubTitle())) / 2, SUBTITLE_TEXT_POSITION);
         }
     }
 
