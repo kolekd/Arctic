@@ -14,7 +14,7 @@ public class Constants {
 
     public static final int STEP_DISTANCE = TILE_SIZE / 8;                  /*  <- Distance by which the walls and
                                                                                      projectiles move each tick. */
-    public static final int INITIAL_SPEED_INCREASE_FREQUENCY = 23;                 //  <- How often does the speed increase.
+    public static final int INITIAL_SPEED_INCREASE_FREQUENCY = 1;                 //  <- How often does the speed increase.
     public static final int INITIAL_SPEED_INCREASE_VALUE = 5;                      //  <- By how much does the speed increase.
     public static final int INITIAL_DELAY_PRIMARY = 40;                            //  <- Primary timer starting speed.
     public static final int INITIAL_DELAY_SECONDARY = 12;                          //  <- Secondary timer starting speed.

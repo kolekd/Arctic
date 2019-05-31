@@ -145,7 +145,6 @@ public class Board extends JPanel implements KeyListener, ActionListener {
                 MENU_CURSOR_LIMIT = LINE_1_CURSOR_POSITION + ((MENU_LINE_COUNT - 1) * TILE_SIZE);
                 break;
             case GAME_OVER_WINDOW:
-                CURRENT_PLAYER++;
                 gameOver(graphics);
                 break;
             case GAME_PAUSED_WINDOW:
@@ -210,6 +209,7 @@ public class Board extends JPanel implements KeyListener, ActionListener {
     private void gameOver(Graphics g) {
 
         scoreBoard.add(new Score(CURRENT_PLAYER, SCORE_COUNT));
+        ++CURRENT_PLAYER;
 
         String gameOver = "Game Over";
         String score = "Score: " + Globals.SCORE_COUNT;
@@ -283,6 +283,16 @@ public class Board extends JPanel implements KeyListener, ActionListener {
 
         String exit = GO_TO_MENU_KEY_TEXT + "   -->   exit to menu";
         String scoreBoardString = "Scoreboard";
+
+        for (int i = 0; i < scoreBoard.size(); i++) {
+            for (int j = 0; j < scoreBoard.size(); j++) {
+                if(scoreBoard.get(i).getPlayerScore() > scoreBoard.get(j).getPlayerScore()) {
+                    Score scoreAtJ = scoreBoard.get(j);
+                    scoreBoard.set(j, scoreBoard.get(i));
+                    scoreBoard.set(i, scoreAtJ);
+                }
+            }
+        }
 
         List<String> players = new ArrayList<>();
         List<String> scores = new ArrayList<>();
